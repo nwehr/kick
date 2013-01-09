@@ -29,6 +29,9 @@
 #ifndef _kick_h
 #define _kick_h
 
+#include <cstdlib>
+#include <iostream>
+
 namespace kick {
 	template<typename T>
 	class link {
@@ -270,64 +273,72 @@ namespace kick {
 	class string {
 	public:
 		string()
-		: _cstring_( 0 )
-		, _length_( 0 )
+		: _size_( 0 )
+		, _c_str_( 0 )
 		{}
 		
-		string( char* i_cstring )
-		: _cstring_( i_cstring )
-		, _length_( sizeof( _cstring_ ) )
-		{}
-		
-		string( const string& i_string ){
-			char t[i_string.length()];
-			
-			for( int i = 0; i < _length_; ++i ){
-				t[i] = i_string[i];
+		string( const char* cstr )
+		: _size_( sizeof( cstr ) )
+		, _c_str_( 0 )
+		{
+			_c_str_ = reinterpret_cast<char**>( realloc( _c_str_, (sizeof( char* ) * --_size_ ) ) );
+
+			for( int i = 0; i < _size_; ++i ){
+				*_c_str_[i] = cstr[i];
+
+				std::cout << *_c_str_[i] << std::endl;
+
 			}
-			
-			_cstring_ = t;
+
 		}
 		
-		string& operator=( char* i_cstring ){
-			_cstring_ = i_cstring;
-			_length_ = sizeof( _cstring_ );
-			
-			return *this;
-			
-		}
-		
-		string& operator=( const string& i_string ){
-			if( this != &i_string ){
-				char t[i_string.length()];
-				
-				for( int i = 0; i < _length_; ++i ){
-					t[i] = i_string[i];
-				}
-				
-				_cstring_ = t;
-				
-			}
-			
-			return *this;
-			
-		}
+//		string( const string& str ){
+//			int size = str.size();
+//
+//			char t[size];
+//
+//			for( int i = 0; i < size; ++i ){
+//				t[i] = str[i];
+//			}
+//
+//			_c_str_ = t;
+//
+//		}
+//
+//		string& operator=( const string& str ){
+//			if( this != &str ){
+//				int size = str.size();
+//
+//				char t[size];
+//
+//				for( int i = 0; i < size; ++i ){
+//					t[i] = str[i];
+//				}
+//
+//				_c_str_ = t;
+//
+//			}
+//
+//			return *this;
+//
+//		}
 		
 		virtual ~string(){}
 		
-		char operator[]( int i_index ) const {
-			return _cstring_[i_index];
+		char operator[]( int index ) const {
+			return *_c_str_[index];
 		}
 		
-		int length() const { return _length_; }
+		int size() const { return _size_; }
 		
 		const char* c_str(){
-			return _cstring_;
+			return *_c_str_;
 		}
 		
 	private:
-		int _length_;
-		char* _cstring_;
+		int _size_;
+		char** _c_str_;
+
 	};
 	
 	template<typename T>
