@@ -29,11 +29,11 @@
 #ifndef _kick_h
 #define _kick_h
 
+#ifdef __APPLE__ || __linux__
 #include <cstdlib>
-#include <iostream>
+#endif
 
 namespace kick {
-	
 	///////////////////////////////////////////////////////////////////////////////
 	// link
 	///////////////////////////////////////////////////////////////////////////////
@@ -311,10 +311,6 @@ namespace kick {
 			
 		}
 		
-		virtual ~string(){
-			free( _cstr_ );
-		}
-		
 		string( const string& str )
 		: _size_( str.size() )
 		, _cstr_( 0 )
@@ -338,7 +334,10 @@ namespace kick {
 			return *this;
 
 		}
-
+		
+		virtual ~string(){
+			free( _cstr_ );
+		}
 		
 		char operator[]( int i ) const {
 			return _cstr_[i];
