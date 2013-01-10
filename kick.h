@@ -283,6 +283,78 @@ namespace kick {
 	};
 	
 	///////////////////////////////////////////////////////////////////////////////
+	// pair
+	///////////////////////////////////////////////////////////////////////////////
+	template<typename K, typename V>
+	class pair {
+	public:
+		pair( K& key, V& val )
+		: _key_( key )
+		, _val_( val )
+		{}
+
+		pair( const pair& p )
+		: _key_( p.key() )
+		, _val_( p.val() )
+		{}
+
+		virtual ~pair(){}
+
+		K& key(){
+			return _key_;
+		}
+
+		V& val(){
+			return _val_;
+		}
+
+	private:
+		K _key_;
+		V _val_;
+	};
+
+	///////////////////////////////////////////////////////////////////////////////
+	// map
+	///////////////////////////////////////////////////////////////////////////////
+	template<typename K, typename V>
+	class map {
+	public:
+		map()
+		: _size_( 0 )
+		, _items_( 0 )
+		{}
+
+		virtual ~map(){
+			for( int i = 0; i < _size_; ++i )
+				delete _items_[i];
+
+			free( _items_ );
+
+		}
+
+		void insert( const pair<K,V>& p ){
+			_items_ = reinterpret_cast<kick::pair<K,V>**>( realloc( _items_, (sizeof( void* ) * (++_size_)) ) );
+			_items_[_size_ - 1] = new pair<K,V>( p.key(), p.val() );
+		}
+
+		V& operator[]( K& key ){
+			for( int i = 0; i < _size_; ++i ){
+				if( _items_[i]->key() == key )
+					return _items_[i]->val();
+
+			}
+
+			return _items_[0]->val();
+
+		}
+
+	private:
+		int _size_;
+		pair<K,V>** _items_;
+
+	};
+
+	///////////////////////////////////////////////////////////////////////////////
 	// string
 	///////////////////////////////////////////////////////////////////////////////
 	class string {
@@ -335,6 +407,14 @@ namespace kick {
 
 		}
 		
+		bool operator==( const string& str ){
+			if( _cstr_ == str.c_str() )
+				return true;
+
+			return false;
+
+		}
+
 		virtual ~string(){
 			free( _cstr_ );
 		}

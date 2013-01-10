@@ -2,15 +2,11 @@
 #include "kick.h"
 
 int main( int argc, char* argv[] ){
-	kick::string Str1( "Hello World!" );
-	kick::string Str2( "What?" );
+	kick::map<int, int> myMap;
 	
-	Str2 = Str1;
-
-//	std::cout << "kick" << std::endl;
-//	std::cout << myString.size() << std::endl;
+	myMap.insert( kick::pair<int, int>( 3, 4 ) );
 	
-	std::cout << Str2.c_str() << std::endl;
+	std::cout << myMap[3] << std::endl;
 	
 	return 0;
 
