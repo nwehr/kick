@@ -1,4 +1,9 @@
 .project
 .cproject
 
+.DS_Store
+
+kick.xcodeproj
+kick.cpp
+
 Debug

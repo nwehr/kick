@@ -33,13 +33,17 @@
 #include <iostream>
 
 namespace kick {
+	
+	///////////////////////////////////////////////////////////////////////////////
+	// link
+	///////////////////////////////////////////////////////////////////////////////
 	template<typename T>
 	class link {
 	public:
-		link( const T& i_item, link<T>* i_previous = 0, link<T>* i_next = 0 )
-		: _item_( i_item )
-		, _previous_( i_previous )
-		, _next_( i_next )
+		link( const T& item, link<T>* previous = 0, link<T>* next = 0 )
+		: _item_( item )
+		, _previous_( previous )
+		, _next_( next )
 		{}
 		
 		link<T>*& previous(){ return _previous_; }
@@ -56,6 +60,9 @@ namespace kick {
 		
 	};
 	
+	///////////////////////////////////////////////////////////////////////////////
+	// deque
+	///////////////////////////////////////////////////////////////////////////////
 	template<typename T>
 	class deque {
 	public:
@@ -73,12 +80,13 @@ namespace kick {
 				delete _current_;
 				
 				_current_ = t;
+				
 			}
 			
 		}
 		
-		void push_back( const T& i_item ){
-			link<T>* t = new link<T>( i_item, _back_, 0 );
+		void push_back( const T& item ){
+			link<T>* t = new link<T>( item, _back_, 0 );
 			
 			if( _back_ )
 				_back_->next() = t;
@@ -92,8 +100,8 @@ namespace kick {
 			
 		}
 		
-		void push_front( const T& i_item ){
-			link<T>* t = new link<T>( i_item, 0, _front_ );
+		void push_front( const T& item ){
+			link<T>* t = new link<T>( item, 0, _front_ );
 			
 			if( _front_ )
 				_front_->previous() = t;
@@ -165,6 +173,9 @@ namespace kick {
 		link<T>* _back_;
 	};
 	
+	///////////////////////////////////////////////////////////////////////////////
+	// vector
+	///////////////////////////////////////////////////////////////////////////////
 	template<typename T>
 	class vector {
 	public:
@@ -177,14 +188,14 @@ namespace kick {
 			empty();
 			
 			free( _items_ );
+			
 		}
 		
-		const vector<T>& operator=( const vector<T>& i_vector ){
+		const vector<T>& operator=( const vector<T>& vec ){
 			empty();
 			
-			for( int i = 0; i < i_vector.size(); ++i ){
-				push_back( i_vector[i] );
-			}
+			for( int i = 0; i < vec.size(); ++i )
+				push_back( vec[i] );
 			
 			return *this;
 			
@@ -193,45 +204,47 @@ namespace kick {
 		void empty(){
 			for( int i = 0; i < _size_; ++i ){
 				delete _items_[i];
+				
 				--_size_;
-			}
-			
-		}
-		
-		void erase( int i_index ){
-			if( i_index < _size_ ){
-				delete _items_[i_index];
-				
-				for( int i = i_index; i < _size_ - 1; ++i )
-					_items_[i] = _items_[i+1];
-				
-				_items_ = reinterpret_cast<T**>( realloc( _items_, (sizeof( T* ) * (--_size_)) ) );
 				
 			}
 			
 		}
 		
-		void push_back( const T& i_item ){
-			_items_ = reinterpret_cast<T**>( realloc( _items_, (sizeof( T* ) * (++_size_)) ) );
-			_items_[_size_ - 1] = new T( i_item );
+		void erase( int i ){
+			if( i < _size_ ){
+				delete _items_[i];
+				
+				for( int n = i; n < _size_ - 1; ++n )
+					_items_[n] = _items_[n + 1];
+				
+				_items_ = reinterpret_cast<T**>( realloc( _items_, (sizeof( void* ) * (--_size_)) ) );
+				
+			}
 			
 		}
 		
-		void push_front( const T& i_item ){
-			_items_ = reinterpret_cast<T**>( realloc( _items_, (sizeof( T* ) * (++_size_)) ) );
+		void push_back( const T& item ){
+			_items_ = reinterpret_cast<T**>( realloc( _items_, (sizeof( void* ) * (++_size_)) ) );
+			_items_[_size_ - 1] = new T( item );
 			
-			for( int i = (_size_ - 1); i > 0; --i ){
-				_items_[i] = _items_[i-1];
-			}
+		}
+		
+		void push_front( const T& item ){
+			_items_ = reinterpret_cast<T**>( realloc( _items_, (sizeof( void* ) * (++_size_)) ) );
 			
-			_items_[0] = new T( i_item );
+			for( int i = (_size_ - 1); i > 0; --i )
+				_items_[i] = _items_[i - 1];
+			
+			_items_[0] = new T( item );
 			
 		}
 		
 		void pop_back(){
 			if( _size_ ){
 				delete _items_[_size_ - 1];
-				_items_ = reinterpret_cast<T**>( realloc( _items_, (sizeof( T* ) * (--_size_)) ) );
+				
+				_items_ = reinterpret_cast<T**>( realloc( _items_, (sizeof( void* ) * (--_size_)) ) );
 				
 			}
 			
@@ -241,11 +254,10 @@ namespace kick {
 			if( _size_ ){
 				delete _items_[0];
 				
-				for( int i = 0; i < (_size_ - 1); ++i ){
+				for( int i = 0; i < (_size_ - 1); ++i )
 					_items_[i] = _items_[i+1];
-				}
 				
-				_items_ = reinterpret_cast<T**>( realloc( _items_, (sizeof( T* ) * (--_size_)) ) );
+				_items_ = reinterpret_cast<T**>( realloc( _items_, (sizeof( void* ) * (--_size_)) ) );
 				
 			}
 			
@@ -256,9 +268,9 @@ namespace kick {
 		T& front(){ if( _size_ ) return *_items_[0]; }
 		T& back(){ if( _size_ ) return *_items_[_size_ - 1]; }
 		
-		T& operator[]( int i_index ){
-			if( i_index < _size_ && i_index > 0 )
-				return *_items_[i_index];
+		T& operator[]( int i ){
+			if( i < _size_ && i > 0 )
+				return *_items_[i];
 			
 			return *_items_[0];
 			
@@ -270,74 +282,79 @@ namespace kick {
 		
 	};
 	
+	///////////////////////////////////////////////////////////////////////////////
+	// string
+	///////////////////////////////////////////////////////////////////////////////
 	class string {
 	public:
 		string()
 		: _size_( 0 )
-		, _c_str_( 0 )
+		, _cstr_( 0 )
 		{}
 		
 		string( const char* cstr )
-		: _size_( sizeof( cstr ) )
-		, _c_str_( 0 )
+		: _size_( 0 )
+		, _cstr_( 0 )
 		{
-			_c_str_ = reinterpret_cast<char**>( realloc( _c_str_, (sizeof( char* ) * --_size_ ) ) );
-
-			for( int i = 0; i < _size_; ++i ){
-				*_c_str_[i] = cstr[i];
-
-				std::cout << *_c_str_[i] << std::endl;
-
+			while( true ){
+				if( cstr[_size_] )
+					++_size_;
+				else break;
+				
 			}
+			
+			_cstr_ = reinterpret_cast<char*>( realloc( _cstr_, (sizeof( void* ) * _size_) ) );
+
+			for( int i = 0; i < _size_; ++i )
+				_cstr_[i] = cstr[i];
+			
+			
+		}
+		
+		virtual ~string(){
+			free( _cstr_ );
+		}
+		
+		string( const string& str )
+		: _size_( str.size() )
+		, _cstr_( 0 )
+		{
+			_cstr_ = reinterpret_cast<char*>( realloc( _cstr_, (sizeof( void* ) * _size_) ) );
+			
+			for( int i = 0; i < _size_; ++i )
+				_cstr_[i] = str[i];
+			
 
 		}
+
+		string& operator=( const string& str ){
+			_size_ = str.size();
+			
+			_cstr_ = reinterpret_cast<char*>( realloc( _cstr_, (sizeof( void* ) * _size_) ) );
+			
+			for( int i = 0; i < _size_; ++i )
+				_cstr_[i] = str[i]; 
+
+			return *this;
+
+		}
+
 		
-//		string( const string& str ){
-//			int size = str.size();
-//
-//			char t[size];
-//
-//			for( int i = 0; i < size; ++i ){
-//				t[i] = str[i];
-//			}
-//
-//			_c_str_ = t;
-//
-//		}
-//
-//		string& operator=( const string& str ){
-//			if( this != &str ){
-//				int size = str.size();
-//
-//				char t[size];
-//
-//				for( int i = 0; i < size; ++i ){
-//					t[i] = str[i];
-//				}
-//
-//				_c_str_ = t;
-//
-//			}
-//
-//			return *this;
-//
-//		}
-		
-		virtual ~string(){}
-		
-		char operator[]( int index ) const {
-			return *_c_str_[index];
+		char operator[]( int i ) const {
+			return _cstr_[i];
 		}
 		
-		int size() const { return _size_; }
+		int size() const {
+			return _size_;
+		}
 		
-		const char* c_str(){
-			return *_c_str_;
+		char* c_str() const {
+			return _cstr_;
 		}
 		
 	private:
 		int _size_;
-		char** _c_str_;
+		char* _cstr_;
 
 	};
 	
@@ -349,13 +366,13 @@ namespace kick {
 	}
 	
 	template<typename T>
-	void bubble_sort( vector<T>& i_vector ){
-		int size = i_vector.size();
+	void bubble_sort( vector<T>& vec ){
+		int size = vec.size();
 		
 		for( int i = 0; i < size; ++i ){
 			for( int j = i; j < size; ++j ){
-				if( i_vector[j] < i_vector[i] )
-					swap( i_vector[j], i_vector[i] );
+				if( vec[j] < vec[i] )
+					swap( vec[j], vec[i] );
 				
 				
 			}
@@ -365,13 +382,12 @@ namespace kick {
 	}
 	
 	template<typename T>
-	void bubble_sort( deque<T>& i_deque ){
-		int size = i_deque.size();
+	void bubble_sort( deque<T>& deq ){
+		int size = deq.size();
 		
-		link<T>* it = i_deque.front();
+		link<T>* it = deq.front();
 		
 		for( int i = 0; i < size; ++i ){
-			
 			link<T>* ij = it;
 			
 			for( int j = i; j < size; ++j ){
