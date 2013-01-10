@@ -1,19 +1,6 @@
 #include <iostream>
 #include "kick.h"
 
-int _strlen_( const char* cstr ){
-	int size = 0;
-	
-	while( true ){
-		if( cstr[size] ) ++size;
-		else break;
-		
-	}
-	
-	return size; 
-	
-}
-
 int main( int argc, char* argv[] ){
 	kick::string Str1( "Hello World!" );
 	kick::string Str2( "What?" );
