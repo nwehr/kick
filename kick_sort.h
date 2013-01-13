@@ -26,14 +26,62 @@
 //      or implied, of Nathan Wehr.
 //
 
-#ifndef _kick_h
-#define _kick_h
+#ifndef _kick_sort_h
+#define _kick_sort_h
 
-#include <kick/kick_allocator.h>
-#include <kick/kick_vector.h>
-#include <kick/kick_map.h>
-#include <kick/kick_deque.h>
-#include <kick/kick_string.h>
-#include <kick/kick_sort.h>
+namespace kick {
+	///////////////////////////////////////////////////////////////////////////////
+	// swap
+	///////////////////////////////////////////////////////////////////////////////
+	template<typename T>
+	void swap( T& a, T& b ){
+		T c( a );
+		a = b;
+		b = c;
+	}
+	
+	///////////////////////////////////////////////////////////////////////////////
+	// bubble_sort
+	///////////////////////////////////////////////////////////////////////////////
+	template<typename T>
+	void bubble_sort( vector<T>& vec ){
+		int size = vec.size();
+		
+		for( int i = 0; i < size; ++i ){
+			for( int j = i; j < size; ++j ){
+				if( vec[j] < vec[i] )
+					swap( vec[j], vec[i] );
+				
+				
+			}
+			
+		}
+		
+	}
+	
+	template<typename T>
+	void bubble_sort( deque<T>& deq ){
+		int size = deq.size();
+		
+		link<T>* it = deq.front();
+		
+		for( int i = 0; i < size; ++i ){
+			link<T>* ij = it;
+			
+			for( int j = i; j < size; ++j ){
+				if( **ij < **it )
+					swap( **it, **ij );
+				
+				ij = ij->next();
+				
+			}
+			
+			it = it->next();
+			
+		}
+		
+	}
+	
+}
 
-#endif
+#endif // _kick_sort_h
