@@ -77,20 +77,20 @@ namespace kick {
 				for( int n = i; n < _size_ - 1; ++n )
 					_items_[n] = _items_[n + 1];
 				
-				_items_ = reinterpret_cast<T**>( realloc( _items_, (sizeof( void* ) * (--_size_)) ) );
+				_items_ = static_cast<T**>( realloc( _items_, (sizeof( void* ) * (--_size_)) ) );
 				
 			}
 			
 		}
 		
 		void push_back( const T& item ){
-			_items_ = reinterpret_cast<T**>( realloc( _items_, (sizeof( void* ) * (++_size_)) ) );
+			_items_ = static_cast<T**>( realloc( _items_, (sizeof( void* ) * (++_size_)) ) );
 			_items_[_size_ - 1] = new T( item );
 			
 		}
 		
 		void push_front( const T& item ){
-			_items_ = reinterpret_cast<T**>( realloc( _items_, (sizeof( void* ) * (++_size_)) ) );
+			_items_ = static_cast<T**>( realloc( _items_, (sizeof( void* ) * (++_size_)) ) );
 			
 			for( int i = (_size_ - 1); i > 0; --i )
 				_items_[i] = _items_[i - 1];
@@ -103,7 +103,7 @@ namespace kick {
 			if( _size_ ){
 				delete _items_[_size_ - 1];
 				
-				_items_ = reinterpret_cast<T**>( realloc( _items_, (sizeof( void* ) * (--_size_)) ) );
+				_items_ = static_cast<T**>( realloc( _items_, (sizeof( void* ) * (--_size_)) ) );
 				
 			}
 			
@@ -116,7 +116,7 @@ namespace kick {
 				for( int i = 0; i < (_size_ - 1); ++i )
 					_items_[i] = _items_[i+1];
 				
-				_items_ = reinterpret_cast<T**>( realloc( _items_, (sizeof( void* ) * (--_size_)) ) );
+				_items_ = static_cast<T**>( realloc( _items_, (sizeof( void* ) * (--_size_)) ) );
 				
 			}
 			

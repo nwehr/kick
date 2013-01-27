@@ -70,7 +70,7 @@ namespace kick {
 		V& val(){
 			return _val_;
 		}
-		
+
 		const K& const_key() const {
 			return _key_;
 		}
@@ -83,20 +83,21 @@ namespace kick {
 		K _key_;
 		V _val_;
 	};
-	
+		
 	///////////////////////////////////////////////////////////////////////////////
 	// map_iterator
 	///////////////////////////////////////////////////////////////////////////////
 	template<typename K, typename V, typename A = array_allocator<pair<K,V>>>
 	class map_iterator {
 	public:
+/* // DON'T NEED THIS
 		map_iterator()
 		: _current_( 0 )
 		, _items_( 0 )
 		, _alloc_( 0 )
 		{}
-		
-		map_iterator( int i, pair<K,V>*** items )
+*/		
+		map_iterator( int i, pair<K,V>**& items )
 		: _current_( i )
 		, _items_( items )
 		, _alloc_( 0 )
@@ -104,8 +105,9 @@ namespace kick {
 		
 		virtual ~map_iterator(){}
 		
-		pair<K,V>& operator*() const {
-			return *(*_items_[_current_]);
+		pair<K,V>& operator*() {
+//TODO: We should do something (other than crash) if someone tries to dereference an invalid iterator (e.g. end() )
+			return *(_items_[_current_]);
 		}
 		
 		void operator++(){
@@ -129,17 +131,17 @@ namespace kick {
 		}
 		
 		bool operator==( const map_iterator& it ) const {
-			return (*_items_[_current_] == *it);
+			return _current_ == it._current_;
 		}
 		
 		bool operator!=( const map_iterator& it ) const {
-			return (**_items_[_current_] != *it);
+			return _current_ != it._current_;
 		}
 		
 	private:
 		int _current_;
 		
-		pair<K,V>*** _items_;
+		pair<K,V>**& _items_;	// reference to an array of pointers-to-pairs
 		A* _alloc_;
 		
 	};
@@ -154,7 +156,7 @@ namespace kick {
 		
 		map()
 		: _items_( 0 )
-		, _alloc_( &_items_ )
+		, _alloc_( _items_ )
 		{}
 		
 		virtual ~map(){
@@ -185,11 +187,11 @@ namespace kick {
 		}
 		
 		iterator begin(){
-			return iterator( 0, &_items_ );
+			return iterator( 0, _items_ );
 		}
 		
 		iterator end(){
-			return iterator( size(), &_items_ );
+			return iterator( size(), _items_ );
 		}
 		
 	private:

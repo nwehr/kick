@@ -38,13 +38,14 @@ namespace kick {
 	template<typename T>
 	class array_allocator {
 	public:
+/* // NO CAN DO
 		array_allocator()
 		: _asize_( 0 )
 		, _usize_( 0 )
 		, _mem_( 0 )
 		{}
-		
-		array_allocator( T*** mem )
+*/
+		array_allocator( T**& mem )
 		: _asize_( 0 )
 		, _usize_( 0 )
 		, _mem_( mem )
@@ -60,25 +61,25 @@ namespace kick {
 			return _usize_;
 		}
 		
-		T** alloc( int size ){
+		T** alloc( int size ){  // returns an array of pointer-to-T
 			_usize_ = size;
 			
 			if( _usize_ > _asize_ )
 				_asize_ = _usize_ + 2;
 			
-			void* ptr = realloc( *_mem_, (sizeof( void* ) * (_asize_)) );
+			T** ptr = static_cast<T**>( realloc( _mem_, (sizeof( void* ) * (_asize_)) ) );
 			
-			if( ptr ) return reinterpret_cast<T**>( ptr );
-			else return *_mem_;
+			if( ptr ) return ptr;
+			else return _mem_;
 			
 			
 		}
 		
 		void free(){
 			for( int i = 0; i < _usize_; ++i )
-				delete (*_mem_)[i];
+				delete (_mem_)[i];
 			
-			::free( *_mem_ );
+			::free( _mem_ );
 			
 		}
 		
@@ -86,7 +87,7 @@ namespace kick {
 		int _asize_;
 		int _usize_;
 		
-		T*** _mem_;
+		T**& _mem_;		// reference to an array of pointer-to-T
 		
 	};
 	
@@ -110,9 +111,9 @@ namespace kick {
 		char* alloc( int size ){
 			_size_ = size; 
 			
-			void* ptr = realloc( *_mem_, (sizeof( void* ) * _size_) );
+			char* ptr = static_cast<char*>( realloc( *_mem_, (sizeof( void* ) * _size_) ) );
 			
-			if( ptr ) return reinterpret_cast<char*>( ptr );
+			if( ptr ) return ptr;
 			else return *_mem_;
 			
 		}

@@ -54,7 +54,7 @@ namespace kick {
 				
 			}
 			
-			_cstr_ = reinterpret_cast<char*>( realloc( _cstr_, (sizeof( void* ) * _size_) ) );
+			_cstr_ = static_cast<char*>( realloc( _cstr_, (sizeof( void* ) * _size_) ) );
 			
 			for( int i = 0; i < _size_; ++i )
 				_cstr_[i] = cstr[i];
@@ -63,13 +63,9 @@ namespace kick {
 		}
 		
 		string( const string& str )
-		: _size_( 0 )
-		, _cstr_( 0 )
+		: _size_( str.size() )
+		, _cstr_( static_cast<char*>( malloc( sizeof( char ) * _size_ ) ) )
 		{
-			_size_ = str.size();
-			
-			_cstr_ = reinterpret_cast<char*>( realloc( _cstr_, (sizeof( void* ) * _size_) ) );
-			
 			for( int i = 0; i < _size_; ++i )
 				_cstr_[i] = str.c_str()[i];
 			
@@ -84,7 +80,7 @@ namespace kick {
 		string& operator=( const string& str ){
 			_size_ = str.size();
 			
-			_cstr_ = reinterpret_cast<char*>( realloc( _cstr_, (sizeof( void* ) * _size_) ) );
+			_cstr_ = static_cast<char*>( realloc( _cstr_, (sizeof( void* ) * _size_) ) );
 			
 			for( int i = 0; i < _size_; ++i )
 				_cstr_[i] = str.c_str()[i];

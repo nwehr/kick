@@ -9,10 +9,8 @@ int main( int argc, char* argv[] ){
 	myMap.insert( kick::pair<kick::string, kick::string>( "two", "Two" ) );
 	myMap.insert( kick::pair<kick::string, kick::string>( "three", "Three" ) );
 	
-	kick::map<kick::string, kick::string>::iterator it;
-	
-	for( it = myMap.begin(); it != myMap.end(); ++it ){
-		kick::pair<kick::string, kick::string> myPair = (*it); ;
+	for( kick::map<kick::string, kick::string>::iterator it = myMap.begin(); it != myMap.end(); ++it ){
+		kick::pair<kick::string, kick::string> myPair = *it;
 		
 		std::cout << (*it).val().c_str() << std::endl;
 		
