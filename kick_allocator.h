@@ -38,17 +38,9 @@ namespace kick {
 	template<typename T>
 	class array_allocator {
 	public:
-/* // NO CAN DO
 		array_allocator()
 		: _asize_( 0 )
 		, _usize_( 0 )
-		, _mem_( 0 )
-		{}
-*/
-		array_allocator( T**& mem )
-		: _asize_( 0 )
-		, _usize_( 0 )
-		, _mem_( mem )
 		{}
 		
 		virtual ~array_allocator(){}
@@ -61,35 +53,43 @@ namespace kick {
 			return _usize_;
 		}
 		
-		T** alloc( int size ){  // returns an array of pointer-to-T
+		T* malloc( int size ){
 			_usize_ = size;
+			_asize_ = size + 2;
 			
-			if( _usize_ > _asize_ )
-				_asize_ = _usize_ + 2;
+			T* ptr = static_cast<T*>( ::malloc( sizeof( T ) * _asize_ ) );
 			
-			T** ptr = static_cast<T**>( realloc( _mem_, (sizeof( void* ) * (_asize_)) ) );
+			if( ptr )
+				return ptr;
 			
-			if( ptr ) return ptr;
-			else return _mem_;
-			
+			exit( -1 );
 			
 		}
 		
-		void free(){
-			for( int i = 0; i < _usize_; ++i )
-				delete (_mem_)[i];
+		T* realloc( T*& mem, int size ){
+			_usize_ = size;
+
+			if( _usize_ > _asize_ || (_asize_ - _usize_) > 3 )
+				_asize_ = _usize_ + 2;
+
+			T* ptr = static_cast<T*>( ::realloc( mem, sizeof( T ) * _asize_ ) );
+
+			if( ptr )
+				return ptr;
 			
-			::free( _mem_ );
+			exit( -1 );
 			
+		}
+		
+		void free( T*& mem ){
+			::free( mem );
 		}
 		
 	private:
 		int _asize_;
 		int _usize_;
 		
-		T**& _mem_;		// reference to an array of pointer-to-T
-		
-	};
+	}; 
 	
 	///////////////////////////////////////////////////////////////////////////////
 	// string_allocator

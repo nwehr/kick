@@ -39,37 +39,33 @@ namespace kick {
 	class string {
 	public:
 		string()
-		: _size_( 0 )
-		, _cstr_( 0 )
-		{}
+		: _size_( 1 )
+		, _cstr_( static_cast<char*>( malloc( sizeof( char ) * 1 ) ) )
+		{
+			_cstr_[0] = 0;	// terminating null for c_str() support
+		}
 		
 		string( const char* cstr )
 		: _size_( 0 )
 		, _cstr_( 0 )
 		{
-			while( true ){
-				if( cstr[_size_] )
-					++_size_;
-				else break;
-				
-			}
+			while( cstr[_size_] )
+				++_size_;
 			
-			_cstr_ = static_cast<char*>( realloc( _cstr_, (sizeof( void* ) * _size_) ) );
+			_cstr_ = static_cast<char*>( malloc( sizeof( char ) * ++_size_ ) );	// include the trailing null char
 			
 			for( int i = 0; i < _size_; ++i )
 				_cstr_[i] = cstr[i];
 			
-			
 		}
 		
 		string( const string& str )
-		: _size_( str.size() )
-		, _cstr_( static_cast<char*>( malloc( sizeof( char ) * _size_ ) ) )
+		: _size_( str._size_ )
+		, _cstr_( static_cast<char*>( malloc( sizeof( char ) * str._size_ ) ) )
 		{
 			for( int i = 0; i < _size_; ++i )
-				_cstr_[i] = str.c_str()[i];
-			
-			
+				_cstr_[i] = str._cstr_[i];
+
 		}
 		
 		virtual ~string(){
@@ -78,25 +74,37 @@ namespace kick {
 		}
 		
 		string& operator=( const string& str ){
-			_size_ = str.size();
+			_size_ = str._size_;
 			
-			_cstr_ = static_cast<char*>( realloc( _cstr_, (sizeof( void* ) * _size_) ) );
+			_cstr_ = static_cast<char*>( realloc( _cstr_, sizeof( char ) * _size_ ) );
 			
 			for( int i = 0; i < _size_; ++i )
-				_cstr_[i] = str.c_str()[i];
+				_cstr_[i] = str._cstr_[i];
 			
 			return *this;
 			
 		}
-		
+/*
+		string& operator=( const char* cstr ){
+			_size_ = 0;
+			
+			while( cstr[_size_] )
+				++_size_;
+			
+			_cstr_ = static_cast<char*>( realloc( _cstr_, sizeof( char ) * ++_size_ ) );	// include the trailing null char
+			
+			for( int i = 0; i < _size_; ++i )
+				_cstr_[i] = cstr[i];
+			
+			return *this;
+			
+		}
+*/		
 		bool operator==( const string& str ) const {
-			if( _size_ == str.size() ){
-				for( int i = 0; i < _size_; ++i ){
-					if( _cstr_[i] != str.c_str()[i] )
+			if( _size_ == str._size_ ){
+				for( int i = 0; i < _size_; ++i )
+					if( _cstr_[i] != str._cstr_[i] )
 						return false;
-					
-					
-				}
 				
 				return true;
 				
@@ -107,28 +115,19 @@ namespace kick {
 		}
 		
 		bool operator!=( const string& str ) const {
-			if( _size_ == str.size() ){
-				for( int i = 0; i < _size_; ++i ){
-					if( _cstr_[i] != str.c_str()[i] )
-						return true;
-					
-					
-				}
-				
-				return false;
-				
-			}
-			
-			return true;
-			
+			return !(*this == str);
 		}
 		
 		char& operator[]( int i ){
-			return _cstr_[i];
+			if( i < _size_ && i >= 0 )
+				return _cstr_[i];
+			
+			exit( -1 ); //TODO: out-of-range, do something!!!
+			
 		}
 		
 		int size() const {
-			return _size_;
+			return _size_ - 1;
 		}
 		
 		char* c_str() const {
@@ -139,7 +138,7 @@ namespace kick {
 		int _size_;
 		char* _cstr_;
 		
-		string_allocator _alloc_;
+//		string_allocator _alloc_;
 		
 	};
 	

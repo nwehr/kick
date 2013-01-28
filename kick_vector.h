@@ -25,6 +25,7 @@
 //      authors and should not be interpreted as representing official policies, either expressed
 //      or implied, of Nathan Wehr.
 //
+
 #ifndef _kick_vector_h
 #define _kick_vector_h
 
@@ -38,107 +39,113 @@ namespace kick {
 	class vector {
 	public:
 		vector()
-		: _size_( 0 )
-		, _items_( 0 )
-		, _alloc_( &_items_ )
+		: _items_( 0 )
+		, _alloc_()
 		{}
 		
-		virtual ~vector(){
-			empty();
+		vector( int size )
+		: _items_( 0 )
+		, _alloc_()
+		{
+			_items_ = _alloc_.malloc( size );
 			
-			free( _items_ );
+			for( int i = 0; i < kick::vector<T>::size(); ++i )
+				_items_[i] = T();
+			
+		
+		}
+		
+		vector( const vector<T>& vec )
+		: _items_( 0 )
+		, _alloc_()
+		{
+			_items_ = _alloc_.malloc( vec.size() );
+			
+			for( int i = 0; i < size(); ++i )
+				_items_[i] = vec._items_[i];
+			
 			
 		}
 		
+		virtual ~vector(){
+			_alloc_.free( _items_ ); 
+		}
+		
 		const vector<T>& operator=( const vector<T>& vec ){
-			empty();
+			_alloc_.free( _items_ );
+
+			_items_ = _alloc_.malloc( vec.size() );
 			
-			for( int i = 0; i < vec.size(); ++i )
-				push_back( vec[i] );
+			for( int i = 0; i < size(); ++i )
+				_items_[i] = vec._items_[i];
 				
-				return *this;
+			return *this;
 			
 		}
 		
 		void empty(){
-			for( int i = 0; i < _size_; ++i ){
-				delete _items_[i];
-				
-				--_size_;
-				
-			}
-			
+			_alloc_.free( _items_ );			
 		}
 		
 		void erase( int i ){
-			if( i < _size_ ){
-				delete _items_[i];
-				
-				for( int n = i; n < _size_ - 1; ++n )
+			if( i < size() ){
+				for( int n = i; n < size() - 1; ++n )
 					_items_[n] = _items_[n + 1];
 				
-				_items_ = static_cast<T**>( realloc( _items_, (sizeof( void* ) * (--_size_)) ) );
+				_items_ = _alloc_.realloc( _items_, size() - 1 );
 				
 			}
 			
 		}
 		
 		void push_back( const T& item ){
-			_items_ = static_cast<T**>( realloc( _items_, (sizeof( void* ) * (++_size_)) ) );
-			_items_[_size_ - 1] = new T( item );
+			_items_ = _alloc_.realloc( _items_, size() + 1 );
+			
+			_items_[size() - 1] = item;
 			
 		}
 		
 		void push_front( const T& item ){
-			_items_ = static_cast<T**>( realloc( _items_, (sizeof( void* ) * (++_size_)) ) );
+			_items_ = _alloc_.realloc( _items_, size() + 1 );
 			
-			for( int i = (_size_ - 1); i > 0; --i )
+			for( int i = (size() - 1); i > 0; --i )
 				_items_[i] = _items_[i - 1];
 			
-			_items_[0] = new T( item );
+			_items_[0] = item;
 			
 		}
 		
 		void pop_back(){
-			if( _size_ ){
-				delete _items_[_size_ - 1];
-				
-				_items_ = static_cast<T**>( realloc( _items_, (sizeof( void* ) * (--_size_)) ) );
-				
-			}
-			
+			if( size() ) _items_ = _alloc_.realloc( _items_, size() - 1 );
 		}
 		
 		void pop_front(){
-			if( _size_ ){
-				delete _items_[0];
+			if( size() ){
+				for( int i = 0; i < (size() - 1); ++i )
+					_items_[i] = _items_[i + 1];
 				
-				for( int i = 0; i < (_size_ - 1); ++i )
-					_items_[i] = _items_[i+1];
-				
-				_items_ = static_cast<T**>( realloc( _items_, (sizeof( void* ) * (--_size_)) ) );
+				_items_ = _alloc_.realloc( _items_, size() - 1 );
 				
 			}
 			
 		}
 		
-		int size() const { return _size_; }
+		int size() const { return _alloc_.usize(); }
 		
-		T& front(){ if( _size_ ) return *_items_[0]; }
-		T& back(){ if( _size_ ) return *_items_[_size_ - 1]; }
+		T& front(){ if( size() ) return _items_[0]; }
+		T& back(){ if( size() ) return _items_[size() - 1]; }
 		
 		T& operator[]( int i ){
-			if( i < _size_ && i > 0 )
-				return *_items_[i];
+			if( i < size() && i >= 0 )
+				return _items_[i];
 			
-			return *_items_[0];
+			exit( -1 ); //TODO: out-of-range, do something!!!
 			
 		}
 		
 	private:
-		int _size_;
-		T** _items_;
-		A _alloc_;
+		T* _items_;
+		A _alloc_; 
 		
 	};
 	

@@ -97,7 +97,7 @@ namespace kick {
 		, _alloc_( 0 )
 		{}
 */		
-		map_iterator( int i, pair<K,V>**& items )
+		map_iterator( int i, pair<K,V>*& items )
 		: _current_( i )
 		, _items_( items )
 		, _alloc_( 0 )
@@ -107,7 +107,7 @@ namespace kick {
 		
 		pair<K,V>& operator*() {
 //TODO: We should do something (other than crash) if someone tries to dereference an invalid iterator (e.g. end() )
-			return *(_items_[_current_]);
+			return _items_[_current_];
 		}
 		
 		void operator++(){
@@ -141,7 +141,7 @@ namespace kick {
 	private:
 		int _current_;
 		
-		pair<K,V>**& _items_;	// reference to an array of pointers-to-pairs
+		pair<K,V>*& _items_;	// reference to an array of pointers-to-pairs
 		A* _alloc_;
 		
 	};
@@ -156,16 +156,18 @@ namespace kick {
 		
 		map()
 		: _items_( 0 )
-		, _alloc_( _items_ )
-		{}
+		, _alloc_()
+		{
+			_items_ = _alloc_.malloc( 0 ); 
+		}
 		
 		virtual ~map(){
-			_alloc_.free();
+			_alloc_.free( _items_ );
 		}
 		
 		void insert( const pair<K,V>& p ){
-			_items_ = _alloc_.alloc( size() + 1 );
-			_items_[_alloc_.usize() - 1] = new pair<K,V>( p.const_key(), p.const_val() );
+			_items_ = _alloc_.realloc( _items_, size() + 1 );
+			_items_[size() - 1] = p; 
 			
 		}
 		
@@ -175,14 +177,14 @@ namespace kick {
 		
 		V& operator[]( const K& key ){
 			for( int i = 0; i < size(); ++i ){
-				if( _items_[i]->key() == key )
-					return _items_[i]->val();
+				if( _items_[i].key() == key )
+					return _items_[i].val();
 					
 			}
 			
 			insert( pair<K,V>( key, V() ) );
 			
-			return _items_[size() - 1]->val();
+			return _items_[size() - 1].val();
 			
 		}
 		
@@ -195,7 +197,7 @@ namespace kick {
 		}
 		
 	private:
-		pair<K,V>** _items_;
+		pair<K,V>* _items_;
 		A _alloc_;
 		
 	};
