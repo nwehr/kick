@@ -77,7 +77,7 @@ namespace kick {
 		: _link_( 0 )
 		{}
 		
-		deque_iterator( const kick::link<T>*& link )
+		deque_iterator( kick::link<T>*& link )
 		: _link_( link )
 		{}
 		
