@@ -86,7 +86,7 @@ namespace kick {
 			
 		}
 		
-		void empty(){
+		void clear(){
 			_alloc_.free( _items_ );			
 		}
 		
