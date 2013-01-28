@@ -90,6 +90,10 @@ namespace kick {
 			_alloc_.free( _items_ );			
 		}
 		
+		bool empty() const {
+			return size(); 
+		}
+		
 		void erase( int i ){
 			if( i < size() ){
 				for( int n = i; n < size() - 1; ++n )
