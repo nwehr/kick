@@ -1,5 +1,6 @@
 //
 //      Copyright 2013 Nathan Wehr. All Rights Reserved.
+//      Copyright 2013 Kevin H. Patterson. All Rights Reserved.
 //
 //      Redistribution and use in source and binary forms, with or without modification, are
 //      permitted provided that the following conditions are met:

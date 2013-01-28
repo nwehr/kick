@@ -29,8 +29,6 @@
 #ifndef _kick_h
 #define _kick_h
 
-#include <kick/kick_allocator.h>
-#include <kick/kick_iterator.h>
 #include <kick/kick_vector.h>
 #include <kick/kick_map.h>
 #include <kick/kick_deque.h>
