@@ -67,7 +67,8 @@ namespace kick {
 		, _asize_( size + 2 )
 		, _usize_( size )
 		{
-			mem = malloc( _asize_ );
+			//TODO: memory should be properly aligned for these objects
+			mem = malloc( sizeof( T ) * _asize_ );
 		}
 		
 		virtual ~array_allocator(){}
@@ -105,6 +106,7 @@ namespace kick {
 			if( size > _asize_ || (_asize_ - size) > 3 )
 				_asize_ = size + 2;
 
+			//TODO: memory should be properly aligned for these objects
 			T* ptr = static_cast<T*>( ::realloc( mem, sizeof( T ) * _asize_ ) );
 
 			// call constructors if growing
