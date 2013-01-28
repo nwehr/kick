@@ -23,7 +23,11 @@ int main( int argc, char* argv[] ){
 		std::cout << (*it).val().c_str() << std::endl;
 		
 	}
+
+	kick::string myString = "Hello World";
 	
+	std::cout << myString.size() << std::endl;
+
 	return 0;
 
 }

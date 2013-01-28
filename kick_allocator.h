@@ -33,27 +33,54 @@
 
 namespace kick {
 	///////////////////////////////////////////////////////////////////////////////
+	// allocator
+	///////////////////////////////////////////////////////////////////////////////
+	template<typename T>
+	class allocator {
+	public:
+		virtual ~allocator(){}
+		
+		virtual int asize() const = 0;
+		virtual int usize() const = 0; 
+		
+		virtual T* malloc( int size ) = 0;
+		virtual T* realloc( T*& mem, int size ) = 0;
+		
+		virtual void free( T*& ) = 0; 
+		
+	};
+	
+	///////////////////////////////////////////////////////////////////////////////
 	// array_allocator
 	///////////////////////////////////////////////////////////////////////////////
 	template<typename T>
-	class array_allocator {
+	class array_allocator : public allocator<T> {
 	public:
 		array_allocator()
-		: _asize_( 0 )
+		: allocator<T>()
+		, _asize_( 0 )
 		, _usize_( 0 )
 		{}
 		
+		array_allocator( T*& mem, int size = 0 )
+		: allocator<T>()
+		, _asize_( size + 2 )
+		, _usize_( size )
+		{
+			mem = malloc( _asize_ );
+		}
+		
 		virtual ~array_allocator(){}
 		
-		int asize() const {
+		virtual int asize() const {
 			return _asize_;
 		}
 		
-		int usize() const {
+		virtual int usize() const {
 			return _usize_;
 		}
 		
-		T* malloc( int size ){
+		virtual T* malloc( int size ){
 			_usize_ = size;
 			_asize_ = size + 2;
 			
@@ -66,7 +93,7 @@ namespace kick {
 			
 		}
 		
-		T* realloc( T*& mem, int size ){
+		virtual T* realloc( T*& mem, int size ){
 			_usize_ = size;
 
 			if( _usize_ > _asize_ || (_asize_ - _usize_) > 3 )
@@ -81,11 +108,11 @@ namespace kick {
 			
 		}
 		
-		void free( T*& mem ){
+		virtual void free( T*& mem ){
 			::free( mem );
 		}
 		
-	private:
+	protected:
 		int _asize_;
 		int _usize_;
 		
@@ -94,37 +121,72 @@ namespace kick {
 	///////////////////////////////////////////////////////////////////////////////
 	// string_allocator
 	///////////////////////////////////////////////////////////////////////////////
-	class string_allocator {
+	template<typename T>
+	class string_allocator : public allocator<T> {
 	public:
 		string_allocator()
-		: _size_( 0 )
-		, _mem_( 0 )
+		: allocator<T>()
+		, _asize_( 0 )
+		, _usize_( 0 )
 		{}
 		
-		string_allocator( char** mem )
-		: _size_( 0 )
-		, _mem_( mem )
-		{}
+		string_allocator( T*& mem, int size = 0 )
+		: allocator<T>()
+		, _asize_( size + 1 )
+		, _usize_( size )
+		{
+			mem = malloc( _asize_ ); 
+		}
 		
 		virtual ~string_allocator(){}
 		
-		char* alloc( int size ){
-			_size_ = size; 
+		virtual int asize() const {
+			return _asize_;
+		}
+		
+		virtual int usize() const {
+			return _usize_;
+		}
+		
+		virtual T* malloc( int size ){
+			_usize_ = size;
+			_asize_ = size + 1;
 			
-			char* ptr = static_cast<char*>( realloc( *_mem_, (sizeof( void* ) * _size_) ) );
+			T* ptr = static_cast<T*>( ::malloc( sizeof( T ) * _asize_ ) );
 			
-			if( ptr ) return ptr;
-			else return *_mem_;
+			if( ptr ){
+				ptr[_usize_] = 0; 
+				return ptr;
+				
+			}
+			
+			exit( -1 );
 			
 		}
 		
-		void free(){
-			::free( *_mem_ );
+		virtual T* realloc( T*& mem, int size ){
+			_usize_ = size;
+			_asize_ = _usize_ + 1;
+			
+			T* ptr = static_cast<T*>( ::realloc( mem, sizeof( T ) * _asize_ ) );
+			
+			if( ptr ){
+				ptr[_usize_] = 0;
+				return ptr;
+				
+			}
+			
+			exit( -1 );
+			
 		}
 		
-	private:
-		int _size_;
-		char** _mem_;
+		virtual void free( T*& mem ){
+			::free( mem );
+		}
+		
+	protected:
+		int _asize_;
+		int _usize_;
 		
 	};
 	
