@@ -84,8 +84,7 @@ namespace kick {
 			_usize_ = size;
 			_asize_ = size + 2;
 			
-			T* ptr = static_cast<T*>( ::malloc( sizeof( T ) * _asize_ ) );
-			return ptr;
+			return static_cast<T*>( ::malloc( sizeof( T ) * _asize_ ) );
 
 		}
 		
@@ -95,8 +94,7 @@ namespace kick {
 			if( _usize_ > _asize_ || (_asize_ - _usize_) > 3 )
 				_asize_ = _usize_ + 2;
 
-			T* ptr = static_cast<T*>( ::realloc( mem, sizeof( T ) * _asize_ ) );
-			return ptr;
+			return static_cast<T*>( ::realloc( mem, sizeof( T ) * _asize_ ) );
 
 		}
 		
