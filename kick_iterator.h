@@ -9,6 +9,8 @@
 #ifndef _kick_iterator_h
 #define _kick_iterator_h
 
+#include <kick/kick_link.h>
+
 namespace kick {
 	///////////////////////////////////////////////////////////////////////////////
 	// array_iterator
@@ -24,7 +26,7 @@ namespace kick {
 		
 		virtual ~array_iterator(){}
 		
-		T& operator*() {
+		T& operator*(){
 			//TODO: We should do something (other than crash) if someone tries to dereference an invalid iterator (e.g. end() )
 			return _items_[_current_];
 		}
@@ -62,6 +64,53 @@ namespace kick {
 		
 		T*& _items_; 
 		A* _alloc_;
+		
+	};
+	
+	///////////////////////////////////////////////////////////////////////////////
+	// deque_iterator
+	///////////////////////////////////////////////////////////////////////////////
+	template<typename T>
+	class deque_iterator {
+	public:
+		deque_iterator()
+		: _link_( 0 )
+		{}
+		
+		deque_iterator( const kick::link<T>*& link )
+		: _link_( link )
+		{}
+		
+		T& operator*(){
+			return _link_->item();
+		}
+		
+		void operator++(){
+			_link_ = _link_->next();
+		}
+		
+		void operator++(int){
+			_link_ = _link_->next();
+		}
+		
+		void operator--(){
+			_link_ = _link_->previous();
+		}
+		
+		void operator--(int){
+			_link_ = _link_->previous();
+		}
+		
+		bool operator==( const deque_iterator& it ) const {
+			return _link_ == it._link_;
+		}
+		
+		bool operator!=( const deque_iterator& it ) const {
+			return _link_ != it._link_;
+		}
+		
+	private:
+		kick::link<T>*& _link_;
 		
 	};
 	

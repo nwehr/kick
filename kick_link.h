@@ -1,5 +1,5 @@
 //
-//      Copyright 2012-2013 Nathan Wehr. All Rights Reserved.
+//      Copyright 2013 Nathan Wehr. All Rights Reserved.
 //
 //      Redistribution and use in source and binary forms, with or without modification, are
 //      permitted provided that the following conditions are met:
@@ -26,116 +26,35 @@
 //      or implied, of Nathan Wehr.
 //
 
-#ifndef _kick_deque_h
-#define _kick_deque_h
-
-#include <kick/kick_iterator.h>
-#include <kick/kick_link.h>
+#ifndef _kick_link_h
+#define _kick_link_h
 
 namespace kick {
 	///////////////////////////////////////////////////////////////////////////////
-	// deque
+	// link
 	///////////////////////////////////////////////////////////////////////////////
 	template<typename T>
-	class deque {
+	class link {
 	public:
-		typedef kick::deque_iterator<T> iterator;
-		
-		deque()
-		: _front_( 0 )
-		, _back_( 0 )
+		link( const T& item, link<T>* previous = 0, link<T>* next = 0 )
+		: _item_( item )
+		, _previous_( previous )
+		, _next_( next )
 		{}
 		
-		virtual ~deque(){
-			
-		}
+		link<T>*& previous(){ return _previous_; }
+		link<T>*& next(){ return _next_; }
 		
-		void push_back( const T& item ){
-			link<T>* t = new link<T>( item, _back_, 0 );
-			
-			if( _back_ )
-				_back_->next() = t;
-			
-			if( !_front_ )
-				_front_ = t;
-			
-			_back_ = t;
-			
-			++_size_;
-			
-		}
-		
-		void push_front( const T& item ){
-			link<T>* t = new link<T>( item, 0, _front_ );
-			
-			if( _front_ )
-				_front_->previous() = t;
-			
-			if( !_back_ )
-				_back_ = t;
-			
-			_front_ = t;
-			
-			++_size_;
-			
-		}
-		
-		void pop_back(){
-			if( _size_ ){
-				link<T>* t = _back_->previous();
-				
-				delete _back_;
-				
-				_back_ = t;
-				_back_->next() = 0;
-				
-				--_size_;
-				
-			}
-			
-		}
-		
-		void pop_front(){
-			if( _size_ ){
-				link<T>* t = _front_->next();
-				
-				delete _front_;
-				
-				_front_ = t;
-				_front_->previous() = 0;
-				
-				--_size_;
-				
-			}
-			
-		}
-		
-		int size(){ return _size_; }
-		
-		T& front(){
-			return _front_->item();
-		}
-		
-		T& back(){
-			return _back_->item();
-		}
-		
-		iterator begin(){
-			return iterator( _front_ );
-		}
-		
-		iterator end(){
-			return iterator( _back_->next() ); 
-		}
+		T& item(){ return _item_; }
 		
 	private:
-		int _size_;
+		T _item_;
 		
-		link<T>* _front_;
-		link<T>* _back_;
+		link<T>* _previous_;
+		link<T>* _next_;
 		
 	};
 	
 }
 
-#endif // _kick_deque_h
+#endif // _kick_link_h

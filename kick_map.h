@@ -31,60 +31,9 @@
 
 #include <kick/kick_allocator.h>
 #include <kick/kick_iterator.h>
+#include <kick/kick_pair.h>
 
 namespace kick {
-	///////////////////////////////////////////////////////////////////////////////
-	// pair
-	///////////////////////////////////////////////////////////////////////////////
-	template<typename K, typename V>
-	class pair {
-	public:
-		pair()
-		: _key_( K() )
-		, _val_( V() )
-		{}
-		
-		pair( const K& key, const V& val )
-		: _key_( key )
-		, _val_( val )
-		{}
-		
-		pair( const pair& p )
-		: _key_( p.const_key() )
-		, _val_( p.const_val() )
-		{}
-		
-		virtual ~pair(){}
-		
-		bool operator==( const pair<K,V>& p ) const {
-			return (_key_ == p.const_key() && _val_ == p.const_val());
-		}
-		
-		bool operator!=( const pair<K,V>& p ) const {
-			return (_key_ != p.const_key() || _val_ != p.const_val());
-		}
-		
-		K& key(){
-			return _key_;
-		}
-		
-		V& val(){
-			return _val_;
-		}
-
-		const K& const_key() const {
-			return _key_;
-		}
-		
-		const V& const_val() const {
-			return _val_;
-		}
-		
-	private:
-		K _key_;
-		V _val_;
-	};
-		
 	///////////////////////////////////////////////////////////////////////////////
 	// map
 	///////////////////////////////////////////////////////////////////////////////
