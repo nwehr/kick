@@ -30,6 +30,7 @@
 #define _kick_map_h
 
 #include <kick/kick_allocator.h>
+#include <kick/kick_iterator.h>
 
 namespace kick {
 	///////////////////////////////////////////////////////////////////////////////
@@ -85,74 +86,12 @@ namespace kick {
 	};
 		
 	///////////////////////////////////////////////////////////////////////////////
-	// map_iterator
-	///////////////////////////////////////////////////////////////////////////////
-	template<typename K, typename V, typename A = array_allocator<pair<K,V>>>
-	class map_iterator {
-	public:
-/* // DON'T NEED THIS
-		map_iterator()
-		: _current_( 0 )
-		, _items_( 0 )
-		, _alloc_( 0 )
-		{}
-*/		
-		map_iterator( int i, pair<K,V>*& items )
-		: _current_( i )
-		, _items_( items )
-		, _alloc_( 0 )
-		{}
-		
-		virtual ~map_iterator(){}
-		
-		pair<K,V>& operator*() {
-//TODO: We should do something (other than crash) if someone tries to dereference an invalid iterator (e.g. end() )
-			return _items_[_current_];
-		}
-		
-		void operator++(){
-			++_current_;
-		}
-		
-		void operator++(int){
-			++_current_;
-		}
-		
-		void operator--(){
-			if( _current_ )
-				--_current_;
-			
-		}
-		
-		void operator--(int){
-			if( _current_ )
-				--_current_;
-			
-		}
-		
-		bool operator==( const map_iterator& it ) const {
-			return _current_ == it._current_;
-		}
-		
-		bool operator!=( const map_iterator& it ) const {
-			return _current_ != it._current_;
-		}
-		
-	private:
-		int _current_;
-		
-		pair<K,V>*& _items_;	// reference to an array of pointers-to-pairs
-		A* _alloc_;
-		
-	};
-	
-	///////////////////////////////////////////////////////////////////////////////
 	// map
 	///////////////////////////////////////////////////////////////////////////////
 	template<typename K, typename V, typename A = array_allocator<pair<K,V>>>
 	class map {
 	public:
-		typedef map_iterator<K,V> iterator; 
+		typedef kick::array_iterator<pair<K,V>> iterator;
 		
 		map()
 		: _items_( 0 )
@@ -179,6 +118,7 @@ namespace kick {
 			for( int i = 0; i < size(); ++i ){
 				if( _items_[i].key() == key )
 					return _items_[i].val();
+					
 					
 			}
 			

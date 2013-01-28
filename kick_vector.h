@@ -30,6 +30,7 @@
 #define _kick_vector_h
 
 #include <kick/kick_allocator.h>
+#include <kick/kick_iterator.h>
 
 namespace kick {
 	///////////////////////////////////////////////////////////////////////////////
@@ -38,6 +39,8 @@ namespace kick {
 	template<typename T, typename A = array_allocator<T>>
 	class vector {
 	public:
+		typedef kick::array_iterator<T> iterator; 
+		
 		vector()
 		: _items_( 0 )
 		, _alloc_()
@@ -116,7 +119,10 @@ namespace kick {
 		}
 		
 		void pop_back(){
-			if( size() ) _items_ = _alloc_.realloc( _items_, size() - 1 );
+			if( size() )
+				_items_ = _alloc_.realloc( _items_, size() - 1 );
+			
+			
 		}
 		
 		void pop_front(){
@@ -130,10 +136,33 @@ namespace kick {
 			
 		}
 		
-		int size() const { return _alloc_.usize(); }
+		int size() const {
+			return _alloc_.usize();
+		}
 		
-		T& front(){ if( size() ) return _items_[0]; }
-		T& back(){ if( size() ) return _items_[size() - 1]; }
+		T& front(){
+			if( size() )
+				return _items_[0];
+			
+			exit( -1 );
+			
+		}
+		
+		T& back(){
+			if( size() )
+				return _items_[size() - 1];
+			
+			exit( -1 ); 
+			
+		}
+		
+		iterator begin(){
+			return iterator( 0, _items_ );
+		}
+		
+		iterator end(){
+			return iterator( size(), _items_ );
+		}
 		
 		T& operator[]( int i ){
 			if( i < size() && i >= 0 )
