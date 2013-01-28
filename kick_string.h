@@ -42,7 +42,8 @@ namespace kick {
 		: _cstr_( 0 )
 		, _alloc_()
 		{
-			_cstr_ = _alloc_.malloc( 1 ); 
+			_cstr_ = _alloc_.malloc( 1 );
+			_cstr_[0] = 0;
 		}
 		
 		string( const char* cstr )
@@ -54,7 +55,7 @@ namespace kick {
 			while( cstr[size] )
 				++size;
 			
-			_cstr_ = _alloc_.malloc( size );
+			_cstr_ = _alloc_.malloc( ++size );
 			
 			for( int i = 0; i < size; ++i )
 				_cstr_[i] = cstr[i];
@@ -65,9 +66,10 @@ namespace kick {
 		: _cstr_( 0 )
 		, _alloc_()
 		{
-			_cstr_ = _alloc_.malloc( str.size() ); 
+			int size( str.size() + 1 );
+			_cstr_ = _alloc_.malloc( size );
 			
-			for( int i = 0; i < size(); ++i )
+			for( int i = 0; i < size; ++i )
 				_cstr_[i] = str._cstr_[i];
 
 		}
@@ -77,9 +79,12 @@ namespace kick {
 		}
 		
 		string& operator=( const string& str ){
-			_cstr_ = _alloc_.malloc( str.size() );
+			_alloc_.free( _cstr_ );
+
+			int size( str.size() + 1 );
+			_cstr_ = _alloc_.malloc( size );
 			
-			for( int i = 0; i < size(); ++i )
+			for( int i = 0; i < size; ++i )
 				_cstr_[i] = str._cstr_[i];
 			
 			return *this;
@@ -88,7 +93,8 @@ namespace kick {
 		
 		bool operator==( const string& str ) const {
 			if( size() == str.size() ){
-				for( int i = 0; i < size(); ++i )
+				int size( str.size() + 1 );
+				for( int i = 0; i < size; ++i )
 					if( _cstr_[i] != str._cstr_[i] )
 						return false;
 				
@@ -113,7 +119,7 @@ namespace kick {
 		}
 		
 		int size() const {
-			return _alloc_.usize();
+			return _alloc_.usize() - 1;
 		}
 		
 		char* c_str() const {
@@ -122,7 +128,7 @@ namespace kick {
 		
 	private:
 		char* _cstr_;
-		string_allocator<char> _alloc_;
+		array_allocator<char> _alloc_;
 		
 	};
 	
