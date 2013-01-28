@@ -36,13 +36,13 @@ namespace kick {
 	template<typename T>
 	class link {
 	public:
-		link( const T& item, link<T>* previous = 0, link<T>* next = 0 )
+		link( const T& item, link<T>* prev = 0, link<T>* next = 0 )
 		: _item_( item )
-		, _previous_( previous )
+		, _prev_( prev )
 		, _next_( next )
 		{}
 		
-		link<T>*& previous(){ return _previous_; }
+		link<T>*& previous(){ return _prev_; }
 		link<T>*& next(){ return _next_; }
 		
 		T& item(){ return _item_; }
@@ -50,7 +50,7 @@ namespace kick {
 	private:
 		T _item_;
 		
-		link<T>* _previous_;
+		link<T>* _prev_;
 		link<T>* _next_;
 		
 	};

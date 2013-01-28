@@ -38,8 +38,8 @@ namespace kick {
 	template<typename T, typename A = array_allocator<T>>
 	class array_iterator {
 	public:
-		array_iterator( int i, T*& items )
-		: _current_( i )
+		array_iterator( int index, T*& items )
+		: _index_( index )
 		, _items_( items )
 		, _alloc_( 0 )
 		{}
@@ -48,41 +48,41 @@ namespace kick {
 		
 		T& operator*(){
 			//TODO: We should do something (other than crash) if someone tries to dereference an invalid iterator (e.g. end() )
-			return _items_[_current_];
+			return _items_[_index_];
 		}
 		
 		void operator++(){
-			++_current_;
+			++_index_;
 		}
 		
 		void operator++(int){
-			++_current_;
+			++_index_;
 		}
 		
 		void operator--(){
-			if( _current_ )
-				--_current_;
+			if( _index_ )
+				--_index_;
 			
 		}
 		
 		void operator--(int){
-			if( _current_ )
-				--_current_;
+			if( _index_ )
+				--_index_;
 			
 		}
 		
 		bool operator==( const array_iterator& it ) const {
-			return _current_ == it._current_;
+			return _index_ == it._index_;
 		}
 		
 		bool operator!=( const array_iterator& it ) const {
-			return _current_ != it._current_;
+			return _index_ != it._index_;
 		}
 		
 	private:
-		int _current_;
+		int _index_;
 		
-		T*& _items_; 
+		T*& _items_;
 		A* _alloc_;
 		
 	};
@@ -94,43 +94,43 @@ namespace kick {
 	class deque_iterator {
 	public:
 		deque_iterator()
-		: _link_( 0 )
+		: _item_( 0 )
 		{}
 		
-		deque_iterator( kick::link<T>*& link )
-		: _link_( link )
+		deque_iterator( kick::link<T>*& item )
+		: _item_( item )
 		{}
 		
 		T& operator*(){
-			return _link_->item();
+			return _item_->item();
 		}
 		
 		void operator++(){
-			_link_ = _link_->next();
+			_item_ = _item_->next();
 		}
 		
 		void operator++(int){
-			_link_ = _link_->next();
+			_item_ = _item_->next();
 		}
 		
 		void operator--(){
-			_link_ = _link_->previous();
+			_item_ = _item_->previous();
 		}
 		
 		void operator--(int){
-			_link_ = _link_->previous();
+			_item_ = _item_->previous();
 		}
 		
 		bool operator==( const deque_iterator& it ) const {
-			return _link_ == it._link_;
+			return _item_ == it._link_;
 		}
 		
 		bool operator!=( const deque_iterator& it ) const {
-			return _link_ != it._link_;
+			return _item_ != it._link_;
 		}
 		
 	private:
-		kick::link<T>*& _link_;
+		kick::link<T>*& _item_;
 		
 	};
 	

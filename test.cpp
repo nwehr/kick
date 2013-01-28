@@ -3,15 +3,14 @@
 #include <kick/kick.h>
 
 int main( int argc, char* argv[] ){
-	kick::deque<int> myDeque;
+	kick::vector<int> myVec;
 	
-	myDeque.push_back( 100 );
-	myDeque.push_back( 200 );
-	myDeque.push_back( 300 );
+	myVec.push_back( 100 );
+	myVec.push_back( 200 );
+	myVec.push_back( 300 );
 	
-	for( kick::deque<int>::iterator it = myDeque.begin(); it != myDeque.end(); ++it )
-		std::cout << *it << std::endl; 
-
-	return 0;
+	for( kick::vector<int>::iterator it = myVec.begin(); it != myVec.end(); ++it )
+		std::cout << *it << std::endl;
+	
 
 }

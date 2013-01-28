@@ -27,8 +27,8 @@
 //      or implied, of Nathan Wehr.
 //
 
-#ifndef kick_string_h
-#define kick_string_h
+#ifndef _kick_string_h
+#define _kick_string_h
 
 #include <cstdlib>
 #include <kick/kick_allocator.h>
