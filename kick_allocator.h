@@ -83,24 +83,47 @@ namespace kick {
 		virtual T* malloc( int size ){
 			_usize_ = size;
 			_asize_ = size + 2;
-			
+
+			//TODO: memory should be properly aligned for these objects
 			T* ptr = static_cast<T*>( ::malloc( sizeof( T ) * _asize_ ) );
+
+			// call the constructors
+			for( int i = 0; i < _usize_; ++i )
+				new( &ptr[i] ) T();		//NOTE: placement operator new
+
 			return ptr;
 
 		}
 		
 		virtual T* realloc( T*& mem, int size ){
-			_usize_ = size;
+			// call destructors if shrinking
+			if( size < _usize_ ) {
+				for( int i = size; i < _usize_; ++i )
+					mem[i].~T();
+			}
 
-			if( _usize_ > _asize_ || (_asize_ - _usize_) > 3 )
-				_asize_ = _usize_ + 2;
+			if( size > _asize_ || (_asize_ - size) > 3 )
+				_asize_ = size + 2;
 
 			T* ptr = static_cast<T*>( ::realloc( mem, sizeof( T ) * _asize_ ) );
+
+			// call constructors if growing
+			if( size > _usize_ ) {
+				for( int i = _usize_; i < size; ++i )
+					new( &ptr[i] ) T();		//NOTE: placement operator new
+			}
+
+			_usize_ = size;
+
 			return ptr;
 
 		}
 		
 		virtual void free( T*& mem ){
+			// call destructors
+			for( int i = 0; i < _usize_; ++i )
+				mem[i].~T();
+			
 			::free( mem );
 		}
 		
