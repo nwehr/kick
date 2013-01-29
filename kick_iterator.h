@@ -1,5 +1,6 @@
 //
 //      Copyright 2013 Nathan Wehr. All Rights Reserved.
+//      Copyright 2013 Kevin H. Patterson. All Rights Reserved.
 //
 //      Redistribution and use in source and binary forms, with or without modification, are
 //      permitted provided that the following conditions are met:
@@ -44,7 +45,7 @@ namespace kick {
 		, _items_( items )
 		{}
 		
-		virtual ~array_iterator(){}
+		~array_iterator(){}
 		
 		T& operator*(){
 			//TODO: We should do something (other than crash) if someone tries to dereference an invalid iterator (e.g. end() )
@@ -71,11 +72,11 @@ namespace kick {
 			
 		}
 		
-		bool operator==( const array_iterator& it ) const {
+		bool operator==( const array_iterator<T>& it ) const {
 			return _index_ == it._index_;
 		}
 		
-		bool operator!=( const array_iterator& it ) const {
+		bool operator!=( const array_iterator<T>& it ) const {
 			return _index_ != it._index_;
 		}
 		
@@ -91,12 +92,12 @@ namespace kick {
 	template<typename T>
 	class deque_iterator {
 	public:
-		deque_iterator()
-		: _item_( 0 )
-		{}
-		
 		deque_iterator( kick::link<T>*& item )
 		: _item_( item )
+		{}
+		
+		deque_iterator( const deque_iterator<T>& it )
+		: _item_( it._item_ )
 		{}
 		
 		T& operator*(){
@@ -120,11 +121,11 @@ namespace kick {
 		}
 		
 		bool operator==( const deque_iterator& it ) const {
-			return _item_ == it._link_;
+			return _item_ == it._item_;
 		}
 		
 		bool operator!=( const deque_iterator& it ) const {
-			return _item_ != it._link_;
+			return _item_ != it._item_;
 		}
 		
 	private:

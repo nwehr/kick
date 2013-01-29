@@ -1,5 +1,6 @@
 //
 //      Copyright 2012-2013 Nathan Wehr. All Rights Reserved.
+//      Copyright 2013 Kevin H. Patterson. All Rights Reserved.
 //
 //      Redistribution and use in source and binary forms, with or without modification, are
 //      permitted provided that the following conditions are met:
@@ -30,6 +31,7 @@
 #define _kick_sort_h
 
 #include <kick/kick_common.h>
+#include <kick/kick_deque.h>
 
 namespace kick {
 	///////////////////////////////////////////////////////////////////////////////
@@ -47,39 +49,14 @@ namespace kick {
 	// bubble_sort
 	///////////////////////////////////////////////////////////////////////////////
 	template<typename T>
-	void bubble_sort( vector<T>& vec ){
-		int size = vec.size();
-		
-		for( int i = 0; i < size; ++i ){
-			for( int j = i; j < size; ++j ){
-				if( vec[j] < vec[i] )
-					swap( vec[j], vec[i] );
+	void bubble_sort( T& seq ){
+		for( typename T::iterator it = seq.begin(); it != seq.end(); ++it ){
+			for( typename T::iterator nt = it; nt != seq.end(); ++nt ){
+				if( *nt < *it )
+					swap( *nt, *it );
 				
 				
 			}
-			
-		}
-		
-	}
-	
-	template<typename T>
-	void bubble_sort( deque<T>& deq ){
-		int size = deq.size();
-		
-		link<T>* it = deq.front();
-		
-		for( int i = 0; i < size; ++i ){
-			link<T>* ij = it;
-			
-			for( int j = i; j < size; ++j ){
-				if( **ij < **it )
-					swap( **it, **ij );
-				
-				ij = ij->next();
-				
-			}
-			
-			it = it->next();
 			
 		}
 		

@@ -141,6 +141,10 @@ namespace kick {
 			return _alloc_.usize();
 		}
 		
+		int capacity() const {
+			return _alloc_.asize(); 
+		}
+		
 		T& front(){
 			if( size() )
 				return _items_[0];

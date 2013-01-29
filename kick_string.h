@@ -153,10 +153,15 @@ namespace kick {
 			return _cstr_;
 		}
 
-		string substr( int pos, int n ) const {
-			if( pos < 0 || n <= 0 || pos >= size() ) return string();
-			if( pos + n > size() ) n = size() - pos;
-			return string( &_cstr_[pos], n );
+		string substr( int pos, int len ) const {
+			if( pos < 0 || len <= 0 || pos >= size() )
+				return string();
+			
+			if( pos + len > size() )
+				len = size() - pos;
+			
+			return string( &_cstr_[pos], len );
+			
 		}
 		
 	private:
