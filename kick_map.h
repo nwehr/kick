@@ -54,9 +54,9 @@ namespace kick {
 			_alloc_.free( _items_ );
 		}
 		
-		void insert( const pair<K,V>& p ){
+		void insert( const kick::pair<K,V>& pair ){
 			_items_ = _alloc_.realloc( _items_, size() + 1 );
-			_items_[size() - 1] = p; 
+			_items_[size() - 1] = pair;
 			
 		}
 		

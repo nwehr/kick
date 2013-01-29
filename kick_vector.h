@@ -90,9 +90,9 @@ namespace kick {
 			return size(); 
 		}
 		
-		void erase( int i ){
-			if( i < size() ){
-				for( int n = i; n < size() - 1; ++n )
+		void erase( int index ){
+			if( index < size() ){
+				for( int n = index; n < size() - 1; ++n )
 					_items_[n] = _items_[n + 1];
 				
 				_items_ = _alloc_.realloc( _items_, size() - 1 );
@@ -164,9 +164,9 @@ namespace kick {
 			return iterator( size(), _items_ );
 		}
 		
-		T& operator[]( int i ){
-			if( i < size() && i >= 0 )
-				return _items_[i];
+		T& operator[]( int index ){
+			if( index < size() && index >= 0 )
+				return _items_[index];
 			
 			exit( -1 ); //TODO: out-of-range, do something!!!
 			

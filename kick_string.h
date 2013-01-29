@@ -43,7 +43,7 @@ namespace kick {
 		: _cstr_( 0 )
 		, _alloc_( array_allocator<char>( 1 ) )
 		{
-			_cstr_ = _alloc_.malloc( 1 );
+			_cstr_ = _alloc_.malloc( 0 );
 			_cstr_[0] = 0;
 		}
 		
@@ -111,9 +111,9 @@ namespace kick {
 			return !(*this == str);
 		}
 		
-		char& operator[]( int i ){
-			if( i < size() && i >= 0 )
-				return _cstr_[i];
+		char& operator[]( int index ){
+			if( index < size() && index >= 0 )
+				return _cstr_[index];
 			
 			exit( -1 ); //TODO: out-of-range, do something!!!
 			

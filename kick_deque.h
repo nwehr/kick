@@ -69,7 +69,7 @@ namespace kick {
 			link<T>* t = new link<T>( item, 0, _front_ );
 			
 			if( _front_ )
-				_front_->previous() = t;
+				_front_->prev() = t;
 			
 			if( !_back_ )
 				_back_ = t;
@@ -82,7 +82,7 @@ namespace kick {
 		
 		void pop_back(){
 			if( _size_ ){
-				link<T>* t = _back_->previous();
+				link<T>* t = _back_->prev();
 				
 				delete _back_;
 				
@@ -102,7 +102,7 @@ namespace kick {
 				delete _front_;
 				
 				_front_ = t;
-				_front_->previous() = 0;
+				_front_->prev() = 0;
 				
 				--_size_;
 				

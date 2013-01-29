@@ -42,7 +42,7 @@ namespace kick {
 		, _next_( next )
 		{}
 		
-		link<T>*& previous(){ return _prev_; }
+		link<T>*& prev(){ return _prev_; }
 		link<T>*& next(){ return _next_; }
 		
 		T& item(){ return _item_; }

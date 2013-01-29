@@ -111,11 +111,11 @@ namespace kick {
 		}
 		
 		void operator--(){
-			_item_ = _item_->previous();
+			_item_ = _item_->prev();
 		}
 		
 		void operator--(int){
-			_item_ = _item_->previous();
+			_item_ = _item_->prev();
 		}
 		
 		bool operator==( const deque_iterator& it ) const {
