@@ -29,6 +29,8 @@
 #ifndef _kick_sort_h
 #define _kick_sort_h
 
+#include <kick/kick_common.h>
+
 namespace kick {
 	///////////////////////////////////////////////////////////////////////////////
 	// swap
