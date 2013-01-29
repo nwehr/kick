@@ -40,14 +40,9 @@ namespace kick {
 	template<typename T, typename A = array_allocator<T>>
 	class vector {
 	public:
-		typedef kick::array_iterator<T, A> iterator;
+		typedef kick::array_iterator<T> iterator;
 		
-		vector()
-		: _items_( 0 )
-		, _alloc_( A() )
-		{}
-		
-		vector( int size )
+		vector( int size = 0 )
 		: _items_( 0 )
 		, _alloc_( A() )
 		{
@@ -61,7 +56,7 @@ namespace kick {
 		
 		vector( const vector<T>& vec )
 		: _items_( 0 )
-		, _alloc_( A() )
+		, _alloc_( vec._alloc_ )
 		{
 			_items_ = _alloc_.malloc( vec.size() );
 			

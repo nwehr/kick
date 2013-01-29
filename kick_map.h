@@ -41,13 +41,13 @@ namespace kick {
 	template<typename K, typename V, typename A = array_allocator<pair<K,V>>>
 	class map {
 	public:
-		typedef kick::array_iterator<pair<K, V>, A> iterator;
+		typedef kick::array_iterator<pair<K,V>> iterator;
 		
-		map()
+		map( int size = 0 )
 		: _items_( 0 )
-		, _alloc_()
+		, _alloc_( A() )
 		{
-			_items_ = _alloc_.malloc( 0 ); 
+			_items_ = _alloc_.malloc( size );
 		}
 		
 		virtual ~map(){

@@ -57,18 +57,27 @@ namespace kick {
 	template<typename T>
 	class array_allocator : public allocator<T> {
 	public:
-		array_allocator()
+		array_allocator( const int alloc_ext = 4 )
 		: allocator<T>()
 		, _asize_( 0 )
 		, _usize_( 0 )
+		, _alloc_ext_( alloc_ext )
 		{}
 		
-		array_allocator( T*& mem, int size = 0 )
+		array_allocator( const array_allocator& alloc )
+		: allocator<T>()
+		, _asize_( alloc._asize_ )
+		, _usize_( alloc._usize_ )
+		, _alloc_ext_( alloc._alloc_ext_ )
+		{}
+		
+		array_allocator( T*& mem, int size = 0, const int alloc_ext = 4 )
 		: allocator<T>()
 		, _asize_( 0 )
 		, _usize_( 0 )
+		, _alloc_ext_( alloc_ext )
 		{
-			malloc( size );
+			mem = malloc( size );
 		}
 		
 		virtual ~array_allocator(){}
@@ -83,7 +92,7 @@ namespace kick {
 		
 		virtual T* malloc( int size ){
 			_usize_ = size;
-			_asize_ = size + 2;
+			_asize_ = size + _alloc_ext_;
 
 			//TODO: memory should be properly aligned for these objects
 			T* ptr = static_cast<T*>( ::malloc( sizeof( T ) * _asize_ ) );
@@ -105,8 +114,10 @@ namespace kick {
 				
 			}
 
-			if( size > _asize_ || (_asize_ - size) > 3 )
-				_asize_ = size + 2;
+			if( size > _asize_ )
+				_asize_ = size + _alloc_ext_;
+			else if( (_asize_ - size) > _alloc_ext_ )
+				_asize_ = size; 
 
 			//TODO: memory should be properly aligned for these objects
 			T* ptr = static_cast<T*>( ::realloc( mem, sizeof( T ) * _asize_ ) );
@@ -138,7 +149,9 @@ namespace kick {
 		int _asize_;
 		int _usize_;
 		
-	};	
+		const int _alloc_ext_;
+		
+	};
 	
 }
 

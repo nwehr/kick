@@ -3,14 +3,13 @@
 #include <kick/kick.h>
 
 int main( int argc, char* argv[] ){
-	kick::vector<int> myVec;
+	kick::vector<kick::string> myVec;
 	
-	myVec.push_back( 100 );
-	myVec.push_back( 200 );
-	myVec.push_back( 300 );
+	for( int i = 0; i < 1000; ++i )
+		myVec.push_back( "Hello World" );
 	
-	for( kick::vector<int>::iterator it = myVec.begin(); it != myVec.end(); ++it )
-		std::cout << *it << std::endl;
+	for( kick::vector<kick::string>::iterator it = myVec.begin(); it != myVec.end(); ++it )
+		std::cout << (*it).c_str() << std::endl; 
 	
 
 }

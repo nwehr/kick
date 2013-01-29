@@ -35,13 +35,12 @@ namespace kick {
 	///////////////////////////////////////////////////////////////////////////////
 	// array_iterator
 	///////////////////////////////////////////////////////////////////////////////
-	template<typename T, typename A = array_allocator<T>>
+	template<typename T>
 	class array_iterator {
 	public:
 		array_iterator( int index, T*& items )
 		: _index_( index )
 		, _items_( items )
-		, _alloc_( 0 )
 		{}
 		
 		virtual ~array_iterator(){}
@@ -81,9 +80,7 @@ namespace kick {
 		
 	private:
 		int _index_;
-		
 		T*& _items_;
-		A* _alloc_;
 		
 	};
 	

@@ -41,7 +41,7 @@ namespace kick {
 	public:
 		string()
 		: _cstr_( 0 )
-		, _alloc_()
+		, _alloc_( array_allocator<char>( 1 ) )
 		{
 			_cstr_ = _alloc_.malloc( 1 );
 			_cstr_[0] = 0;
@@ -49,7 +49,7 @@ namespace kick {
 		
 		string( const char* cstr )
 		: _cstr_( 0 )
-		, _alloc_()
+		, _alloc_( array_allocator<char>( 1 ) )
 		{
 			int size( 0 );
 			
@@ -65,7 +65,7 @@ namespace kick {
 		
 		string( const string& str )
 		: _cstr_( 0 )
-		, _alloc_()
+		, _alloc_( str._alloc_ )
 		{
 			int size( str.size() + 1 );
 			_cstr_ = _alloc_.malloc( size );
