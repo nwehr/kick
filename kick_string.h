@@ -31,6 +31,7 @@
 #define _kick_string_h
 
 #include <cstdlib>
+#include <kick/kick_common.h>
 #include <kick/kick_allocator.h>
 
 namespace kick {
@@ -39,6 +40,10 @@ namespace kick {
 	///////////////////////////////////////////////////////////////////////////////
 	class string {
 	public:
+		typedef typename kick::size_type size_type;
+
+		static const size_type npos = -1;
+		
 		string()
 		: _cstr_( 0 )
 		, _alloc_( array_allocator<char>( 1 ) )
@@ -61,6 +66,19 @@ namespace kick {
 			for( int i = 0; i < size; ++i )
 				_cstr_[i] = cstr[i];
 			
+		}
+
+		string( const char* cstr, int size )
+		: _cstr_( 0 )
+		, _alloc_( array_allocator<char>( 1 ) )
+		{
+			_cstr_ = _alloc_.malloc( size + 1 );
+
+			for( int i = 0; i < size; ++i )
+				_cstr_[i] = cstr[i];
+
+			_cstr_[size] = 0;
+
 		}
 		
 		string( const string& str )
@@ -118,6 +136,14 @@ namespace kick {
 			exit( -1 ); //TODO: out-of-range, do something!!!
 			
 		}
+
+		const char& operator[]( int index ) const {
+			if( index < size() && index >= 0 )
+				return _cstr_[index];
+
+			exit( -1 ); //TODO: out-of-range, do something!!!
+
+		}
 		
 		int size() const {
 			return _alloc_.usize() - 1;
@@ -125,6 +151,12 @@ namespace kick {
 		
 		char* c_str() const {
 			return _cstr_;
+		}
+
+		string substr( int pos, int n ) const {
+			if( pos < 0 || n <= 0 || pos >= size() ) return string();
+			if( pos + n > size() ) n = size() - pos;
+			return string( &_cstr_[pos], n );
 		}
 		
 	private:
