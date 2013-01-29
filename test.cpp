@@ -37,12 +37,12 @@ int main( int argc, char* argv[] ){
 	
 	std::cout << "average push_back time for kick::vector" << std::endl;
 	std::cout << KickAvgTime / KickTimes.size() << std::endl;
-	std::cout << StdVector.capacity() << " allocated items" << std::endl;
+	std::cout << KickVector.capacity() << " allocated items" << std::endl;
 	
 	std::cout << std::endl; 
 	
 	std::cout << "average push_back time for std::vector" << std::endl;
 	std::cout << StdAvgTime / StdTimes.size() << std::endl;
-	std::cout << KickVector.capacity() << " allocated items" << std::endl;
+	std::cout << StdVector.capacity() << " allocated items" << std::endl;
 	
 }
