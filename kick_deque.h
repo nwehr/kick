@@ -30,7 +30,7 @@
 #ifndef _kick_deque_h
 #define _kick_deque_h
 
-#include <kick/kick_common.h>
+#include <kick/kick_typdef.h>
 #include <kick/kick_iterator.h>
 #include <kick/kick_link.h>
 
@@ -49,7 +49,14 @@ namespace kick {
 		{}
 		
 		virtual ~deque(){
+			kick::link<T>* link = _front_;
 			
+			while( link ){
+				delete link;
+				link = link->next();
+				
+			}
+				
 		}
 		
 		void push_back( const T& item ){
@@ -120,6 +127,14 @@ namespace kick {
 		
 		T& back(){
 			return _back_->item();
+		}
+		
+		link<T>*& front_link(){
+			return _front_;
+		}
+		
+		link<T>*& back_link(){
+			return _back_;
 		}
 		
 		iterator begin(){

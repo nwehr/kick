@@ -30,7 +30,7 @@
 #ifndef _kick_sort_h
 #define _kick_sort_h
 
-#include <kick/kick_common.h>
+#include <kick/kick_typdef.h>
 #include <kick/kick_deque.h>
 
 namespace kick {
@@ -48,6 +48,7 @@ namespace kick {
 	///////////////////////////////////////////////////////////////////////////////
 	// bubble_sort
 	///////////////////////////////////////////////////////////////////////////////
+	// TODO: figure out why this function won't work with deque...
 	template<typename T>
 	void bubble_sort( T& seq ){
 		for( typename T::iterator it = seq.begin(); it != seq.end(); ++it ){
@@ -57,6 +58,27 @@ namespace kick {
 				
 				
 			}
+			
+		}
+		
+	}
+	
+	template<typename T>
+	void bubble_sort( deque<T>& deq ){
+		kick::link<T>* il = deq.front_link();
+		
+		while( il ){
+			kick::link<T>* nl = il;
+			
+			while( nl ){
+				if( nl->item() < il->item() )
+					swap( nl->item(), il->item() );
+					
+				nl = nl->next();
+				
+			}
+			
+			il = il->next();
 			
 		}
 		

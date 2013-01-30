@@ -27,13 +27,12 @@
 //      or implied, of Nathan Wehr.
 //
 
-#ifndef _kick_common_h
-#define _kick_common_h
+#ifndef _kick_typdef_h
+#define _kick_typdef_h
 
 namespace kick {
-
 	typedef int size_type;
 
 }
 
-#endif
+#endif // _kick_typdef_h

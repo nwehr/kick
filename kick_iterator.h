@@ -30,7 +30,7 @@
 #ifndef _kick_iterator_h
 #define _kick_iterator_h
 
-#include <kick/kick_common.h>
+#include <kick/kick_typdef.h>
 #include <kick/kick_link.h>
 
 namespace kick {

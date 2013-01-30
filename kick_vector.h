@@ -30,7 +30,8 @@
 #ifndef _kick_vector_h
 #define _kick_vector_h
 
-#include <kick/kick_common.h>
+#include <kick/kick_typdef.h>
+
 #include <kick/kick_allocator.h>
 #include <kick/kick_iterator.h>
 
@@ -109,6 +110,7 @@ namespace kick {
 			
 		}
 		
+		// TODO: look into memmove
 		void push_front( const T& item ){
 			_items_ = _alloc_.realloc( _items_, size() + 1 );
 			
@@ -126,6 +128,7 @@ namespace kick {
 			
 		}
 		
+		// TODO: look into memmove
 		void pop_front(){
 			if( size() ){
 				for( int i = 0; i < (size() - 1); ++i )

@@ -31,7 +31,8 @@
 #define _kick_allocator_h
 
 #include <cstdlib>
-#include <kick/kick_common.h>
+
+#include <kick/kick_typdef.h>
 
 namespace kick {
 	///////////////////////////////////////////////////////////////////////////////
@@ -98,9 +99,8 @@ namespace kick {
 			//TODO: memory should be properly aligned for these objects
 			T* ptr = static_cast<T*>( ::malloc( sizeof( T ) * _asize_ ) );
 
-			// call the constructors
 			for( int i = 0; i < _usize_; ++i )
-				new( &ptr[i] ) T();		//NOTE: placement operator new
+				new( &ptr[i] ) T();
 
 			return ptr;
 
@@ -123,10 +123,9 @@ namespace kick {
 			//TODO: memory should be properly aligned for these objects
 			T* ptr = static_cast<T*>( ::realloc( mem, sizeof( T ) * _asize_ ) );
 
-			// call constructors if growing
 			if( size > _usize_ ) {
 				for( int i = _usize_; i < size; ++i )
-					new( &ptr[i] ) T();		//NOTE: placement operator new
+					new( &ptr[i] ) T();	
 				
 				
 			}
@@ -138,7 +137,6 @@ namespace kick {
 		}
 		
 		virtual void free( T*& mem ){
-			// call destructors
 			for( int i = 0; i < _usize_; ++i )
 				mem[i].~T();
 			

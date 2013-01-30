@@ -30,9 +30,11 @@
 #ifndef _kick_map_h
 #define _kick_map_h
 
-#include <kick/kick_common.h>
+#include <kick/kick_typdef.h>
+
 #include <kick/kick_allocator.h>
 #include <kick/kick_iterator.h>
+
 #include <kick/kick_pair.h>
 
 namespace kick {

@@ -43,6 +43,12 @@ namespace kick {
 		, _next_( next )
 		{}
 		
+		link( const kick::link<T>& link )
+		: _item_( link._item_ )
+		, _prev_( link._prev_ )
+		, _next_( link._next_ )
+		{}
+		
 		link<T>*& prev(){ return _prev_; }
 		link<T>*& next(){ return _next_; }
 		

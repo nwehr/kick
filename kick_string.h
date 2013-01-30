@@ -31,7 +31,8 @@
 #define _kick_string_h
 
 #include <cstdlib>
-#include <kick/kick_common.h>
+
+#include <kick/kick_typdef.h>
 #include <kick/kick_allocator.h>
 
 namespace kick {
