@@ -190,7 +190,52 @@ namespace kick {
 			return string( &_cstr_[pos], len );
 			
 		}
-		
+
+		int find( const string& nstr, int spos = 0 ) const {
+			const int nsize = nstr.size();
+			const int hsize = size();
+			
+			if( nsize > hsize ) return string::npos;
+
+			const int smax = hsize - nsize;
+			while( spos <= smax ) {
+				while( spos < smax && _cstr_[spos] != nstr._cstr_[0] )
+					++spos;
+
+				int hpos = spos + 1;
+				int epos = 1;
+				while( hpos < hsize && epos < nsize && _cstr_[hpos] == nstr._cstr_[epos] ) {
+					++hpos;
+					++epos;
+				}
+				
+				if( epos == nsize )
+					return spos;
+				else
+					++spos;
+			}
+
+			return string::npos;
+		}
+
+		//TODO: Optimized search for C string
+		inline int find( const char* buf, int spos = 0 ) const {
+			string n( buf );
+			return find( n, spos );
+		}
+
+		//TODO: Optimized search for char buffer
+		inline int find( const char* buf, int spos, int len ) const {
+			string n( buf, len );
+			return find( n, spos );
+		}
+
+		//TODO: Optimized search for single char
+		inline int find( char c, int spos = 0 ) const {
+			string n( &c, 1 );
+			return find( n );
+		}
+
 	private:
 		char* _cstr_;
 		array_allocator<char> _alloc_;
