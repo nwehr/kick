@@ -53,18 +53,71 @@ namespace kick {
 			_items_ = _alloc_.malloc( size );
 		}
 		
+		map( const kick::map<K,V>& map )
+		: _items_( 0 )
+		, _alloc_( map._alloc_ )
+		{
+			_items_ = _alloc_.malloc( size() );
+			_items_ = _alloc_.copy( map._items_, _items_ );
+			
+		}
+		
 		virtual ~map(){
 			_alloc_.free( _items_ );
 		}
 		
+		int findkey( const K& key, int& min, int& max ){
+			if( size() ){
+				while ( max > min ){
+					int mid = (max + min) / 2;
+					
+					if( _items_[mid].const_key() > key ){
+						min = mid + 1;
+					} else max = mid;
+					
+				}
+				
+//				std::cout << _items_[min].const_key().c_str() << " - " << key.c_str() << std::endl;
+				
+				if( _items_[min].const_key() == key )
+					return min;
+				
+				
+			}
+			
+			return -1;
+			
+		}
+		
 		void insert( const kick::pair<K,V>& pair ){
-			_items_ = _alloc_.realloc( _items_, size() + 1 );
-			_items_[size() - 1] = pair;
+			int min = 0;
+			int max = size() - 1;
+			
+			std::cout << findkey( pair.const_key(), min, max ) << std::endl;
+			
+			min = 0;
+			max = size() - 1;
+			
+			if( findkey( pair.const_key(), min, max ) == -1 ){
+				_items_ = _alloc_.realloc( _items_, size() + 1 );
+				
+				if( min < size() - 1 )
+					_alloc_.move( _items_, min, min + 1 );
+				
+				std::cout << min << std::endl; 
+				
+				_items_[min] = pair;
+				
+			}
 			
 		}
 		
 		const int size() const {
 			return _alloc_.usize();
+		}
+		
+		const int capacity() const {
+			return _alloc_.asize(); 
 		}
 		
 		V& operator[]( const K& key ){

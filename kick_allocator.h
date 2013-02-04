@@ -60,22 +60,19 @@ namespace kick {
 	class array_allocator : public allocator<T> {
 	public:
 		array_allocator( const int alloc_ext = 4 )
-		: allocator<T>()
-		, _asize_( 0 )
+		: _asize_( 0 )
 		, _usize_( 0 )
 		, _alloc_ext_( alloc_ext )
 		{}
 		
 		array_allocator( const array_allocator& alloc )
-		: allocator<T>()
-		, _asize_( alloc._asize_ )
+		: _asize_( alloc._asize_ )
 		, _usize_( alloc._usize_ )
 		, _alloc_ext_( alloc._alloc_ext_ )
 		{}
 		
 		array_allocator( T*& mem, int size = 0, const int alloc_ext = 4 )
-		: allocator<T>()
-		, _asize_( 0 )
+		: _asize_( 0 )
 		, _usize_( 0 )
 		, _alloc_ext_( alloc_ext )
 		{
@@ -123,7 +120,7 @@ namespace kick {
 			//TODO: memory should be properly aligned for these objects
 			T* ptr = static_cast<T*>( ::realloc( mem, sizeof( T ) * _asize_ ) );
 
-			if( size > _usize_ ) {
+			if( size > _usize_ ){
 				for( int i = _usize_; i < size; ++i )
 					new( &ptr[i] ) T();	
 				
@@ -134,6 +131,33 @@ namespace kick {
 
 			return ptr;
 
+		}
+		
+		T* move( T*& mem, int src_index, int dest_index ){
+			// Call destructors on items if we're overwriting them...
+			if( dest_index < src_index ){
+				for( int i = dest_index; i < src_index + 1; ++i )
+					mem[i].~T();
+				
+				
+			}
+			
+			if( dest_index > src_index ){
+				for( int i = src_index; i < dest_index; ++i )
+					new( &mem[i] ) T();
+				
+			}
+			
+			return static_cast<T*>( memmove( &mem[dest_index], &mem[src_index], sizeof( T ) * (_usize_ - (dest_index - src_index)) ) );
+			
+			// This was the old method of shifting the array... much, much slower...
+//			for( int i = (_usize_ - (dest_index - src_index)); i > src_index; --i )
+//				mem[i] = mem[i - (dest_index - src_index)];
+			
+		}
+		
+		T* copy( T*& src, T*& dest ){
+			return static_cast<T*>( memcpy( dest, src, sizeof( T ) * _usize_ ) );
 		}
 		
 		virtual void free( T*& mem ){

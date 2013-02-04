@@ -48,8 +48,23 @@ namespace kick {
 		~array_iterator(){}
 		
 		T& operator*(){
-			//TODO: We should do something (other than crash) if someone tries to dereference an invalid iterator (e.g. end() )
 			return _items_[_index_];
+		}
+		
+		array_iterator operator+( int rh ){
+			return array_iterator( _index_ + rh, _items_ );
+		}
+		
+		array_iterator operator+( const array_iterator& rh ){
+			return array_iterator( _index_ + rh._index_, _items_ );
+		}
+		
+		array_iterator operator-( int rh ){
+			return array_iterator( _index_ - rh, _items_ );
+		}
+		
+		array_iterator operator-( const array_iterator& rh ){
+			return array_iterator( _index_ - rh._index_, _items_ );
 		}
 		
 		void operator++(){
@@ -78,6 +93,11 @@ namespace kick {
 		
 		bool operator!=( const array_iterator<T>& it ) const {
 			return _index_ != it._index_;
+		}
+		
+		// TODO: Should I make map and vector a friend class???
+		int index() const {
+			return _index_; 
 		}
 		
 	private:

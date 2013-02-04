@@ -49,10 +49,6 @@ namespace kick {
 		, _alloc_( A() )
 		{
 			_items_ = _alloc_.malloc( size );
-			
-			for( int i = 0; i < kick::vector<T>::size(); ++i )
-				_items_[i] = T();
-			
 		
 		}
 		
@@ -60,11 +56,8 @@ namespace kick {
 		: _items_( 0 )
 		, _alloc_( vec._alloc_ )
 		{
-			_items_ = _alloc_.malloc( vec.size() );
-			
-			for( int i = 0; i < size(); ++i )
-				_items_[i] = vec._items_[i];
-			
+			_items_ = _alloc_.malloc( size() );
+			_items_ = _alloc_.copy( vec._items_, _items_ );
 			
 		}
 		
@@ -94,12 +87,16 @@ namespace kick {
 		
 		void erase( int index ){
 			if( index < size() ){
-				for( int n = index; n < size() - 1; ++n )
-					_items_[n] = _items_[n + 1];
-				
+				_alloc_.move( _items_, index + 1, index );
 				_items_ = _alloc_.realloc( _items_, size() - 1 );
 				
 			}
+			
+		}
+		
+		void erase( array_iterator<T> pos ){
+			_alloc_.move( _items_, pos.index() + 1, pos.index() );
+			_items_ = _alloc_.realloc( _items_, size() - 1 );
 			
 		}
 		
@@ -110,12 +107,9 @@ namespace kick {
 			
 		}
 		
-		// TODO: look into memmove
 		void push_front( const T& item ){
 			_items_ = _alloc_.realloc( _items_, size() + 1 );
-			
-			for( int i = (size() - 1); i > 0; --i )
-				_items_[i] = _items_[i - 1];
+			_alloc_.move( _items_, 0, 1 );
 			
 			_items_[0] = item;
 			
@@ -128,12 +122,9 @@ namespace kick {
 			
 		}
 		
-		// TODO: look into memmove
 		void pop_front(){
 			if( size() ){
-				for( int i = 0; i < (size() - 1); ++i )
-					_items_[i] = _items_[i + 1];
-				
+				_alloc_.move( _items_, 1, 0 );
 				_items_ = _alloc_.realloc( _items_, size() - 1 );
 				
 			}

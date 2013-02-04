@@ -2,48 +2,23 @@
 
 #include <iostream>
 #include <vector>
+#include <map>
+#include <string>
 
 #include <kick/kick.h>
 
 int main( int argc, char* argv[] ){
-	double KickAvgTime( 0.0 );
-	double StdAvgTime( 0.0 );
+	kick::map<kick::string, int> myMap;
 	
-	kick::vector<float> KickTimes;
-	kick::vector<float> StdTimes;
+	myMap.insert( kick::pair<kick::string, int>( "one", 100 ) );
+	myMap.insert( kick::pair<kick::string, int>( "two", 200 ) );
+	myMap.insert( kick::pair<kick::string, int>( "three", 300 ) );
+	myMap.insert( kick::pair<kick::string, int>( "four", 400 ) );
 	
-	kick::vector<int> KickVector;
-	std::vector<int> StdVector;
+	myMap.insert( kick::pair<kick::string, int>( "two", 500 ) );
 	
-	for( int i = 0; i < 100000; ++i ){
-		clock_t kt1 = clock();
-		KickVector.push_front( i );
-		clock_t kt2 = clock();
-		
-		KickTimes.push_back( (((float)kt2 - (float)kt1) / 1000000.0F ) * 1000 );
-		
-		clock_t st1 = clock();
-		StdVector.insert( StdVector.begin(), i );
-		clock_t st2 = clock();
-		
-		StdTimes.push_back( (((float)st2 - (float)st1) / 1000000.0F ) * 1000 );
-		
-	}
+	for( kick::map<kick::string, int>::iterator it = myMap.begin(); it != myMap.end(); ++it )
+		std::cout<< (*it).key().c_str() << " - " << (*it).val() << std::endl;
 	
-	for( int i = 0; i < KickTimes.size(); ++i )
-		KickAvgTime += KickTimes[i];
-	
-	for( int i = 0; i < StdTimes.size(); ++i )
-		StdAvgTime += StdTimes[i];
-	
-	std::cout << "average push_back time for kick::vector" << std::endl;
-	std::cout << KickAvgTime / KickTimes.size() << std::endl;
-	std::cout << KickVector.capacity() << " allocated items" << std::endl;
-	
-	std::cout << std::endl;
-	
-	std::cout << "average push_back time for std::vector" << std::endl;
-	std::cout << StdAvgTime / StdTimes.size() << std::endl;
-	std::cout << StdVector.capacity() << " allocated items" << std::endl;
 	
 }

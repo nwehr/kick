@@ -32,6 +32,8 @@
 
 #include <cstdlib>
 
+#include <iostream>
+
 #include <kick/kick_typdef.h>
 #include <kick/kick_allocator.h>
 
@@ -95,7 +97,9 @@ namespace kick {
 		}
 		
 		virtual ~string(){
-			_alloc_.free( _cstr_ );
+			if( size() )
+				_alloc_.free( _cstr_ );
+			
 		}
 		
 		string& operator=( const string& str ){
@@ -130,6 +134,24 @@ namespace kick {
 			return !(*this == str);
 		}
 		
+		bool operator<( const string& str ) const {
+			for( int i = 0; i < size(); ++i )
+				if( _cstr_[i] > str._cstr_[i] )
+					return false;
+			
+			return true;
+			
+		}
+		
+		bool operator>( const string& str ) const {
+			for( int i = 0; i < size(); ++i )
+				if( _cstr_[i] < str._cstr_[i] )
+					return false;
+			
+			return true;
+			
+		}
+		
 		char& operator[]( int index ){
 			if( index < size() && index >= 0 )
 				return _cstr_[index];
@@ -147,7 +169,11 @@ namespace kick {
 		}
 		
 		int size() const {
-			return _alloc_.usize() - 1;
+			if( _alloc_.usize() )
+				return _alloc_.usize() - 1;
+			
+			return 0;
+			
 		}
 		
 		char* c_str() const {
