@@ -195,7 +195,9 @@ namespace kick {
 			const int nsize = nstr.size();
 			const int hsize = size();
 			
-			if( nsize > hsize ) return string::npos;
+			if( nsize > hsize ) return npos;
+
+			if( spos < 0 ) spos = 0;
 
 			const int smax = hsize - nsize;
 			while( spos <= smax ) {
@@ -215,7 +217,7 @@ namespace kick {
 					++spos;
 			}
 
-			return string::npos;
+			return npos;
 		}
 
 		//TODO: Optimized search for C string
@@ -236,6 +238,53 @@ namespace kick {
 			return find( n );
 		}
 
+		int rfind( const string& nstr, int spos = npos ) const {
+			const int nsize = nstr.size();
+			const int hsize = size();
+
+			if( nsize > hsize ) return npos;
+
+			if( spos == npos || spos > hsize - 1 ) spos = hsize - 1;
+
+			const int smin = nsize - 1;
+			while( spos >= smin ) {
+				while( spos >= smin && _cstr_[spos] != nstr._cstr_[nsize - 1] )
+					--spos;
+
+				int hpos = spos - 1;
+				int epos = nsize - 2;
+				while( hpos >= 0 && epos >= 0 && _cstr_[hpos] == nstr._cstr_[epos] ) {
+					--hpos;
+					--epos;
+				}
+
+				if( epos == -1 )
+					return hpos + 1;
+				else
+					--spos;
+			}
+
+			return npos;
+		}
+
+		//TODO: Optimized search for C string
+		inline int rfind( const char* buf, int spos = npos ) const {
+			string n( buf );
+			return rfind( n, spos );
+		}
+
+		//TODO: Optimized search for char buffer
+		inline int rfind( const char* buf, int spos, int len ) const {
+			string n( buf, len );
+			return rfind( n, spos );
+		}
+
+		//TODO: Optimized search for single char
+		inline int rfind( char c, int spos = npos ) const {
+			string n( &c, 1 );
+			return rfind( n );
+		}
+		
 	private:
 		char* _cstr_;
 		array_allocator<char> _alloc_;
