@@ -43,7 +43,7 @@ namespace kick {
 	///////////////////////////////////////////////////////////////////////////////
 	class string {
 	public:
-		typedef typename kick::size_type size_type;
+		typedef kick::size_type size_type;
 
 		static const size_type npos = -1;
 		
@@ -152,7 +152,7 @@ namespace kick {
 			
 		}
 		
-		char& operator[]( int index ){
+		inline char& operator[]( int index ){
 			if( index < size() && index >= 0 )
 				return _cstr_[index];
 			
@@ -160,7 +160,7 @@ namespace kick {
 			
 		}
 
-		const char& operator[]( int index ) const {
+		inline const char& operator[]( int index ) const {
 			if( index < size() && index >= 0 )
 				return _cstr_[index];
 
@@ -168,7 +168,7 @@ namespace kick {
 
 		}
 		
-		int size() const {
+		inline int size() const {
 			if( _alloc_.usize() )
 				return _alloc_.usize() - 1;
 			
@@ -176,7 +176,7 @@ namespace kick {
 			
 		}
 		
-		char* c_str() const {
+		inline char* c_str() const {
 			return _cstr_;
 		}
 
@@ -283,6 +283,160 @@ namespace kick {
 		inline int rfind( char c, int spos = npos ) const {
 			string n( &c, 1 );
 			return rfind( n );
+		}
+
+		int find_first_of( const string& nstr, int spos = 0 ) const {
+			const int nsize = nstr.size();
+			const int hsize = size();
+
+			if( nsize < 1 ) return npos;
+
+			if( spos < 0 ) spos = 0;
+			while( spos < hsize ) {
+				int npos = 0;
+				while( _cstr_[spos] != nstr._cstr_[npos] && npos < nsize )
+					++npos;
+
+				if( npos < nsize ) return spos;
+				
+				++spos;
+			}
+
+			return npos;
+		}
+
+		//TODO: Optimized search for C string
+		inline int find_first_of( const char* buf, int spos = 0 ) const {
+			string n( buf );
+			return find_first_of( n, spos );
+		}
+
+		//TODO: Optimized search for char buffer
+		inline int find_first_of( const char* buf, int spos, int len ) const {
+			string n( buf, len );
+			return find_first_of( n, spos );
+		}
+
+		//TODO: Optimized search for single char
+		inline int find_first_of( char c, int spos = 0 ) const {
+			string n( &c, 1 );
+			return find_first_of( n );
+		}
+
+		int find_last_of( const string& nstr, int spos = npos ) const {
+			const int nsize = nstr.size();
+			const int hsize = size();
+
+			if( nsize < 1 ) return npos;
+
+			if( spos == npos || spos > hsize - 1 ) spos = hsize - 1;
+			while( spos >= 0 ) {
+				int npos = 0;
+				while( _cstr_[spos] != nstr._cstr_[npos] && npos < nsize )
+					++npos;
+
+				if( npos < nsize ) return spos;
+
+				--spos;
+			}
+
+			return npos;
+		}
+
+		//TODO: Optimized search for C string
+		inline int find_last_of( const char* buf, int spos = npos ) const {
+			string n( buf );
+			return find_last_of( n, spos );
+		}
+
+		//TODO: Optimized search for char buffer
+		inline int find_last_of( const char* buf, int spos, int len ) const {
+			string n( buf, len );
+			return find_last_of( n, spos );
+		}
+
+		//TODO: Optimized search for single char
+		inline int find_last_of( char c, int spos = npos ) const {
+			string n( &c, 1 );
+			return find_last_of( n );
+		}
+
+		int find_first_not_of( const string& nstr, int spos = 0 ) const {
+			const int nsize = nstr.size();
+			const int hsize = size();
+
+			if( nsize < 1 ) return npos;
+
+			if( spos < 0 ) spos = 0;
+			while( spos < hsize ) {
+				int npos = 0;
+				while( _cstr_[spos] != nstr._cstr_[npos] && npos < nsize )
+					++npos;
+
+				if( npos < nsize )
+					++spos;
+				else
+					return spos;
+			}
+
+			return npos;
+		}
+
+		//TODO: Optimized search for C string
+		inline int find_first_not_of( const char* buf, int spos = 0 ) const {
+			string n( buf );
+			return find_first_not_of( n, spos );
+		}
+
+		//TODO: Optimized search for char buffer
+		inline int find_first_not_of( const char* buf, int spos, int len ) const {
+			string n( buf, len );
+			return find_first_not_of( n, spos );
+		}
+
+		//TODO: Optimized search for single char
+		inline int find_first_not_of( char c, int spos = 0 ) const {
+			string n( &c, 1 );
+			return find_first_not_of( n );
+		}
+
+		int find_last_not_of( const string& nstr, int spos = npos ) const {
+			const int nsize = nstr.size();
+			const int hsize = size();
+
+			if( nsize < 1 ) return npos;
+
+			if( spos == npos || spos > hsize - 1 ) spos = hsize - 1;
+			while( spos >= 0 ) {
+				int npos = 0;
+				while( _cstr_[spos] != nstr._cstr_[npos] && npos < nsize )
+					++npos;
+
+				if( npos < nsize )
+					--spos;
+				else
+					return spos;
+			}
+
+			return npos;
+		}
+
+		//TODO: Optimized search for C string
+		inline int find_last_not_of( const char* buf, int spos = npos ) const {
+			string n( buf );
+			return find_last_not_of( n, spos );
+		}
+
+		//TODO: Optimized search for char buffer
+		inline int find_last_not_of( const char* buf, int spos, int len ) const {
+			string n( buf, len );
+			return find_last_not_of( n, spos );
+		}
+
+		//TODO: Optimized search for single char
+		inline int find_last_not_of( char c, int spos = npos ) const {
+			string n( &c, 1 );
+			return find_last_not_of( n );
 		}
 		
 	private:
