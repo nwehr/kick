@@ -8,17 +8,13 @@
 #include <kick/kick.h>
 
 int main( int argc, char* argv[] ){
-	kick::map<kick::string, int> myMap;
+	kick::map<int, int> myMap;
 	
-	myMap.insert( kick::pair<kick::string, int>( "one", 100 ) );
-	myMap.insert( kick::pair<kick::string, int>( "two", 200 ) );
-	myMap.insert( kick::pair<kick::string, int>( "three", 300 ) );
-	myMap.insert( kick::pair<kick::string, int>( "four", 400 ) );
-	
-	myMap.insert( kick::pair<kick::string, int>( "two", 500 ) );
-	
-	for( kick::map<kick::string, int>::iterator it = myMap.begin(); it != myMap.end(); ++it )
-		std::cout<< (*it).key().c_str() << " - " << (*it).val() << std::endl;
-	
-	
+	myMap.insert( kick::pair<int, int>( 1, 1 ) );
+	myMap.insert( kick::pair<int, int>( 5, 5 ) );
+	myMap.insert( kick::pair<int, int>( 2, 2 ) );
+	myMap.insert( kick::pair<int, int>( 16, 16 ) );
+	myMap.insert( kick::pair<int, int>( 6, 6 ) );
+	myMap.insert( kick::pair<int, int>( 7, 7 ) );
+
 }

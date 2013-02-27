@@ -30,7 +30,7 @@
 #ifndef _kick_vector_h
 #define _kick_vector_h
 
-#include <kick/kick_typdef.h>
+#include <kick/kick_typedef.h>
 
 #include <kick/kick_allocator.h>
 #include <kick/kick_iterator.h>

@@ -32,32 +32,14 @@
 
 #include <cstdlib>
 
-#include <kick/kick_typdef.h>
+#include <kick/kick_typedef.h>
 
 namespace kick {
-	///////////////////////////////////////////////////////////////////////////////
-	// allocator
-	///////////////////////////////////////////////////////////////////////////////
-	template<typename T>
-	class allocator {
-	public:
-		virtual ~allocator(){}
-		
-		virtual int asize() const = 0;
-		virtual int usize() const = 0; 
-		
-		virtual T* malloc( int size ) = 0;
-		virtual T* realloc( T*& mem, int size ) = 0;
-		
-		virtual void free( T*& ) = 0; 
-		
-	};
-	
 	///////////////////////////////////////////////////////////////////////////////
 	// array_allocator
 	///////////////////////////////////////////////////////////////////////////////
 	template<typename T>
-	class array_allocator : public allocator<T> {
+	class array_allocator {
 	public:
 		array_allocator( const int alloc_ext = 4 )
 		: _asize_( 0 )
@@ -71,25 +53,25 @@ namespace kick {
 		, _alloc_ext_( alloc._alloc_ext_ )
 		{}
 		
-		array_allocator( T*& mem, int size = 0, const int alloc_ext = 4 )
+		array_allocator( T*& mem, kick::size_t size = 0, const int alloc_ext = 4 )
 		: _asize_( 0 )
 		, _usize_( 0 )
 		, _alloc_ext_( alloc_ext )
 		{
-			mem = malloc( size );
+			mem = array_allocator::malloc( size );
 		}
 		
-		virtual ~array_allocator(){}
+		~array_allocator(){}
 		
-		virtual int asize() const {
+		kick::size_t asize() const {
 			return _asize_;
 		}
 		
-		virtual int usize() const {
+		kick::size_t usize() const {
 			return _usize_;
 		}
 		
-		virtual T* malloc( int size ){
+		T* malloc( int size ){
 			_usize_ = size;
 			_asize_ = size + _alloc_ext_;
 
@@ -103,7 +85,7 @@ namespace kick {
 
 		}
 		
-		virtual T* realloc( T*& mem, int size ){
+		T* realloc( T*& mem, int size ){
 			// call destructors if shrinking
 			if( size < _usize_ ) {
 				for( int i = size; i < _usize_; ++i )
@@ -119,7 +101,7 @@ namespace kick {
 
 			//TODO: memory should be properly aligned for these objects
 			T* ptr = static_cast<T*>( ::realloc( mem, sizeof( T ) * _asize_ ) );
-
+			
 			if( size > _usize_ ){
 				for( int i = _usize_; i < size; ++i )
 					new( &ptr[i] ) T();	
@@ -148,7 +130,9 @@ namespace kick {
 				
 			}
 			
-			return static_cast<T*>( memmove( &mem[dest_index], &mem[src_index], sizeof( T ) * (_usize_ - (dest_index - src_index)) ) );
+			return static_cast<T*>( ::memmove( static_cast<void*>( &mem[dest_index] )
+											, static_cast<void*>( &mem[src_index] )
+											, sizeof( T ) * (_usize_ - (dest_index - src_index)) ) );
 			
 			// This was the old method of shifting the array... much, much slower...
 //			for( int i = (_usize_ - (dest_index - src_index)); i > src_index; --i )
@@ -157,10 +141,10 @@ namespace kick {
 		}
 		
 		T* copy( T*& src, T*& dest ){
-			return static_cast<T*>( memcpy( dest, src, sizeof( T ) * _usize_ ) );
+			return static_cast<T*>( ::memcpy( dest, src, sizeof( T ) * _usize_ ) );
 		}
 		
-		virtual void free( T*& mem ){
+		void free( T*& mem ){
 			for( int i = 0; i < _usize_; ++i )
 				mem[i].~T();
 			
@@ -169,8 +153,11 @@ namespace kick {
 		}
 		
 	protected:
-		int _asize_;
-		int _usize_;
+		kick::size_t _asize_;
+		kick::size_t _usize_;
+		
+		// start position
+		int _stpos_;
 		
 		const int _alloc_ext_;
 		

@@ -30,7 +30,7 @@
 #ifndef _kick_deque_h
 #define _kick_deque_h
 
-#include <kick/kick_typdef.h>
+#include <kick/kick_typedef.h>
 #include <kick/kick_iterator.h>
 #include <kick/kick_link.h>
 

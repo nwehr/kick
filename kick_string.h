@@ -30,11 +30,7 @@
 #ifndef _kick_string_h
 #define _kick_string_h
 
-#include <cstdlib>
-
-#include <iostream>
-
-#include <kick/kick_typdef.h>
+#include <kick/kick_typedef.h>
 #include <kick/kick_allocator.h>
 
 namespace kick {
@@ -153,19 +149,11 @@ namespace kick {
 		}
 		
 		char& operator[]( int index ){
-			if( index < size() && index >= 0 )
-				return _cstr_[index];
-			
-			exit( -1 ); //TODO: out-of-range, do something!!!
-			
+			return _cstr_[index];
 		}
 
 		const char& operator[]( int index ) const {
-			if( index < size() && index >= 0 )
-				return _cstr_[index];
-
-			exit( -1 ); //TODO: out-of-range, do something!!!
-
+			return _cstr_[index];
 		}
 		
 		int size() const {

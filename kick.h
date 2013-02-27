@@ -34,6 +34,7 @@
 #include <kick/kick_map.h>
 #include <kick/kick_deque.h>
 #include <kick/kick_string.h>
-#include <kick/kick_sort.h>
+
+#include <kick/algorithm/kick_sort.h>
 
 #endif
