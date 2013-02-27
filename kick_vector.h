@@ -39,7 +39,7 @@ namespace kick {
 	///////////////////////////////////////////////////////////////////////////////
 	// vector
 	///////////////////////////////////////////////////////////////////////////////
-	template<typename T, typename A = array_allocator<T>>
+	template<typename T, typename A = array_allocator<T> >
 	class vector {
 	public:
 		typedef kick::array_iterator<T> iterator;
