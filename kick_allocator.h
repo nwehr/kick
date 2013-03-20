@@ -30,8 +30,11 @@
 #ifndef _kick_allocator_h
 #define _kick_allocator_h
 
-#include <cstdlib>
+// C
+#include <stdlib.h>
+#include <string.h>
 
+// Kick
 #include <kick/kick_typedef.h>
 
 namespace kick {
