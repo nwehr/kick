@@ -27,8 +27,15 @@
 //      or implied, of Nathan Wehr.
 //
 
-#ifndef _kick_typedef_h
-#define _kick_typedef_h
+#ifndef _kick_config_h
+#define _kick_config_h
+
+/// Should Kick containers implement virtual methods to support polymorphic use?
+/// You decide. Each kick container inherits this setting, but also has its own
+/// #define which you can override on a per-container basis.
+#ifndef kick_polymorphic_containers
+	#define kick_polymorphic_containers 1
+#endif
 
 namespace kick {
 	typedef int size_type;
@@ -36,4 +43,4 @@ namespace kick {
 
 }
 
-#endif // _kick_typedef_h
+#endif // _kick_config_h

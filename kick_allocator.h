@@ -35,7 +35,7 @@
 #include <string.h>
 
 // Kick
-#include <kick/kick_typedef.h>
+#include <kick/kick_config.h>
 
 namespace kick {
 	///////////////////////////////////////////////////////////////////////////////

@@ -30,8 +30,13 @@
 #ifndef _kick_string_h
 #define _kick_string_h
 
-#include <kick/kick_typedef.h>
+#include <kick/kick_config.h>
 #include <kick/kick_allocator.h>
+
+/// enable or disable virtual methods to support polymorphism
+#ifndef kick_polymorphic_string
+	#define kick_polymorphic_string kick_polymorphic_containers
+#endif
 
 namespace kick {
 	///////////////////////////////////////////////////////////////////////////////
@@ -92,8 +97,11 @@ namespace kick {
 				_cstr_[i] = str._cstr_[i];
 
 		}
-		
-		virtual ~basic_string(){
+
+#if (kick_polymorphic_string == 1)
+		virtual
+#endif
+		~basic_string(){
 			if( size() )
 				_alloc_.free( _cstr_ );
 			
