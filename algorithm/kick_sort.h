@@ -30,7 +30,7 @@
 #ifndef _kick_sort_h
 #define _kick_sort_h
 
-#include <kick/kick_typedef.h>
+#include <kick/kick_config.h>
 #include <kick/kick_deque.h>
 
 namespace kick {

@@ -30,12 +30,15 @@
 #ifndef _kick_map_h
 #define _kick_map_h
 
-#include <kick/kick_typedef.h>
-
+#include <kick/kick_config.h>
 #include <kick/kick_allocator.h>
 #include <kick/kick_iterator.h>
-
 #include <kick/kick_pair.h>
+
+/// enable or disable virtual methods to support polymorphism
+#ifndef kick_polymorphic_map
+	#define kick_polymorphic_map kick_polymorphic_containers
+#endif
 
 namespace kick {
 	///////////////////////////////////////////////////////////////////////////////
@@ -61,8 +64,11 @@ namespace kick {
 			_items_ = _alloc_.copy( map._items_, _items_ );
 			
 		}
-		
-		virtual ~map(){
+
+#if (kick_polymorphic_map == 1)
+		virtual
+#endif
+		~map(){
 			_alloc_.free( _items_ );
 		}
 		

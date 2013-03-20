@@ -31,8 +31,7 @@
 #define _kick_allocator_h
 
 #include <cstdlib>
-
-#include <kick/kick_typedef.h>
+#include <kick/kick_config.h>
 
 namespace kick {
 	///////////////////////////////////////////////////////////////////////////////

@@ -30,6 +30,13 @@
 #ifndef _kick_pair_h
 #define _kick_pair_h
 
+#include <kick/kick_config.h>
+
+/// enable or disable virtual methods to support polymorphism
+#ifndef kick_polymorphic_pair
+	#define kick_polymorphic_pair kick_polymorphic_containers
+#endif
+
 namespace kick {
 	///////////////////////////////////////////////////////////////////////////////
 	// pair
@@ -51,8 +58,11 @@ namespace kick {
 		: _key_( pair.const_key() )
 		, _val_( pair.const_val() )
 		{}
-		
-		virtual ~pair(){}
+
+#if (kick_polymorphic_pair == 1)
+		virtual
+#endif
+		~pair(){}
 		
 		bool operator==( const kick::pair<K,V>& pair ) const {
 			return (_key_ == pair.const_key() && _val_ == pair.const_val());
