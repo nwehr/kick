@@ -46,7 +46,7 @@ namespace kick {
 	public:
 		typedef kick::array_iterator< pair<K,V> > iterator;
 		
-		map( int size = 0 )
+		map( kick::size_t size = 0 )
 		: _items_( 0 )
 		, _alloc_( A() )
 		{
@@ -66,7 +66,7 @@ namespace kick {
 			_alloc_.free( _items_ );
 		}
 		
-		V find( const K& key, unsigned int* tokens = 0 ){
+		bool find( const K& key, unsigned int* index = 0 ){
 			kick::size_t min = 0;
 			kick::size_t mid = 0;
 			kick::size_t max = size();
@@ -79,30 +79,21 @@ namespace kick {
 				
 			}
 			
-			if( tokens ){
-				tokens[0] = 0;
-				tokens[1] = 0;
+			if( index )
+				*index = 0;
 				
-			}
-			
 			if( max ){
 				if( _items_[min].key() == key ){
-					if( tokens ){
-						tokens[0] = 1;
-						tokens[1] = min;
-						
-					}
+					if( index )
+						*index = min;
 					
 					std::cout << "(" << key << ") found at [" << tokens[1] << "]" << std::endl;
 					
-					return _items_[min].val();
+					return true;
 					
 				} else {
-					if( tokens ){
-						tokens[0] = 0;
-						tokens[1] = _items_[min].key() > key ? min - 1 : min + 1;
-						
-					}
+					if( index ){
+						*index = _items_[min].key() > key ? min - 1 : min + 1;
 					
 					std::cout << "(" << key << ") not found, insert at [" << tokens[1] << "]" << std::endl;
 					
@@ -110,26 +101,26 @@ namespace kick {
 				
 			}
 			
-			return V();
+			return false;
 			
 		}
 		
 		void insert( const kick::pair<K,V>& pair ){
-			unsigned int tokens[2];
+			unsigned int index;
 			
-			find( pair.const_key(), tokens );
+			bool found = find( pair.const_key(), &index );
 			
-			if( !tokens[0] ){
+			if( found ){
 				_items_ = _alloc_.realloc( _items_, size() + 1 );
 				
 				if( tokens[1] < size() - 1 ){
-					std::cout << "moving [" << tokens[1] << "] to [" << tokens[1] + 1 << "]" << std::endl;
-					_alloc_.move( _items_, tokens[1], tokens[1] + 1 );
+					std::cout << "moving [" << index << "] to [" << index + 1 << "]" << std::endl;
+					_alloc_.move( _items_, index, index + 1 );
 					
 				}
 				
-				std::cout << "inserting (" << pair.const_key() << ") at [" << tokens[1] << "]" << std::endl;
-				_items_[tokens[1]] = pair;
+				std::cout << "inserting (" << pair.const_key() << ") at [" << index << "]" << std::endl;
+				_items_[index] = pair;
 				
 			}
 			
@@ -146,13 +137,6 @@ namespace kick {
 		const kick::size_t size() const {
 			return _alloc_.usize();
 		}
-		
-//		1
-//		5
-//		0
-//		0
-//		0
-//		0
 		
 		const kick::size_t capacity() const {
 			return _alloc_.asize(); 
@@ -188,8 +172,6 @@ namespace kick {
 	private:
 		pair<K,V>* _items_;
 		A _alloc_;
-		
-		
 		
 	};
 	

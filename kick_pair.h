@@ -48,18 +48,18 @@ namespace kick {
 		{}
 		
 		pair( const kick::pair<K,V>& pair )
-		: _key_( pair.const_key() )
-		, _val_( pair.const_val() )
+		: _key_( pair._key_ )
+		, _val_( pair._val_ )
 		{}
 		
 		virtual ~pair(){}
 		
 		bool operator==( const kick::pair<K,V>& pair ) const {
-			return (_key_ == pair.const_key() && _val_ == pair.const_val());
+			return (_key_ == pair._key_ && _val_ == pair._val_);
 		}
 		
 		bool operator!=( const kick::pair<K,V>& pair ) const {
-			return (_key_ != pair.const_key() || _val_ != pair.const_val());
+			return (_key_ != pair._key_ || _val_ != pair._val_);
 		}
 		
 		K& key(){
