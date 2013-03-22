@@ -118,7 +118,7 @@ namespace kick {
 
 		}
 		
-		T* move( T* mem, int src_index, int dest_index ){
+		T* move( T*& mem, int src_index, int dest_index ){
 			// Call destructors on items if we're overwriting them...
 			if( dest_index < src_index ){
 				for( int i = dest_index; i < src_index + 1; ++i )
