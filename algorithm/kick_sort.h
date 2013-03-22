@@ -48,37 +48,15 @@ namespace kick {
 	///////////////////////////////////////////////////////////////////////////////
 	// bubble_sort
 	///////////////////////////////////////////////////////////////////////////////
-	// TODO: figure out why this function won't work with deque...
 	template<typename T>
 	void bubble_sort( T& seq ){
 		for( typename T::iterator it = seq.begin(); it != seq.end(); ++it ){
 			for( typename T::iterator nt = it; nt != seq.end(); ++nt ){
 				if( *nt < *it )
-					swap( *nt, *it );
+					swap( *nt, *it );	
 				
 				
 			}
-			
-		}
-		
-	}
-	
-	template<typename T>
-	void bubble_sort( deque<T>& deq ){
-		kick::link<T>* il = deq.front_link();
-		
-		while( il ){
-			kick::link<T>* nl = il;
-			
-			while( nl ){
-				if( nl->item() < il->item() )
-					swap( nl->item(), il->item() );
-					
-				nl = nl->next();
-				
-			}
-			
-			il = il->next();
 			
 		}
 		

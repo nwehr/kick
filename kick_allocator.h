@@ -118,7 +118,7 @@ namespace kick {
 
 		}
 		
-		T* move( T*& mem, int src_index, int dest_index ){
+		T* move( T* mem, int src_index, int dest_index ){
 			// Call destructors on items if we're overwriting them...
 			if( dest_index < src_index ){
 				for( int i = dest_index; i < src_index + 1; ++i )
@@ -128,18 +128,18 @@ namespace kick {
 			}
 			
 			if( dest_index > src_index ){
-				for( int i = src_index; i < dest_index; ++i )
-					new( &mem[i] ) T();
+				for( int i = dest_index; i < dest_index + 1; ++i )
+					mem[i].~T();
 				
 			}
 			
 			return static_cast<T*>( ::memmove( static_cast<void*>( &mem[dest_index] )
 											, static_cast<void*>( &mem[src_index] )
-											, sizeof( T ) * (_usize_ - (dest_index - src_index)) ) );
+											, sizeof( T ) * (_usize_ - src_index) ) );
 			
 			// This was the old method of shifting the array... much, much slower...
-//			for( int i = (_usize_ - (dest_index - src_index)); i > src_index; --i )
-//				mem[i] = mem[i - (dest_index - src_index)];
+// 			for( int i = (_usize_ - (dest_index - src_index)); i > src_index; --i )
+// 				mem[i] = mem[i - (dest_index - src_index)];
 			
 		}
 		

@@ -99,8 +99,6 @@ namespace kick {
 						
 					}
 					
-					std::cout << "(" << key << ") found at [" << tokens[1] << "]" << std::endl;
-					
 					return _items_[min].val();
 					
 				} else {
@@ -109,8 +107,6 @@ namespace kick {
 						tokens[1] = _items_[min].key() > key ? min - 1 : min + 1;
 						
 					}
-					
-					std::cout << "(" << key << ") not found, insert at [" << tokens[1] << "]" << std::endl;
 					
 				}
 				
@@ -129,36 +125,19 @@ namespace kick {
 				_items_ = _alloc_.realloc( _items_, size() + 1 );
 				
 				if( tokens[1] < size() - 1 ){
-					std::cout << "moving [" << tokens[1] << "] to [" << tokens[1] + 1 << "]" << std::endl;
 					_alloc_.move( _items_, tokens[1], tokens[1] + 1 );
 					
 				}
 				
-				std::cout << "inserting (" << pair.const_key() << ") at [" << tokens[1] << "]" << std::endl;
 				_items_[tokens[1]] = pair;
 				
 			}
-			
-			std::cout << std::endl;
-			
-			for( iterator it = begin(); it != end(); ++it )
-				std::cout << (*it).key() << std::endl;
-				
-			std::cout << std::endl;
-			
 			
 		}
 		
 		const kick::size_t size() const {
 			return _alloc_.usize();
 		}
-		
-//		1
-//		5
-//		0
-//		0
-//		0
-//		0
 		
 		const kick::size_t capacity() const {
 			return _alloc_.asize(); 
@@ -170,8 +149,6 @@ namespace kick {
 			find( key, tokens );
 			
 			if( !tokens[0] ){
-				std::cout << "inserting " << key << " at " << tokens[1] << std::endl; 
-				
 				_items_ = _alloc_.realloc( _items_, size() + 1 );
 				_alloc_.move( _items_, tokens[1], tokens[1] + 1 );
 				
