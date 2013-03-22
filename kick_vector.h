@@ -30,10 +30,14 @@
 #ifndef _kick_vector_h
 #define _kick_vector_h
 
-#include <kick/kick_typedef.h>
-
+#include <kick/kick_config.h>
 #include <kick/kick_allocator.h>
 #include <kick/kick_iterator.h>
+
+/// enable or disable virtual methods to support polymorphism
+#ifndef kick_polymorphic_vector
+	#define kick_polymorphic_vector kick_polymorphic_containers
+#endif
 
 namespace kick {
 	///////////////////////////////////////////////////////////////////////////////
@@ -60,8 +64,11 @@ namespace kick {
 			_items_ = _alloc_.copy( vec._items_, _items_ );
 			
 		}
-		
-		virtual ~vector(){
+
+#if (kick_polymorphic_vector == 1)
+		virtual
+#endif
+		~vector(){
 			_alloc_.free( _items_ ); 
 		}
 		
@@ -118,7 +125,6 @@ namespace kick {
 		void pop_back(){
 			if( size() )
 				_items_ = _alloc_.realloc( _items_, size() - 1 );
-			
 			
 		}
 		

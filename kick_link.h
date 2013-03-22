@@ -49,10 +49,29 @@ namespace kick {
 		, _next_( link._next_ )
 		{}
 		
-		link<T>*& prev(){ return _prev_; }
-		link<T>*& next(){ return _next_; }
+		link<T>*& prev(){
+			return _prev_; 
+		}
 		
-		T& item(){ return _item_; }
+		const link<T>*& prev() const {
+			return _prev_;
+		}
+		
+		link<T>*& next(){
+			return _next_; 
+		}
+		
+		const link<T>*& next() const {
+			return _next_; 
+		}
+		
+		T& item(){
+			return _item_; 
+		}
+		
+		const T& item() const {
+			return _item_; 
+		}
 		
 	private:
 		T _item_;

@@ -30,12 +30,15 @@
 #ifndef _kick_map_h
 #define _kick_map_h
 
-#include <kick/kick_typedef.h>
-
+#include <kick/kick_config.h>
 #include <kick/kick_allocator.h>
 #include <kick/kick_iterator.h>
-
 #include <kick/kick_pair.h>
+
+/// enable or disable virtual methods to support polymorphism
+#ifndef kick_polymorphic_map
+#define kick_polymorphic_map kick_polymorphic_containers
+#endif
 
 namespace kick {
 	///////////////////////////////////////////////////////////////////////////////
@@ -46,7 +49,7 @@ namespace kick {
 	public:
 		typedef kick::array_iterator< pair<K,V> > iterator;
 		
-		map( kick::size_t size = 0 )
+		map( int size = 0 )
 		: _items_( 0 )
 		, _alloc_( A() )
 		{
@@ -62,11 +65,14 @@ namespace kick {
 			
 		}
 		
-		virtual ~map(){
+#if (kick_polymorphic_map == 1)
+		virtual
+#endif
+		~map(){
 			_alloc_.free( _items_ );
 		}
 		
-		bool find( const K& key, unsigned int* index = 0 ){
+		V find( const K& key, unsigned int* tokens = 0 ){
 			kick::size_t min = 0;
 			kick::size_t mid = 0;
 			kick::size_t max = size();
@@ -79,58 +85,53 @@ namespace kick {
 				
 			}
 			
-			if( index )
-				*index = 0;
+			if( tokens ){
+				tokens[0] = 0;
+				tokens[1] = 0;
 				
+			}
+			
 			if( max ){
 				if( _items_[min].key() == key ){
-					if( index )
-						*index = min;
+					if( tokens ){
+						tokens[0] = 1;
+						tokens[1] = min;
+						
+					}
 					
-					std::cout << "(" << key << ") found at [" << tokens[1] << "]" << std::endl;
-					
-					return true;
+					return _items_[min].val();
 					
 				} else {
-					if( index ){
-						*index = _items_[min].key() > key ? min - 1 : min + 1;
-					
-					std::cout << "(" << key << ") not found, insert at [" << tokens[1] << "]" << std::endl;
+					if( tokens ){
+						tokens[0] = 0;
+						tokens[1] = _items_[min].key() > key ? min - 1 : min + 1;
+						
+					}
 					
 				}
 				
 			}
 			
-			return false;
+			return V();
 			
 		}
 		
 		void insert( const kick::pair<K,V>& pair ){
-			unsigned int index;
+			unsigned int tokens[2];
 			
-			bool found = find( pair.const_key(), &index );
+			find( pair.const_key(), tokens );
 			
-			if( found ){
+			if( !tokens[0] ){
 				_items_ = _alloc_.realloc( _items_, size() + 1 );
 				
 				if( tokens[1] < size() - 1 ){
-					std::cout << "moving [" << index << "] to [" << index + 1 << "]" << std::endl;
-					_alloc_.move( _items_, index, index + 1 );
+					_alloc_.move( _items_, tokens[1], tokens[1] + 1 );
 					
 				}
 				
-				std::cout << "inserting (" << pair.const_key() << ") at [" << index << "]" << std::endl;
-				_items_[index] = pair;
+				_items_[tokens[1]] = pair;
 				
 			}
-			
-			std::cout << std::endl;
-			
-			for( iterator it = begin(); it != end(); ++it )
-				std::cout << (*it).key() << std::endl;
-				
-			std::cout << std::endl;
-			
 			
 		}
 		
@@ -139,7 +140,7 @@ namespace kick {
 		}
 		
 		const kick::size_t capacity() const {
-			return _alloc_.asize(); 
+			return _alloc_.asize();
 		}
 		
 		V& operator[]( const K& key ){
@@ -148,8 +149,6 @@ namespace kick {
 			find( key, tokens );
 			
 			if( !tokens[0] ){
-				std::cout << "inserting " << key << " at " << tokens[1] << std::endl; 
-				
 				_items_ = _alloc_.realloc( _items_, size() + 1 );
 				_alloc_.move( _items_, tokens[1], tokens[1] + 1 );
 				
@@ -172,6 +171,8 @@ namespace kick {
 	private:
 		pair<K,V>* _items_;
 		A _alloc_;
+		
+		
 		
 	};
 	

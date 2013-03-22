@@ -30,7 +30,7 @@
 #ifndef _kick_iterator_h
 #define _kick_iterator_h
 
-#include <kick/kick_typedef.h>
+#include <kick/kick_config.h>
 #include <kick/kick_link.h>
 
 namespace kick {
@@ -40,12 +40,21 @@ namespace kick {
 	template<typename T>
 	class array_iterator {
 	public:
-		array_iterator( int index, T*& items )
+		array_iterator( int index, T* items )
 		: _index_( index )
 		, _items_( items )
 		{}
 		
-		~array_iterator(){}
+		array_iterator<T>& operator=( const array_iterator<T>& it ){
+			if( this == &it )
+				return *this; 
+			
+			_index_ = it._index_; 
+			_items_ = it._items_; 
+			
+			return *this; 
+			
+		}
 		
 		T& operator*(){
 			return _items_[_index_];
@@ -95,14 +104,13 @@ namespace kick {
 			return _index_ != it._index_;
 		}
 		
-		// TODO: Should I make map and vector a friend class???
 		int index() const {
 			return _index_; 
 		}
 		
 	private:
 		int _index_;
-		T*& _items_;
+		T* _items_;
 		
 	};
 	
@@ -112,7 +120,7 @@ namespace kick {
 	template<typename T>
 	class deque_iterator {
 	public:
-		deque_iterator( kick::link<T>*& item )
+		deque_iterator( kick::link<T>* item )
 		: _item_( item )
 		{}
 		
@@ -120,8 +128,34 @@ namespace kick {
 		: _item_( it._item_ )
 		{}
 		
+		deque_iterator<T>& operator=( const deque_iterator<T>& it ){
+			if( this == &it )
+				return *this; 
+			
+			_item_ = it._item_; 
+			
+			return *this; 
+			
+		}
+		
 		T& operator*(){
-			return _item_->item();
+			return _item_->item(); 
+		}
+		
+		deque_iterator<T> operator+( unsigned int rh ){
+			for( unsigned int i = 0; i < rh; ++i )
+				operator++(); 
+			
+			return deque_iterator<T>( _item_ ); 
+			
+		}
+		
+		deque_iterator<T> operator-( unsigned int rh ){
+			for( unsigned int i = 0; i < rh; ++i )
+				operator--(); 
+			
+			return deque_iterator<T>( _item_ ); 
+			
 		}
 		
 		void operator++(){
@@ -149,7 +183,7 @@ namespace kick {
 		}
 		
 	private:
-		kick::link<T>*& _item_;
+		kick::link<T>* _item_;
 		
 	};
 	
