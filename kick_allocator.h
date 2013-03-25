@@ -44,7 +44,7 @@ namespace kick {
 	template<typename T>
 	class array_allocator {
 	public:
-		array_allocator( const int alloc_ext = 4 )
+		array_allocator( const unsigned int alloc_ext = 4 )
 		: _asize_( 0 )
 		, _usize_( 0 )
 		, _alloc_ext_( alloc_ext )
@@ -167,7 +167,7 @@ namespace kick {
 		// start position
 		int _stpos_;
 		
-		const int _alloc_ext_;
+		const unsigned int _alloc_ext_;
 		
 	};
 	

@@ -30,13 +30,14 @@
 #ifndef _kick_vector_h
 #define _kick_vector_h
 
+// Kick
 #include <kick/kick_config.h>
 #include <kick/kick_allocator.h>
 #include <kick/kick_iterator.h>
 
 /// enable or disable virtual methods to support polymorphism
-#ifndef kick_polymorphic_vector
-	#define kick_polymorphic_vector kick_polymorphic_containers
+#ifndef KICK_POLYMORPHIC_VECTOR
+	#define KICK_POLYMORPHIC_VECTOR KICK_POLYMORPHIC_CONTAINERS
 #endif
 
 namespace kick {
@@ -70,7 +71,7 @@ namespace kick {
 			
 		}
 
-#if (kick_polymorphic_vector == 1)
+#if (KICK_POLYMORPHIC_VECTOR > 0)
 		virtual
 #endif
 		~vector(){

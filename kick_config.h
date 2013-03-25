@@ -33,8 +33,8 @@
 /// Should Kick containers implement virtual methods to support polymorphic use?
 /// You decide. Each kick container inherits this setting, but also has its own
 /// #define which you can override on a per-container basis.
-#ifndef kick_polymorphic_containers
-	#define kick_polymorphic_containers 1
+#ifndef KICK_POLYMORPHIC_CONTAINERS
+	#define KICK_POLYMORPHIC_CONTAINERS 1
 #endif
 
 namespace kick {

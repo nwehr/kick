@@ -30,14 +30,15 @@
 #ifndef _kick_map_h
 #define _kick_map_h
 
+// Kick
 #include <kick/kick_config.h>
 #include <kick/kick_allocator.h>
 #include <kick/kick_iterator.h>
 #include <kick/kick_pair.h>
 
 /// enable or disable virtual methods to support polymorphism
-#ifndef kick_polymorphic_map
-#define kick_polymorphic_map kick_polymorphic_containers
+#ifndef KICK_POLYMORPHIC_MAP
+	#define KICK_POLYMORPHIC_MAP KICK_POLYMORPHIC_CONTAINERS
 #endif
 
 namespace kick {
@@ -63,13 +64,13 @@ namespace kick {
 			_alloc_.malloc( _items_, size() );
 			
 			for( int i = 0; i < map.size(); ++i )
-				_items_[0] = map._items_[0];
+				_items_[i] = map._items_[i];
 			
 			//_items_ = _alloc_.copy( map._items_, _items_ );
 			
 		}
 		
-#if (kick_polymorphic_map == 1)
+#if (KICK_POLYMORPHIC_MAP > 0)
 		virtual
 #endif
 		~map(){
@@ -133,19 +134,17 @@ namespace kick {
 		}
 		
 		V& operator[]( const K& key ){
-			unsigned int tokens[2];
+			int index( 0 );
 			
-			find( key, tokens );
-			
-			if( !tokens[0] ){
+			if( !find( key, index ) ){
 				_alloc_.realloc( _items_, size() + 1 );
-				_alloc_.move( _items_, tokens[1], tokens[1] + 1 );
+				_alloc_.move( _items_, index, index + 1 );
 				
-				_items_[tokens[1]] = kick::pair<K,V>();
+				_items_[index] = kick::pair<K,V>();
 				
 			}
 			
-			return _items_[tokens[1]].val();
+			return _items_[index].val();
 			
 		}
 		
@@ -160,8 +159,6 @@ namespace kick {
 	private:
 		pair<K,V>* _items_;
 		A _alloc_;
-		
-		
 		
 	};
 	

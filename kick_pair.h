@@ -30,11 +30,12 @@
 #ifndef _kick_pair_h
 #define _kick_pair_h
 
+// Kick
 #include <kick/kick_config.h>
 
 /// enable or disable virtual methods to support polymorphism
-#ifndef kick_polymorphic_pair
-	#define kick_polymorphic_pair kick_polymorphic_containers
+#ifndef KICK_POLYMORPHIC_PAIR
+	#define KICK_POLYMORPHIC_PAIR KICK_POLYMORPHIC_CONTAINERS
 #endif
 
 namespace kick {
@@ -59,7 +60,7 @@ namespace kick {
 		, _val_( pair._val_ )
 		{}
 
-#if (kick_polymorphic_pair == 1)
+#if (KICK_POLYMORPHIC_PAIR > 0)
 		virtual
 #endif
 		~pair(){}

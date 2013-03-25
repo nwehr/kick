@@ -30,6 +30,7 @@
 #ifndef _kick_iterator_h
 #define _kick_iterator_h
 
+// Kick
 #include <kick/kick_config.h>
 #include <kick/kick_link.h>
 

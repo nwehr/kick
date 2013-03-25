@@ -38,8 +38,8 @@
 #include <kick/kick_allocator.h>
 
 /// enable or disable virtual methods to support polymorphism
-#ifndef kick_polymorphic_string
-	#define kick_polymorphic_string kick_polymorphic_containers
+#ifndef KICK_POLYMORPHIC_STRING
+	#define KICK_POLYMORPHIC_STRING KICK_POLYMORPHIC_CONTAINERS
 #endif
 
 namespace kick {
@@ -103,7 +103,7 @@ namespace kick {
 
 		}
 
-#if (kick_polymorphic_string == 1)
+#if (KICK_POLYMORPHIC_STRING > 0)
 		virtual
 #endif
 		~basic_string(){
