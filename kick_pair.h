@@ -64,6 +64,17 @@ namespace kick {
 #endif
 		~pair(){}
 		
+		pair<K,V>& operator=( const kick::pair<K,V>& pair ){
+			if( this == &pair )
+				return *this;
+			
+			_key_ = pair._key_;
+			_val_ = pair._val_;
+			
+			return *this;
+			
+		}
+		
 		bool operator==( const kick::pair<K,V>& pair ) const {
 			return (_key_ == pair._key_ && _val_ == pair._val_);
 		}
@@ -76,15 +87,15 @@ namespace kick {
 			return _key_;
 		}
 		
+		const K& key() const {
+			return _key_;
+		}
+		
 		V& val(){
 			return _val_;
 		}
 		
-		const K& const_key() const {
-			return _key_;
-		}
-		
-		const V& const_val() const {
+		const V& val() const {
 			return _val_;
 		}
 		

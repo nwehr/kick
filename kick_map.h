@@ -53,15 +53,19 @@ namespace kick {
 		: _items_( 0 )
 		, _alloc_( A() )
 		{
-			_items_ = _alloc_.malloc( size );
+			_alloc_.malloc( _items_, size );
 		}
 		
 		map( const kick::map<K,V>& map )
 		: _items_( 0 )
 		, _alloc_( map._alloc_ )
 		{
-			_items_ = _alloc_.malloc( size() );
-			_items_ = _alloc_.copy( map._items_, _items_ );
+			_alloc_.malloc( _items_, size() );
+			
+			for( int i = 0; i < map.size(); ++i )
+				_items_[0] = map._items_[0];
+			
+			//_items_ = _alloc_.copy( map._items_, _items_ );
 			
 		}
 		
@@ -72,7 +76,7 @@ namespace kick {
 			_alloc_.free( _items_ );
 		}
 		
-		V find( const K& key, unsigned int* tokens = 0 ){
+		bool find( const K& key, int& index ){
 			kick::size_t min = 0;
 			kick::size_t mid = 0;
 			kick::size_t max = size();
@@ -85,51 +89,36 @@ namespace kick {
 				
 			}
 			
-			if( tokens ){
-				tokens[0] = 0;
-				tokens[1] = 0;
-				
-			}
-			
 			if( max ){
 				if( _items_[min].key() == key ){
-					if( tokens ){
-						tokens[0] = 1;
-						tokens[1] = min;
-						
-					}
-					
-					return _items_[min].val();
+					index = min;
+					return true; 
 					
 				} else {
-					if( tokens ){
-						tokens[0] = 0;
-						tokens[1] = _items_[min].key() > key ? min - 1 : min + 1;
-						
-					}
+					index = _items_[min].key() > key ? (min == 0 ? min : min - 1) : min + 1;
+					return false;
 					
 				}
 				
 			}
 			
-			return V();
+			index = 0;
+			return false; 
 			
 		}
 		
 		void insert( const kick::pair<K,V>& pair ){
-			unsigned int tokens[2];
+			int index( 0 );
 			
-			find( pair.const_key(), tokens );
-			
-			if( !tokens[0] ){
-				_items_ = _alloc_.realloc( _items_, size() + 1 );
+			if( !find( pair.key(), index ) ){
+				_alloc_.realloc( _items_, size() + 1 );
 				
-				if( tokens[1] < size() - 1 ){
-					_alloc_.move( _items_, tokens[1], tokens[1] + 1 );
+				if( index < size() - 1 ){
+					_alloc_.move( _items_, index, index + 1 );
 					
 				}
-				
-				_items_[tokens[1]] = pair;
+								
+				_items_[index] = pair;
 				
 			}
 			
@@ -149,7 +138,7 @@ namespace kick {
 			find( key, tokens );
 			
 			if( !tokens[0] ){
-				_items_ = _alloc_.realloc( _items_, size() + 1 );
+				_alloc_.realloc( _items_, size() + 1 );
 				_alloc_.move( _items_, tokens[1], tokens[1] + 1 );
 				
 				_items_[tokens[1]] = kick::pair<K,V>();

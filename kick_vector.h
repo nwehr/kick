@@ -52,7 +52,7 @@ namespace kick {
 		: _items_( 0 )
 		, _alloc_( A() )
 		{
-			_items_ = _alloc_.malloc( size );
+			_alloc_.malloc( _items_, size );
 		
 		}
 		
@@ -60,8 +60,13 @@ namespace kick {
 		: _items_( 0 )
 		, _alloc_( vec._alloc_ )
 		{
-			_items_ = _alloc_.malloc( size() );
-			_items_ = _alloc_.copy( vec._items_, _items_ );
+			_alloc_.malloc( _items_, size() );
+			
+			for( int i = 0; i < vec.size(); ++i )
+				_items_[i] = vec._items_[i]; 
+			
+			// TODO: fix this copy method
+			//_items_ = _alloc_.copy( vec._items_, _items_ );
 			
 		}
 
@@ -75,7 +80,7 @@ namespace kick {
 		const vector<T>& operator=( const vector<T>& vec ){
 			_alloc_.free( _items_ );
 
-			_items_ = _alloc_.malloc( vec.size() );
+			_alloc_.malloc( _items_, vec.size() );
 			
 			for( int i = 0; i < size(); ++i )
 				_items_[i] = vec._items_[i];
@@ -103,19 +108,19 @@ namespace kick {
 		
 		void erase( array_iterator<T> pos ){
 			_alloc_.move( _items_, pos.index() + 1, pos.index() );
-			_items_ = _alloc_.realloc( _items_, size() - 1 );
+			_alloc_.realloc( _items_, size() - 1 );
 			
 		}
 		
 		void push_back( const T& item ){
-			_items_ = _alloc_.realloc( _items_, size() + 1 );
+			_alloc_.realloc( _items_, size() + 1 );
 			
 			_items_[size() - 1] = item;
 			
 		}
 		
 		void push_front( const T& item ){
-			_items_ = _alloc_.realloc( _items_, size() + 1 );
+			_alloc_.realloc( _items_, size() + 1 );
 			_alloc_.move( _items_, 0, 1 );
 			
 			_items_[0] = item;
@@ -131,7 +136,7 @@ namespace kick {
 		void pop_front(){
 			if( size() ){
 				_alloc_.move( _items_, 1, 0 );
-				_items_ = _alloc_.realloc( _items_, size() - 1 );
+				_alloc_.realloc( _items_, size() - 1 );
 				
 			}
 			
