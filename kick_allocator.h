@@ -44,7 +44,7 @@ namespace kick {
 	template<typename T>
 	class array_allocator {
 	public:
-		array_allocator( const int alloc_ext = 4 )
+		array_allocator( const kick::size_t alloc_ext = 4 )
 		: _asize_( 0 )
 		, _usize_( 0 )
 		, _alloc_ext_( alloc_ext )
@@ -56,13 +56,14 @@ namespace kick {
 		, _alloc_ext_( alloc._alloc_ext_ )
 		{}
 		
-		array_allocator( T*& mem, kick::size_t size = 0, const int alloc_ext = 4 )
-		: _asize_( 0 )
-		, _usize_( 0 )
-		, _alloc_ext_( alloc_ext )
-		{
-			mem = array_allocator::malloc( size );
-		}
+		// TODO: I don't this constructor makes sense... remove it...
+// 		array_allocator( T*& mem, kick::size_t size = 0, const kick::size_t alloc_ext = 4 )
+// 		: _asize_( 0 )
+// 		, _usize_( 0 )
+// 		, _alloc_ext_( alloc_ext )
+// 		{
+// 			array_allocator::malloc( mem, size );
+// 		}
 		
 		~array_allocator(){}
 		
@@ -74,54 +75,59 @@ namespace kick {
 			return _usize_;
 		}
 		
-		T* malloc( int size ){
+		void malloc( T*& mem, kick::size_t size ){
 			_usize_ = size;
 			_asize_ = size + _alloc_ext_;
-
+			
 			//TODO: memory should be properly aligned for these objects
-			T* ptr = static_cast<T*>( ::malloc( sizeof( T ) * _asize_ ) );
-
-			for( int i = 0; i < _usize_; ++i )
-				new( &ptr[i] ) T();
-
-			return ptr;
-
+			mem = static_cast<T*>( ::malloc( sizeof( T ) * _asize_ ) );
+			
+			for( kick::size_t i = 0; i < _usize_; ++i )
+				new( &mem[i] ) T();
+			
+			
 		}
 		
-		T* realloc( T*& mem, int size ){
+		void realloc( T*& mem, kick::size_t size ){
 			// call destructors if shrinking
 			if( size < _usize_ ) {
-				for( int i = size; i < _usize_; ++i )
+				for( kick::size_t i = size; i < _usize_; ++i )
 					mem[i].~T();
 				
 				
 			}
 
-			if( size > _asize_ )
+			bool reallocate( false );
+			
+			if( size > _asize_ ){
 				_asize_ = size + _alloc_ext_;
-			else if( (_asize_ - size) > _alloc_ext_ )
-				_asize_ = size; 
-
+				reallocate = true;
+				
+			} else if( (_asize_ - size) > _alloc_ext_ ){
+				_asize_ = size;
+				reallocate = true;
+				
+			}
+				
 			//TODO: memory should be properly aligned for these objects
-			T* ptr = static_cast<T*>( ::realloc( mem, sizeof( T ) * _asize_ ) );
+			if( reallocate )
+				mem = static_cast<T*>( ::realloc( static_cast<void*>( mem ), sizeof( T ) * _asize_ ) );
 			
 			if( size > _usize_ ){
-				for( int i = _usize_; i < size; ++i )
-					new( &ptr[i] ) T();	
+				for( kick::size_t i = _usize_; i < size; ++i )
+					new( &mem[i] ) T();
 				
 				
 			}
 
 			_usize_ = size;
 
-			return ptr;
-
 		}
 		
-		T* move( T*& mem, int src_index, int dest_index ){
-			// Call destructors at the beginning of the memory block
+		void move( T*& mem, unsigned int src_index, unsigned int dest_index ){
+			// Call destructors on items if we're overwriting them...
 			if( dest_index < src_index ){
-				for( int i = dest_index; i < src_index + 1; ++i )
+				for( unsigned int i = dest_index; i < src_index + 1; ++i )
 					mem[i].~T();
 				
 				
@@ -129,27 +135,27 @@ namespace kick {
 			
 			// Call destructors at the end of the memory block
 			if( dest_index > src_index ){
-				for( int i = dest_index; i < dest_index + 1; ++i )
+				for( unsigned int i = dest_index; i < dest_index + 1; ++i )
 					mem[i].~T();
 				
 			}
 			
-// 			return static_cast<T*>( ::memmove( static_cast<void*>( &mem[dest_index] )
-// 											, static_cast<void*>( &mem[src_index] )
-// 											, sizeof( T ) * (_usize_ - src_index) ) );
+			::memmove( static_cast<void*>( &mem[dest_index] )
+					, static_cast<void*>( &mem[src_index] )
+					, sizeof( T ) * (_usize_ - src_index) );
 			
 			// This was the old method of shifting the array... much, much slower...
-			for( int i = (_usize_ - (dest_index - src_index)); i > src_index; --i )
-				mem[i] = mem[i - (dest_index - src_index)];
+// 			for( int i = (_usize_ - (dest_index - src_index)); i > src_index; --i )
+// 				mem[i] = mem[i - (dest_index - src_index)];
 			
 		}
 		
-		T* copy( T*& src, T*& dest ){
-			return static_cast<T*>( ::memcpy( dest, src, sizeof( T ) * _usize_ ) );
-		}
+//		void copy( T*& src, T*& dest ){
+//			return static_cast<T*>( ::memcpy( dest, src, sizeof( T ) * _usize_ ) );
+//		}
 		
 		void free( T*& mem ){
-			for( int i = 0; i < _usize_; ++i )
+			for( kick::size_t i = 0; i < _usize_; ++i )
 				mem[i].~T();
 			
 			::free( mem );
@@ -161,9 +167,9 @@ namespace kick {
 		kick::size_t _usize_;
 		
 		// start position
-		int _stpos_;
+		unsigned int _stpos_;
 		
-		const int _alloc_ext_;
+		const kick::size_t _alloc_ext_;
 		
 	};
 	
