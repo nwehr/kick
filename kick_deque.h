@@ -30,13 +30,14 @@
 #ifndef _kick_deque_h
 #define _kick_deque_h
 
+// Kick
 #include <kick/kick_config.h>
 #include <kick/kick_iterator.h>
 #include <kick/kick_link.h>
 
 /// enable or disable virtual methods to support polymorphism
-#ifndef kick_polymorphic_deque
-	#define kick_polymorphic_deque kick_polymorphic_containers
+#ifndef KICK_POLYMORPHIC_DEQUE
+	#define KICK_POLYMORPHIC_DEQUE KICK_POLYMORPHIC_CONTAINERS
 #endif
 
 namespace kick {
@@ -53,7 +54,7 @@ namespace kick {
 		, _back_( 0 )
 		{}
 		
-#if (kick_polymorphic_deque == 1)
+#if (KICK_POLYMORPHIC_DEQUE > 0)
 		virtual
 #endif
 		~deque(){

@@ -30,12 +30,16 @@
 #ifndef _kick_string_h
 #define _kick_string_h
 
+// C
+#include <string.h>
+
+// Kick
 #include <kick/kick_config.h>
 #include <kick/kick_allocator.h>
 
 /// enable or disable virtual methods to support polymorphism
-#ifndef kick_polymorphic_string
-	#define kick_polymorphic_string kick_polymorphic_containers
+#ifndef KICK_POLYMORPHIC_STRING
+	#define KICK_POLYMORPHIC_STRING KICK_POLYMORPHIC_CONTAINERS
 #endif
 
 namespace kick {
@@ -53,7 +57,7 @@ namespace kick {
 		: _cstr_( 0 )
 		, _alloc_( array_allocator<T>( 1 ) )
 		{
-			_cstr_ = _alloc_.malloc( 0 );
+			_alloc_.malloc( _cstr_, 0 );
 			_cstr_[0] = 0;
 		}
 		
@@ -66,7 +70,7 @@ namespace kick {
 			while( cstr[size] )
 				++size;
 			
-			_cstr_ = _alloc_.malloc( ++size );
+			_alloc_.malloc( _cstr_, ++size );
 			
 			for( size_type i = 0; i < size; ++i )
 				_cstr_[i] = cstr[i];
@@ -77,7 +81,7 @@ namespace kick {
 		: _cstr_( 0 )
 		, _alloc_( array_allocator<T>( 1 ) )
 		{
-			_cstr_ = _alloc_.malloc( size + 1 );
+			_alloc_.malloc( _cstr_, size + 1 );
 
 			for( size_type i = 0; i < size; ++i )
 				_cstr_[i] = cstr[i];
@@ -91,27 +95,27 @@ namespace kick {
 		, _alloc_( str._alloc_ )
 		{
 			size_type size( str.size() + 1 );
-			_cstr_ = _alloc_.malloc( size );
+			
+			_alloc_.malloc( _cstr_, size );
 			
 			for( size_type i = 0; i < size; ++i )
 				_cstr_[i] = str._cstr_[i];
 
 		}
 
-#if (kick_polymorphic_string == 1)
+#if (KICK_POLYMORPHIC_STRING > 0)
 		virtual
 #endif
 		~basic_string(){
-			if( size() )
+			if( _cstr_ )
 				_alloc_.free( _cstr_ );
 			
 		}
 		
 		basic_string& operator=( const basic_string<T>& str ){
-			_alloc_.free( _cstr_ );
-
 			size_type size( str.size() + 1 );
-			_cstr_ = _alloc_.malloc( size );
+			
+			_alloc_.malloc( _cstr_, size );
 			
 			for( size_type i = 0; i < size; ++i )
 				_cstr_[i] = str._cstr_[i];
@@ -140,8 +144,21 @@ namespace kick {
 		}
 		
 		bool operator<( const basic_string<T>& str ) const {
+// 			switch( strcmp( _cstr_, str._cstr_ ) ){
+// 				case 0:
+// 					return false; 
+// 				break;
+// 				case 1:
+// 					return false;
+// 				break;
+// 				case -1:
+// 					return true;
+// 				break;
+// 					
+// 			}
+			
 			for( size_type i = 0; i < size(); ++i )
-				if( _cstr_[i] > str._cstr_[i] )
+				if( _cstr_[i] >= str._cstr_[i] )
 					return false;
 			
 			return true;
@@ -149,8 +166,21 @@ namespace kick {
 		}
 		
 		bool operator>( const basic_string<T>& str ) const {
+// 			switch( strcmp( _cstr_, str._cstr_ ) ){
+// 				case 0:
+// 					return false;
+// 				break;
+// 				case 1:
+// 					return true;
+// 				break;
+// 				case -1:
+// 					return false;
+// 				break;
+// 					
+// 			}
+			
 			for( size_type i = 0; i < size(); ++i )
-				if( _cstr_[i] < str._cstr_[i] )
+				if( _cstr_[i] <= str._cstr_[i] )
 					return false;
 			
 			return true;
@@ -179,11 +209,7 @@ namespace kick {
 		}
 
 		inline size_type capacity() const {
-			if( _alloc_.asize() )
-				return _alloc_.asize() - 1;
-
-			return 0;
-
+			return _alloc_.asize();
 		}
 		
 		inline T* c_str() const {

@@ -8,3 +8,13 @@ kick.cpp
 test.cpp
 
 Debug
+
+*~
+
+CMake*
+cmake*
+Makefile
+
+test
+
+*.kate-swp

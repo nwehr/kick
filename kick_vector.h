@@ -30,13 +30,14 @@
 #ifndef _kick_vector_h
 #define _kick_vector_h
 
+// Kick
 #include <kick/kick_config.h>
 #include <kick/kick_allocator.h>
 #include <kick/kick_iterator.h>
 
 /// enable or disable virtual methods to support polymorphism
-#ifndef kick_polymorphic_vector
-	#define kick_polymorphic_vector kick_polymorphic_containers
+#ifndef KICK_POLYMORPHIC_VECTOR
+	#define KICK_POLYMORPHIC_VECTOR KICK_POLYMORPHIC_CONTAINERS
 #endif
 
 namespace kick {
@@ -48,11 +49,11 @@ namespace kick {
 	public:
 		typedef kick::array_iterator<T> iterator;
 		
-		vector( int size = 0 )
+		vector( kick::size_t size = 0 )
 		: _items_( 0 )
 		, _alloc_( A() )
 		{
-			_items_ = _alloc_.malloc( size );
+			_alloc_.malloc( _items_, size );
 		
 		}
 		
@@ -60,22 +61,29 @@ namespace kick {
 		: _items_( 0 )
 		, _alloc_( vec._alloc_ )
 		{
-			_items_ = _alloc_.malloc( size() );
-			_items_ = _alloc_.copy( vec._items_, _items_ );
+			_alloc_.malloc( _items_, size() );
+			
+			for( kick::size_t i = 0; i < vec.size(); ++i )
+				_items_[i] = vec._items_[i]; 
+			
+			// TODO: fix this copy method
+			//_items_ = _alloc_.copy( vec._items_, _items_ );
 			
 		}
 
-#if (kick_polymorphic_vector == 1)
+#if (KICK_POLYMORPHIC_VECTOR > 0)
 		virtual
 #endif
 		~vector(){
-			_alloc_.free( _items_ ); 
+			if( _items_ )
+				_alloc_.free( _items_ ); 
+			
 		}
 		
 		const vector<T>& operator=( const vector<T>& vec ){
 			_alloc_.free( _items_ );
 
-			_items_ = _alloc_.malloc( vec.size() );
+			_alloc_.malloc( _items_, vec.size() );
 			
 			for( int i = 0; i < size(); ++i )
 				_items_[i] = vec._items_[i];
@@ -92,7 +100,7 @@ namespace kick {
 			return size(); 
 		}
 		
-		void erase( int index ){
+		void erase( unsigned int index ){
 			if( index < size() ){
 				_alloc_.move( _items_, index + 1, index );
 				_items_ = _alloc_.realloc( _items_, size() - 1 );
@@ -103,19 +111,19 @@ namespace kick {
 		
 		void erase( array_iterator<T> pos ){
 			_alloc_.move( _items_, pos.index() + 1, pos.index() );
-			_items_ = _alloc_.realloc( _items_, size() - 1 );
+			_alloc_.realloc( _items_, size() - 1 );
 			
 		}
 		
 		void push_back( const T& item ){
-			_items_ = _alloc_.realloc( _items_, size() + 1 );
+			_alloc_.realloc( _items_, size() + 1 );
 			
 			_items_[size() - 1] = item;
 			
 		}
 		
 		void push_front( const T& item ){
-			_items_ = _alloc_.realloc( _items_, size() + 1 );
+			_alloc_.realloc( _items_, size() + 1 );
 			_alloc_.move( _items_, 0, 1 );
 			
 			_items_[0] = item;
@@ -131,17 +139,17 @@ namespace kick {
 		void pop_front(){
 			if( size() ){
 				_alloc_.move( _items_, 1, 0 );
-				_items_ = _alloc_.realloc( _items_, size() - 1 );
+				_alloc_.realloc( _items_, size() - 1 );
 				
 			}
 			
 		}
 		
-		int size() const {
+		const kick::size_t size() const {
 			return _alloc_.usize();
 		}
 		
-		int capacity() const {
+		const kick::size_t capacity() const {
 			return _alloc_.asize(); 
 		}
 		
@@ -169,7 +177,7 @@ namespace kick {
 			return iterator( size(), _items_ );
 		}
 		
-		T& operator[]( int index ){
+		T& operator[]( unsigned int index ){
 			if( index < size() && index >= 0 )
 				return _items_[index];
 			

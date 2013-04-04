@@ -30,11 +30,12 @@
 #ifndef _kick_pair_h
 #define _kick_pair_h
 
+// Kick
 #include <kick/kick_config.h>
 
 /// enable or disable virtual methods to support polymorphism
-#ifndef kick_polymorphic_pair
-	#define kick_polymorphic_pair kick_polymorphic_containers
+#ifndef KICK_POLYMORPHIC_PAIR
+	#define KICK_POLYMORPHIC_PAIR KICK_POLYMORPHIC_CONTAINERS
 #endif
 
 namespace kick {
@@ -55,24 +56,39 @@ namespace kick {
 		{}
 		
 		pair( const kick::pair<K,V>& pair )
-		: _key_( pair.const_key() )
-		, _val_( pair.const_val() )
+		: _key_( pair._key_ )
+		, _val_( pair._val_ )
 		{}
 
-#if (kick_polymorphic_pair == 1)
+#if (KICK_POLYMORPHIC_PAIR > 0)
 		virtual
 #endif
 		~pair(){}
 		
+		pair<K,V>& operator=( const kick::pair<K,V>& pair ){
+			if( this == &pair )
+				return *this;
+			
+			_key_ = pair._key_;
+			_val_ = pair._val_;
+			
+			return *this;
+			
+		}
+		
 		bool operator==( const kick::pair<K,V>& pair ) const {
-			return (_key_ == pair.const_key() && _val_ == pair.const_val());
+			return (_key_ == pair._key_ && _val_ == pair._val_);
 		}
 		
 		bool operator!=( const kick::pair<K,V>& pair ) const {
-			return (_key_ != pair.const_key() || _val_ != pair.const_val());
+			return (_key_ != pair._key_ || _val_ != pair._val_);
 		}
 		
 		K& key(){
+			return _key_;
+		}
+		
+		const K& key() const {
 			return _key_;
 		}
 		
@@ -80,11 +96,7 @@ namespace kick {
 			return _val_;
 		}
 		
-		const K& const_key() const {
-			return _key_;
-		}
-		
-		const V& const_val() const {
+		const V& val() const {
 			return _val_;
 		}
 		
