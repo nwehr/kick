@@ -457,6 +457,24 @@ namespace kick {
 			return find_last_not_of( n );
 		}
 
+		inline size_type find_first_less_than( T c, size_type spos = npos ) const {
+			const size_type hsize = size();
+			if( spos < 0 ) spos = 0;
+			for( ; spos < hsize; ++spos )
+				if( _cstr_[spos] < c ) return spos;
+
+			return npos;
+		}
+
+		inline size_type find_first_greater_than( T c, size_type spos = npos ) const {
+			const size_type hsize = size();
+			if( spos < 0 ) spos = 0;
+			for( ; spos < hsize; ++spos )
+				if( _cstr_[spos] > c ) return spos;
+
+			return npos;
+		}
+
 		basic_string<T> substr( size_type pos, size_type len ) const {
 			if( pos < 0 || len <= 0 || pos >= size() )
 				return basic_string<T>();
