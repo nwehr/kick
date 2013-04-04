@@ -30,12 +30,21 @@
 #ifndef _kick_allocator_h
 #define _kick_allocator_h
 
-// C
-#include <stdlib.h>
-#include <string.h>
+#ifdef ARDUINO
+	#include <kick_config.h>
 
-// Kick
-#include <kick/kick_config.h>
+	// missing operator placement new on Arduino
+	void* operator new( size_t size, void* ptr ) { return ptr; }
+
+#else
+	// C
+	#include <stdlib.h>
+	#include <string.h>
+
+	// Kick
+	#include <kick/kick_config.h>
+
+#endif
 
 namespace kick {
 	///////////////////////////////////////////////////////////////////////////////
@@ -87,7 +96,7 @@ namespace kick {
 			
 			
 		}
-		
+
 		void realloc( T*& mem, kick::size_t size ){
 			// call destructors if shrinking
 			if( size < _usize_ ) {

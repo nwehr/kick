@@ -30,12 +30,19 @@
 #ifndef _kick_string_h
 #define _kick_string_h
 
-// C
-#include <string.h>
+#ifdef ARDUINO
+	#include <kick_config.h>
+	#include <kick_allocator.h>
 
-// Kick
-#include <kick/kick_config.h>
-#include <kick/kick_allocator.h>
+#else
+	// C
+	#include <string.h>
+
+	// Kick
+	#include <kick/kick_config.h>
+	#include <kick/kick_allocator.h>
+
+#endif
 
 /// enable or disable virtual methods to support polymorphism
 #ifndef KICK_POLYMORPHIC_STRING

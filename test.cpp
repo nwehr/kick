@@ -1,3 +1,5 @@
+#ifndef ARDUINO
+
 // C
 #include <time.h>
 
@@ -66,3 +68,5 @@ int main( int argc, char* argv[] ){
 		std::cout << (*it).key() << std::endl;
 
 }
+
+#endif // ARDUNIO
