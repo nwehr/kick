@@ -96,6 +96,15 @@ namespace kick {
 			_cstr_[size] = 0;
 
 		}
+
+		basic_string( size_type size )
+		: _cstr_( 0 )
+		, _alloc_( array_allocator<T>( 1 ) )
+		{
+			_alloc_.malloc( _cstr_, size + 1 );
+			_cstr_[0] = 0;
+			_cstr_[size] = 0;
+		}
 		
 		basic_string( const basic_string<T>& str )
 		: _cstr_( 0 )
@@ -487,28 +496,27 @@ namespace kick {
 		//TODO: Optimized search for single char
 		inline size_type find_last_not_of( T c, size_type spos = npos ) const {
 			basic_string<T> n( &c, 1 );
-			return find_last_not_of( n );
+			return find_last_not_of( n, spos );
 		}
 
-		inline size_type find_first_less_than( T c, size_type spos = npos ) const {
+		size_type find_first_less_than( T c, size_type spos = 0 ) const {
 			const size_type hsize = size();
-			if( spos < 0 ) spos = 0;
 			for( ; spos < hsize; ++spos )
 				if( _cstr_[spos] < c ) return spos;
 
 			return npos;
 		}
 
-		inline size_type find_first_greater_than( T c, size_type spos = npos ) const {
+		size_type find_first_greater_than( T c, size_type spos = 0 ) const {
 			const size_type hsize = size();
-			if( spos < 0 ) spos = 0;
 			for( ; spos < hsize; ++spos )
 				if( _cstr_[spos] > c ) return spos;
 
 			return npos;
 		}
 
-		basic_string<T> substr( size_type pos, size_type len ) const {
+		basic_string<T> substr( size_type pos, size_type len = npos ) const {
+			if( len == npos ) len = size();
 			if( pos < 0 || len <= 0 || pos >= size() )
 				return basic_string<T>();
 
