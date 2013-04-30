@@ -37,6 +37,12 @@
 // Kick
 #include <kick/kick_config.h>
 
+
+#ifdef ARDUINO
+	// missing operator placement new on Arduino
+	void* operator new( size_t size, void* ptr ) { return ptr; }
+#endif
+
 namespace kick {
 	///////////////////////////////////////////////////////////////////////////////
 	// array_allocator
@@ -87,7 +93,7 @@ namespace kick {
 			
 			
 		}
-		
+
 		void realloc( T*& mem, kick::size_t size ){
 			// call destructors if shrinking
 			if( size < _usize_ ) {
