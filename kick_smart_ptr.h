@@ -33,8 +33,6 @@
 	#define KICK_POLYMORPHIC_SMART_PTR KICK_POLYMORPHIC_CONTAINERS
 #endif
 
-#include <iostream>
-
 namespace kick {
 	///////////////////////////////////////////////////////////////////////////////
 	// smart_ptr
@@ -77,6 +75,10 @@ namespace kick {
 		
 		T& operator*(){
 			return *_mem_; 
+		}
+		
+		T* operator->(){
+			return _mem_; 
 		}
 		
 		int refs(){

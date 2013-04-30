@@ -12,10 +12,11 @@
 #include <kick/kick.h>
 
 int main( int argc, char* argv[] ){
-	kick::shared_ptr<int> myInt( new int( 25 ) );
-	kick::shared_ptr<int> myInt2 = myInt; 
+	kick::shared_ptr<kick::string> myInt( new kick::string( "Hello, World!" ) );
+	kick::shared_ptr<kick::string> myInt2 = myInt;
 	
 	std::cout << myInt.refs() << std::endl;
+	std::cout << myInt->c_str() << std::endl;
 	
 // 	kick::vector<int> myVec;
 // 	
