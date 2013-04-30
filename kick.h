@@ -1,3 +1,6 @@
+#ifndef _kick_h
+#define _kick_h
+
 //
 //      Copyright 2012-2013 Nathan Wehr. All Rights Reserved.
 //      Copyright 2013 Kevin H. Patterson. All Rights Reserved.
@@ -27,8 +30,7 @@
 //      or implied, of Nathan Wehr.
 //
 
-#ifndef _kick_h
-#define _kick_h
+#include <kick/kick_smart_ptr.h>
 
 #include <kick/kick_vector.h>
 #include <kick/kick_map.h>
@@ -37,4 +39,4 @@
 
 #include <kick/algorithm/kick_sort.h>
 
-#endif
+#endif // _kick_h

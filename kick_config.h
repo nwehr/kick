@@ -1,3 +1,6 @@
+#ifndef _kick_config_h
+#define _kick_config_h
+
 //
 //      Copyright 2012-2013 Nathan Wehr. All Rights Reserved.
 //      Copyright 2013 Kevin H. Patterson. All Rights Reserved.
@@ -26,9 +29,6 @@
 //      authors and should not be interpreted as representing official policies, either expressed
 //      or implied, of Nathan Wehr.
 //
-
-#ifndef _kick_config_h
-#define _kick_config_h
 
 /// Should Kick containers implement virtual methods to support polymorphic use?
 /// You decide. Each kick container inherits this setting, but also has its own

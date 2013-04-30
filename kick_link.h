@@ -1,3 +1,6 @@
+#ifndef _kick_link_h
+#define _kick_link_h
+
 //
 //      Copyright 2013 Nathan Wehr. All Rights Reserved.
 //      Copyright 2013 Kevin H. Patterson. All Rights Reserved.
@@ -26,9 +29,6 @@
 //      authors and should not be interpreted as representing official policies, either expressed
 //      or implied, of Nathan Wehr.
 //
-
-#ifndef _kick_link_h
-#define _kick_link_h
 
 namespace kick {
 	///////////////////////////////////////////////////////////////////////////////

@@ -1,3 +1,6 @@
+#ifndef _kick_string_h
+#define _kick_string_h
+
 //
 //      Copyright 2012-2013 Nathan Wehr. All Rights Reserved.
 //      Copyright 2013 Kevin H. Patterson. All Rights Reserved.
@@ -26,9 +29,6 @@
 //      authors and should not be interpreted as representing official policies, either expressed
 //      or implied, of Nathan Wehr.
 //
-
-#ifndef _kick_string_h
-#define _kick_string_h
 
 // C
 #include <string.h>
@@ -113,11 +113,9 @@ namespace kick {
 		}
 		
 		basic_string& operator=( const basic_string<T>& str ){
-			size_type size( str.size() + 1 );
+			_alloc_.malloc( _cstr_, (str.size() + 1) );
 			
-			_alloc_.malloc( _cstr_, size );
-			
-			for( size_type i = 0; i < size; ++i )
+			for( size_type i = 0; i < (str.size() + 1); ++i )
 				_cstr_[i] = str._cstr_[i];
 			
 			return *this;
@@ -126,8 +124,7 @@ namespace kick {
 		
 		bool operator==( const basic_string<T>& str ) const {
 			if( size() == str.size() ){
-				size_type size( str.size() + 1 );
-				for( size_type i = 0; i < size; ++i )
+				for( size_type i = 0; i < (str.size() + 1); ++i )
 					if( _cstr_[i] != str._cstr_[i] )
 						return false;
 				

@@ -10,6 +10,11 @@
 #include <kick/kick.h>
 
 int main( int argc, char* argv[] ){
+	kick::shared_ptr<int> myInt( new int( 25 ) );
+	kick::shared_ptr<int> myInt2 = myInt; 
+	
+	std::cout << myInt.refs() << std::endl;
+	
 // 	kick::vector<int> myVec;
 // 	
 // 	myVec.push_back( 1 );
@@ -37,32 +42,32 @@ int main( int argc, char* argv[] ){
 // 	
 // 	for( kick::vector<kick::string>::iterator it = myVec2.begin(); it != myVec2.end(); ++it )
 // 		std::cout << (*it).c_str() << std::endl;
-	
-	kick::map<kick::string, int> myMap;
-	
-	myMap.insert( kick::pair<kick::string, int>( "sixteen", 16 ) );
-	myMap.insert( kick::pair<kick::string, int>( "two", 2 ) );
-	myMap.insert( kick::pair<kick::string, int>( "one", 1 ) );
-	myMap.insert( kick::pair<kick::string, int>( "seven", 7 ) );
-	myMap.insert( kick::pair<kick::string, int>( "six", 6 ) );
-	myMap.insert( kick::pair<kick::string, int>( "four", 4 ) );
-	myMap.insert( kick::pair<kick::string, int>( "four", 4 ) );
-	myMap.insert( kick::pair<kick::string, int>( "four", 4 ) );
-
-	for( kick::map<kick::string, int>::iterator it = myMap.begin(); it != myMap.end(); ++it )
-		std::cout << (*it).key().c_str() << std::endl;
-	
-	
-	kick::map<int, int> myMap2;
-	
-	myMap2.insert( kick::pair<int, int>( 16, 16 ) );
-	myMap2.insert( kick::pair<int, int>( 2, 2 ) );
-	myMap2.insert( kick::pair<int, int>( 1, 1 ) );
-	myMap2.insert( kick::pair<int, int>( 7, 7 ) );
-	myMap2.insert( kick::pair<int, int>( 6, 6 ) );
-	myMap2.insert( kick::pair<int, int>( 4, 4 ) );
-	
-	for( kick::map<int, int>::iterator it = myMap2.begin(); it != myMap2.end(); ++it )
-		std::cout << (*it).key() << std::endl;
+//	
+//	kick::map<kick::string, int> myMap;
+//	
+//	myMap.insert( kick::pair<kick::string, int>( "sixteen", 16 ) );
+//	myMap.insert( kick::pair<kick::string, int>( "two", 2 ) );
+//	myMap.insert( kick::pair<kick::string, int>( "one", 1 ) );
+//	myMap.insert( kick::pair<kick::string, int>( "seven", 7 ) );
+//	myMap.insert( kick::pair<kick::string, int>( "six", 6 ) );
+//	myMap.insert( kick::pair<kick::string, int>( "four", 4 ) );
+//	myMap.insert( kick::pair<kick::string, int>( "four", 4 ) );
+//	myMap.insert( kick::pair<kick::string, int>( "four", 4 ) );
+//
+//	for( kick::map<kick::string, int>::iterator it = myMap.begin(); it != myMap.end(); ++it )
+//		std::cout << (*it).key().c_str() << std::endl;
+//	
+//	
+//	kick::map<int, int> myMap2;
+//	
+//	myMap2.insert( kick::pair<int, int>( 16, 16 ) );
+//	myMap2.insert( kick::pair<int, int>( 2, 2 ) );
+//	myMap2.insert( kick::pair<int, int>( 1, 1 ) );
+//	myMap2.insert( kick::pair<int, int>( 7, 7 ) );
+//	myMap2.insert( kick::pair<int, int>( 6, 6 ) );
+//	myMap2.insert( kick::pair<int, int>( 4, 4 ) );
+//	
+//	for( kick::map<int, int>::iterator it = myMap2.begin(); it != myMap2.end(); ++it )
+//		std::cout << (*it).key() << std::endl;
 
 }
