@@ -97,11 +97,9 @@ namespace kick {
 		~shared_ptr(){
 			if( *this->_refs_ )
 				--(*_refs_);
-			
-			if( !*this->_refs_ ){
+			else {
 				delete this->_mem_;
 				delete _refs_;
-				
 			}
 			
 		}

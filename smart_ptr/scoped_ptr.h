@@ -1,7 +1,6 @@
 #ifndef _kick_smart_ptr_scoped_ptr_h
 #define _kick_smart_ptr_scoped_ptr_h
 
-
 //
 //      Copyright 2012-2013 Nathan Wehr. All Rights Reserved.
 //
