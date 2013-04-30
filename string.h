@@ -34,8 +34,8 @@
 #include <string.h>
 
 // Kick
-#include <kick/kick_config.h>
-#include <kick/kick_allocator.h>
+#include <kick/config.h>
+#include <kick/allocator.h>
 
 /// enable or disable virtual methods to support polymorphism
 #ifndef KICK_POLYMORPHIC_STRING

@@ -1,9 +1,8 @@
-#ifndef _kick_deque_h
-#define _kick_deque_h
+#ifndef _kick_smart_ptr_h
+#define _kick_smart_ptr_h
 
 //
 //      Copyright 2012-2013 Nathan Wehr. All Rights Reserved.
-//      Copyright 2013 Kevin H. Patterson. All Rights Reserved.
 //
 //      Redistribution and use in source and binary forms, with or without modification, are
 //      permitted provided that the following conditions are met:
@@ -30,138 +29,61 @@
 //      or implied, of Nathan Wehr.
 //
 
-// Kick
-#include <kick/kick_config.h>
-#include <kick/kick_iterator.h>
-#include <kick/kick_link.h>
-
-/// enable or disable virtual methods to support polymorphism
-#ifndef KICK_POLYMORPHIC_DEQUE
-	#define KICK_POLYMORPHIC_DEQUE KICK_POLYMORPHIC_CONTAINERS
+#ifndef KICK_POLYMORPHIC_SMART_PTR
+	#define KICK_POLYMORPHIC_SMART_PTR KICK_POLYMORPHIC_CONTAINERS
 #endif
 
 namespace kick {
 	///////////////////////////////////////////////////////////////////////////////
-	// deque
+	// smart_ptr
 	///////////////////////////////////////////////////////////////////////////////
-	template<typename T>
-	class deque {
-	public:
-		typedef kick::deque_iterator<T> iterator;
-		
-		deque()
-		: _front_( 0 )
-		, _back_( 0 )
+	template <typename T>
+	class smart_ptr {
+	protected:
+		smart_ptr()
+		: _mem_( 0 )
+		, _refs_( 0 )
 		{}
 		
-#if (KICK_POLYMORPHIC_DEQUE > 0)
+		smart_ptr( T* mem )
+		: _mem_( mem )
+		, _refs_( new int( 1 ) )
+		{}
+		
+		smart_ptr( const smart_ptr<T>& ptr )
+		: _mem_( ptr._mem_ )
+		, _refs_( ptr._refs_ )
+		{
+			++(*_refs_);
+		}
+		
+	public:
+#if (KICK_POLYMORPHIC_SMART_PTR > 0)
 		virtual
 #endif
-		~deque(){
-			kick::link<T>* link = _front_;
-			
-			while( link ){
-				delete link;
-				link = link->next();
-				
-			}
-				
+		~smart_ptr(){}
+		
+		T& operator*(){
+			return *_mem_; 
 		}
 		
-		void push_back( const T& item ){
-			link<T>* t = new link<T>( item, _back_, 0 );
-			
-			if( _back_ )
-				_back_->next() = t;
-			
-			if( !_front_ )
-				_front_ = t;
-			
-			_back_ = t;
-			
-			++_size_;
-			
+		T* operator->(){
+			return _mem_; 
 		}
 		
-		void push_front( const T& item ){
-			link<T>* t = new link<T>( item, 0, _front_ );
-			
-			if( _front_ )
-				_front_->prev() = t;
-			
-			if( !_back_ )
-				_back_ = t;
-			
-			_front_ = t;
-			
-			++_size_;
-			
+		int refs(){
+			return *_refs_; 
 		}
 		
-		void pop_back(){
-			if( _size_ ){
-				link<T>* t = _back_->prev();
-				
-				delete _back_;
-				
-				_back_ = t;
-				_back_->next() = 0;
-				
-				--_size_;
-				
-			}
-			
-		}
-		
-		void pop_front(){
-			if( _size_ ){
-				link<T>* t = _front_->next();
-				
-				delete _front_;
-				
-				_front_ = t;
-				_front_->prev() = 0;
-				
-				--_size_;
-				
-			}
-			
-		}
-		
-		int size(){ return _size_; }
-		
-		T& front(){
-			return _front_->item();
-		}
-		
-		T& back(){
-			return _back_->item();
-		}
-		
-		link<T>*& front_link(){
-			return _front_;
-		}
-		
-		link<T>*& back_link(){
-			return _back_;
-		}
-		
-		iterator begin(){
-			return iterator( _front_ );
-		}
-		
-		iterator end(){
-			return iterator( _back_->next() ); 
-		}
-		
-	private:
-		int _size_;
-		
-		link<T>* _front_;
-		link<T>* _back_;
+	protected:
+		T*		_mem_;
+		int*	_refs_;
 		
 	};
 	
-}
+} // namespace kick
 
-#endif // _kick_deque_h
+#include <kick/smart_ptr/shared_ptr.h>
+#include <kick/smart_ptr/weak_ptr.h>
+
+#endif // _kick_smart_ptr_h

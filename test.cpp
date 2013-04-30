@@ -6,17 +6,20 @@
 // C++
 #include <iostream>
 
-#define KICK_POLYMORPHIC_CONTAINERS 0
+#define KICK_POLYMORPHIC_CONTAINERS 1
 
 // Kick
-#include <kick/kick.h>
+#include <kick/string.h>
+#include <kick/smart_ptr.h>
 
 int main( int argc, char* argv[] ){
 	kick::shared_ptr<kick::string> myInt( new kick::string( "Hello, World!" ) );
-	kick::shared_ptr<kick::string> myInt2 = myInt;
+	kick::weak_ptr<kick::string> myInt2( myInt );
 	
-	std::cout << myInt.refs() << std::endl;
-	std::cout << myInt->c_str() << std::endl;
+	if( !myInt2.expired() ){
+		std::cout << myInt2->c_str() << std::endl;
+	}
+	
 	
 // 	kick::vector<int> myVec;
 // 	

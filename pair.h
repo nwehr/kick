@@ -1,8 +1,8 @@
-#ifndef _kick_h
-#define _kick_h
+#ifndef _kick_pair_h
+#define _kick_pair_h
 
 //
-//      Copyright 2012-2013 Nathan Wehr. All Rights Reserved.
+//      Copyright 2013 Nathan Wehr. All Rights Reserved.
 //      Copyright 2013 Kevin H. Patterson. All Rights Reserved.
 //
 //      Redistribution and use in source and binary forms, with or without modification, are
@@ -30,13 +30,82 @@
 //      or implied, of Nathan Wehr.
 //
 
-#include <kick/kick_smart_ptr.h>
+// Kick
+#include <kick/config.h>
 
-#include <kick/kick_vector.h>
-#include <kick/kick_map.h>
-#include <kick/kick_deque.h>
-#include <kick/kick_string.h>
+/// enable or disable virtual methods to support polymorphism
+#ifndef KICK_POLYMORPHIC_PAIR
+	#define KICK_POLYMORPHIC_PAIR KICK_POLYMORPHIC_CONTAINERS
+#endif
 
-#include <kick/algorithm/kick_sort.h>
+namespace kick {
+	///////////////////////////////////////////////////////////////////////////////
+	// pair
+	///////////////////////////////////////////////////////////////////////////////
+	template<typename K, typename V>
+	class pair {
+	public:
+		pair()
+		: _key_( K() )
+		, _val_( V() )
+		{}
+		
+		pair( const K& key, const V& val )
+		: _key_( key )
+		, _val_( val )
+		{}
+		
+		pair( const kick::pair<K,V>& pair )
+		: _key_( pair._key_ )
+		, _val_( pair._val_ )
+		{}
 
-#endif // _kick_h
+#if (KICK_POLYMORPHIC_PAIR > 0)
+		virtual
+#endif
+		~pair(){}
+		
+		pair<K,V>& operator=( const kick::pair<K,V>& pair ){
+			if( this == &pair )
+				return *this;
+			
+			_key_ = pair._key_;
+			_val_ = pair._val_;
+			
+			return *this;
+			
+		}
+		
+		bool operator==( const kick::pair<K,V>& pair ) const {
+			return (_key_ == pair._key_ && _val_ == pair._val_);
+		}
+		
+		bool operator!=( const kick::pair<K,V>& pair ) const {
+			return (_key_ != pair._key_ || _val_ != pair._val_);
+		}
+		
+		K& key(){
+			return _key_;
+		}
+		
+		const K& key() const {
+			return _key_;
+		}
+		
+		V& val(){
+			return _val_;
+		}
+		
+		const V& val() const {
+			return _val_;
+		}
+		
+	private:
+		K _key_;
+		V _val_;
+		
+	};
+	
+}
+
+#endif // _kick_pair_h

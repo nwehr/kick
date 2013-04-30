@@ -1,3 +1,7 @@
+#ifndef _kick_algorithm_sort_h
+#define _kick_algorithm_sort_h
+
+
 //
 //      Copyright 2012-2013 Nathan Wehr. All Rights Reserved.
 //      Copyright 2013 Kevin H. Patterson. All Rights Reserved.
@@ -27,41 +31,40 @@
 //      or implied, of Nathan Wehr.
 //
 
-#ifndef _kick_sort_h
-#define _kick_sort_h
-
-#include <kick/kick_config.h>
-#include <kick/kick_deque.h>
+#include <kick/config.hpp>
 
 namespace kick {
-	///////////////////////////////////////////////////////////////////////////////
-	// swap
-	///////////////////////////////////////////////////////////////////////////////
-	template<typename T>
-	void swap( T& a, T& b ){
-		T c( a );
-		a = b;
-		b = c;
+	namespace algorithm {
+		///////////////////////////////////////////////////////////////////////////////
+		// swap
+		///////////////////////////////////////////////////////////////////////////////
+		template<typename T>
+		void swap( T& a, T& b ){
+			T c( a );
+			a = b;
+			b = c;
+			
+		}
 		
-	}
-	
-	///////////////////////////////////////////////////////////////////////////////
-	// bubble_sort
-	///////////////////////////////////////////////////////////////////////////////
-	template<typename T>
-	void bubble_sort( T& seq ){
-		for( typename T::iterator it = seq.begin(); it != seq.end(); ++it ){
-			for( typename T::iterator nt = it; nt != seq.end(); ++nt ){
-				if( *nt < *it )
-					swap( *nt, *it );	
-				
+		///////////////////////////////////////////////////////////////////////////////
+		// bubble_sort
+		///////////////////////////////////////////////////////////////////////////////
+		template<typename T>
+		void bubble_sort( T& seq ){
+			for( typename T::iterator it = seq.begin(); it != seq.end(); ++it ){
+				for( typename T::iterator nt = it; nt != seq.end(); ++nt ){
+					if( *nt < *it )
+						swap( *nt, *it );
+					
+					
+				}
 				
 			}
 			
 		}
-		
-	}
-	
-}
 
-#endif // _kick_sort_h
+	} // namespace algorithm
+	
+} // namespace kick
+
+#endif // _kick_algorithm_sort_h

@@ -1,9 +1,8 @@
-#ifndef _kick_pair_h
-#define _kick_pair_h
+#ifndef _kick_smart_ptr_shared_ptr_h
+#define _kick_smart_ptr_shared_ptr_h
 
 //
-//      Copyright 2013 Nathan Wehr. All Rights Reserved.
-//      Copyright 2013 Kevin H. Patterson. All Rights Reserved.
+//      Copyright 2012-2013 Nathan Wehr. All Rights Reserved.
 //
 //      Redistribution and use in source and binary forms, with or without modification, are
 //      permitted provided that the following conditions are met:
@@ -30,82 +29,63 @@
 //      or implied, of Nathan Wehr.
 //
 
-// Kick
-#include <kick/kick_config.h>
-
-/// enable or disable virtual methods to support polymorphism
-#ifndef KICK_POLYMORPHIC_PAIR
-	#define KICK_POLYMORPHIC_PAIR KICK_POLYMORPHIC_CONTAINERS
-#endif
+#include <kick/smart_ptr.h>
+#include <kick/smart_ptr/weak_ptr.h>
 
 namespace kick {
+	template <typename T>
+	class weak_ptr;
+	
 	///////////////////////////////////////////////////////////////////////////////
-	// pair
+	// shared_ptr
 	///////////////////////////////////////////////////////////////////////////////
-	template<typename K, typename V>
-	class pair {
+	template <typename T>
+	class shared_ptr : public smart_ptr<T> {
+		friend class weak_ptr<T>;
+		
 	public:
-		pair()
-		: _key_( K() )
-		, _val_( V() )
+		shared_ptr()
+		: smart_ptr<T>()
 		{}
 		
-		pair( const K& key, const V& val )
-		: _key_( key )
-		, _val_( val )
+		shared_ptr( T* mem )
+		: smart_ptr<T>( mem )
 		{}
 		
-		pair( const kick::pair<K,V>& pair )
-		: _key_( pair._key_ )
-		, _val_( pair._val_ )
+		shared_ptr( const shared_ptr<T>& ptr )
+		: smart_ptr<T>( ptr )
 		{}
-
-#if (KICK_POLYMORPHIC_PAIR > 0)
-		virtual
-#endif
-		~pair(){}
 		
-		pair<K,V>& operator=( const kick::pair<K,V>& pair ){
-			if( this == &pair )
-				return *this;
-			
-			_key_ = pair._key_;
-			_val_ = pair._val_;
+		shared_ptr& operator=( const shared_ptr<T>& rhs ){
+			if( this != rhs ){
+				this->_mem_		= rhs._mem_;
+				this->_refs_	= rhs._refs_;
+				
+				++(*this->_refs_);
+				
+			}
 			
 			return *this;
 			
 		}
 		
-		bool operator==( const kick::pair<K,V>& pair ) const {
-			return (_key_ == pair._key_ && _val_ == pair._val_);
+#if (KICK_POLYMORPHIC_SMART_PTR > 0)
+		virtual
+#endif
+		~shared_ptr(){
+			if( *this->_refs_ )
+				--(*this->_refs_);
+			
+			if( !*this->_refs_ ){
+				delete this->_mem_;
+				delete this->_refs_;
+				
+			}
+			
 		}
-		
-		bool operator!=( const kick::pair<K,V>& pair ) const {
-			return (_key_ != pair._key_ || _val_ != pair._val_);
-		}
-		
-		K& key(){
-			return _key_;
-		}
-		
-		const K& key() const {
-			return _key_;
-		}
-		
-		V& val(){
-			return _val_;
-		}
-		
-		const V& val() const {
-			return _val_;
-		}
-		
-	private:
-		K _key_;
-		V _val_;
 		
 	};
 	
-}
+} // namespace kick
 
-#endif // _kick_pair_h
+#endif // _kick_smart_ptr_shared_ptr_h

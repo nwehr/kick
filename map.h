@@ -31,10 +31,12 @@
 //
 
 // Kick
-#include <kick/kick_config.h>
-#include <kick/kick_allocator.h>
-#include <kick/kick_iterator.h>
-#include <kick/kick_pair.h>
+#include <kick/config.h>
+
+#include <kick/allocator.h>
+#include <kick/iterator.h>
+
+#include <kick/pair.h>
 
 /// enable or disable virtual methods to support polymorphism
 #ifndef KICK_POLYMORPHIC_MAP

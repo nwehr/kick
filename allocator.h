@@ -35,8 +35,7 @@
 #include <string.h>
 
 // Kick
-#include <kick/kick_config.h>
-
+#include <kick/config.h>
 
 #ifdef ARDUINO
 	// missing operator placement new on Arduino
