@@ -1,5 +1,6 @@
-#ifndef _kick_smart_ptr_h
-#define _kick_smart_ptr_h
+#ifndef _kick_smart_ptr_scoped_ptr_h
+#define _kick_smart_ptr_scoped_ptr_h
+
 
 //
 //      Copyright 2012-2013 Nathan Wehr. All Rights Reserved.
@@ -29,59 +30,33 @@
 //      or implied, of Nathan Wehr.
 //
 
-#ifndef KICK_POLYMORPHIC_SMART_PTR
-	#define KICK_POLYMORPHIC_SMART_PTR KICK_POLYMORPHIC_CONTAINERS
-#endif
+#include <kick/smart_ptr.h>
 
 namespace kick {
 	///////////////////////////////////////////////////////////////////////////////
-	// smart_ptr
+	// scoped_ptr
 	///////////////////////////////////////////////////////////////////////////////
 	template <typename T>
-	class smart_ptr {
-		smart_ptr();
-		
-	protected:
-		explicit smart_ptr( T* mem )
-		: _mem_( mem )
+	class scoped_ptr : public smart_ptr<T> {
+		scoped_ptr();
+		scoped_ptr( const scoped_ptr&  );
+		scoped_ptr& operator=( const scoped_ptr& );
+	
+	public:
+		explicit scoped_ptr( T* mem )
+		: smart_ptr<T>( mem )
 		{}
 		
-	public:
 #if (KICK_POLYMORPHIC_SMART_PTR > 0)
 		virtual
 #endif
-		~smart_ptr(){}
-		
-		T& operator*(){
-			return *_mem_; 
+		~scoped_ptr(){
+			delete this->_mem_;
 		}
-		
-		T* operator->(){
-			return _mem_; 
-		}
-		
-		T* get(){
-			return _mem_; 
-		}
-		
-		void reset( T* mem = 0 ){
-			delete _mem_;
-			_mem_ = mem;
-		}
-		
-		bool expired(){
-			return !static_cast<bool>( _mem_ );
-		}
-		
-	protected:
-		T* _mem_;
 		
 	};
 	
-} // namespace kick
+}
 
-#include <kick/smart_ptr/shared_ptr.h>
-#include <kick/smart_ptr/weak_ptr.h>
-#include <kick/smart_ptr/scoped_ptr.h>
 
-#endif // _kick_smart_ptr_h
+#endif // _kick_smart_ptr_scoped_ptr_h

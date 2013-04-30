@@ -43,35 +43,33 @@ namespace kick {
 	class weak_ptr : public smart_ptr<T> {
 		friend class shared_ptr<T>;
 		
+		weak_ptr();
+		
 	public:
-		weak_ptr( const shared_ptr<T>& ptr )
-		: smart_ptr<T>()
-		{
-			this->_mem_		= ptr._mem_;
-			this->_refs_	= ptr._refs_;
-		}
-		
 		weak_ptr( const weak_ptr<T>& ptr )
-		: smart_ptr<T>()
-		{
-			this->_mem_		= ptr._mem_;
-			this->_refs_	= ptr._refs_;
-		}
+		: smart_ptr<T>( ptr._mem_ )
+		, _refs_( ptr._refs_ )
+		{}
 		
-		weak_ptr& operator=( const shared_ptr<T>& rhs ){
+		weak_ptr( const shared_ptr<T>& ptr )
+		: smart_ptr<T>( ptr._mem_ )
+		, _refs_( ptr._refs_ )
+		{}
+		
+		weak_ptr& operator=( const weak_ptr<T>& rhs ){
 			if( this != rhs ){
 				this->_mem_		= rhs._mem_;
-				this->_refs_	= rhs._refs_;
+				_refs_			= rhs._refs_;
 			}
 			
 			return *this;
 			
 		}
 		
-		weak_ptr& operator=( const weak_ptr<T>& rhs ){
+		weak_ptr& operator=( const shared_ptr<T>& rhs ){
 			if( this != rhs ){
 				this->_mem_		= rhs._mem_;
-				this->_refs_	= rhs._refs_;
+				_refs_			= rhs._refs_;
 			}
 			
 			return *this;
@@ -83,13 +81,12 @@ namespace kick {
 #endif
 		~weak_ptr(){}
 		
-		bool expired() const {
-			return !static_cast<bool>( this->_mem_ );
-		}
-		
 		shared_ptr<T> lock() const {
 			return shared_ptr<T>( *this );
 		}
+		
+	protected:
+		int* _refs_;
 		
 	};
 	

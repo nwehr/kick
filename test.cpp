@@ -14,12 +14,12 @@
 
 int main( int argc, char* argv[] ){
 	kick::shared_ptr<kick::string> myInt( new kick::string( "Hello, World!" ) );
-	kick::weak_ptr<kick::string> myInt2( myInt );
 	
-	if( !myInt2.expired() ){
-		std::cout << myInt2->c_str() << std::endl;
-	}
+	kick::shared_ptr<kick::string> mySharedPtr1 = myInt;
+	kick::shared_ptr<kick::string> mySharedPtr2 = myInt;
+	kick::shared_ptr<kick::string> mySharedPtr3 = myInt;
 	
+	std::cout << myInt->c_str() << std::endl;
 	
 // 	kick::vector<int> myVec;
 // 	
