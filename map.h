@@ -52,23 +52,34 @@ namespace kick {
 	public:
 		typedef array_iterator< pair<K,V> > iterator;
 		
-		map( kick::size_t size = 0 )
+		map( size_t size = 0 )
 		: _items_( 0 )
 		, _alloc_( A() )
 		{
-			_alloc_.malloc( _items_, size );
+			_items_ = _alloc_.malloc( _items_, size );
 		}
 		
 		map( const map<K,V>& map )
 		: _items_( 0 )
 		, _alloc_( map._alloc_ )
 		{
-			_alloc_.malloc( _items_, size() );
+			_items_ = _alloc_.malloc( _items_, size() );
 			
-			for( kick::size_t i = 0; i < map.size(); ++i )
+			for( size_t i = 0; i < map.size(); ++i )
 				_items_[i] = map._items_[i];
 			
 			//_items_ = _alloc_.copy( map._items_, _items_ );
+			
+		}
+		
+		map& operator=( const map<K,V>& map ){
+			if( *this != map ){
+				for( size_t i = 0; i < map.size(); ++i )
+					_items_[i] = map._items_[i];
+				
+			}
+			
+			return *this;
 			
 		}
 		
@@ -82,9 +93,9 @@ namespace kick {
 		}
 		
 		bool find( const K& key, unsigned int& index ){
-			kick::size_t min = 0;
-			kick::size_t mid = 0;
-			kick::size_t max = size();
+			size_t min = 0;
+			size_t mid = 0;
+			size_t max = size();
 			
 			while( min + 1 < max ){
 				mid = (min + max) / 2;
@@ -116,22 +127,22 @@ namespace kick {
 			unsigned int index( 0 );
 			
 			if( !find( pair.key(), index ) ){
-				_alloc_.realloc( _items_, size() + 1 );
+				_items_ = _alloc_.realloc( _items_, size() + 1 );
 				
 				if( index < size() - 1 )
-					_alloc_.move( _items_, index, index + 1 );
-								
+					_items_ = _alloc_.move( _items_, index, index + 1 );
+				
 				_items_[index] = pair;
 				
 			}
 			
 		}
 		
-		const kick::size_t size() const {
+		const size_t size() const {
 			return _alloc_.usize();
 		}
 		
-		const kick::size_t capacity() const {
+		const size_t capacity() const {
 			return _alloc_.asize();
 		}
 		
@@ -139,10 +150,10 @@ namespace kick {
 			unsigned int index( 0 );
 			
 			if( !find( key, index ) ){
-				_alloc_.realloc( _items_, size() + 1 );
+				_items_ = _alloc_.realloc( _items_, size() + 1 );
 				
 				if( index < size() - 1 )
-					_alloc_.move( _items_, index, index + 1 );
+					_items_ = _alloc_.move( _items_, index, index + 1 );
 				
 				_items_[index] = pair<K,V>();
 				
@@ -161,7 +172,7 @@ namespace kick {
 		}
 		
 	private:
-		kick::pair<K,V>* _items_;
+		pair<K,V>* _items_;
 		A _alloc_;
 		
 	};

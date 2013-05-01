@@ -55,33 +55,32 @@ namespace kick {
 		, _val_( val )
 		{}
 		
-		pair( const kick::pair<K,V>& pair )
+		pair( const pair<K,V>& pair )
 		: _key_( pair._key_ )
 		, _val_( pair._val_ )
 		{}
 
+		pair<K,V>& operator=( const pair<K,V>& pair ){
+			if( *this != pair ){
+				_key_ = pair._key_;
+				_val_ = pair._val_;
+				
+			}
+			
+			return *this;
+			
+		}
 #if (KICK_POLYMORPHIC_PAIR > 0)
 		virtual
 #endif
 		~pair(){}
 		
-		pair<K,V>& operator=( const kick::pair<K,V>& pair ){
-			if( this == &pair )
-				return *this;
-			
-			_key_ = pair._key_;
-			_val_ = pair._val_;
-			
-			return *this;
-			
-		}
-		
-		bool operator==( const kick::pair<K,V>& pair ) const {
+		bool operator==( const pair<K,V>& pair ) const {
 			return (_key_ == pair._key_ && _val_ == pair._val_);
 		}
 		
-		bool operator!=( const kick::pair<K,V>& pair ) const {
-			return (_key_ != pair._key_ || _val_ != pair._val_);
+		bool operator!=( const pair<K,V>& pair ) const {
+			return !operator==( pair );
 		}
 		
 		K& key(){

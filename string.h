@@ -57,7 +57,7 @@ namespace kick {
 		: _cstr_( 0 )
 		, _alloc_( array_allocator<T>( 1 ) )
 		{
-			_alloc_.malloc( _cstr_, 0 );
+			_cstr_ = _alloc_.malloc( _cstr_, 0 );
 			_cstr_[0] = 0;
 		}
 		
@@ -70,7 +70,7 @@ namespace kick {
 			while( cstr[size] )
 				++size;
 			
-			_alloc_.malloc( _cstr_, ++size );
+			_cstr_ = _alloc_.malloc( _cstr_, ++size );
 			
 			for( size_type i = 0; i < size; ++i )
 				_cstr_[i] = cstr[i];
@@ -81,7 +81,7 @@ namespace kick {
 		: _cstr_( 0 )
 		, _alloc_( array_allocator<T>( 1 ) )
 		{
-			_alloc_.malloc( _cstr_, size + 1 );
+			_cstr_ = _alloc_.malloc( _cstr_, size + 1 );
 
 			for( size_type i = 0; i < size; ++i )
 				_cstr_[i] = cstr[i];
@@ -94,7 +94,7 @@ namespace kick {
 		: _cstr_( 0 )
 		, _alloc_( array_allocator<T>( 1 ) )
 		{
-			_alloc_.malloc( _cstr_, size + 1 );
+			_cstr_ = _alloc_.malloc( _cstr_, size + 1 );
 			_cstr_[0] = 0;
 			_cstr_[size] = 0;
 		}
@@ -105,7 +105,7 @@ namespace kick {
 		{
 			size_type size( str.size() + 1 );
 			
-			_alloc_.malloc( _cstr_, size );
+			_cstr_ = _alloc_.malloc( _cstr_, size );
 			
 			for( size_type i = 0; i < size; ++i )
 				_cstr_[i] = str._cstr_[i];
@@ -122,7 +122,7 @@ namespace kick {
 		}
 		
 		basic_string& operator=( const basic_string<T>& str ){
-			_alloc_.malloc( _cstr_, (str.size() + 1) );
+			_cstr_ = _alloc_.malloc( _cstr_, (str.size() + 1) );
 			
 			for( size_type i = 0; i < (str.size() + 1); ++i )
 				_cstr_[i] = str._cstr_[i];
@@ -150,7 +150,7 @@ namespace kick {
 		}
 		
 		bool operator<( const basic_string<T>& str ) const {
-// 			switch( strcmp( _cstr_, str._cstr_ ) ){
+// 			switch( strncmp( _cstr_, str._cstr_, static_cast<size_t>( size() > str.size() ? str.size() : size() ) ) ){
 // 				case 0:
 // 					return false; 
 // 				break;
@@ -172,7 +172,7 @@ namespace kick {
 		}
 		
 		bool operator>( const basic_string<T>& str ) const {
-// 			switch( strcmp( _cstr_, str._cstr_ ) ){
+// 			switch( strncmp( _cstr_, str._cstr_, static_cast<size_t>( size() > str.size() ? str.size() : size() ) ) ){
 // 				case 0:
 // 					return false;
 // 				break;
