@@ -2,7 +2,7 @@
 #define _kick_smart_ptr_shared_ptr_h
 
 //
-//      Copyright 2012-2013 Nathan Wehr. All Rights Reserved.
+//      Copyright 2013 Nathan Wehr. All Rights Reserved.
 //
 //      Redistribution and use in source and binary forms, with or without modification, are
 //      permitted provided that the following conditions are met:
@@ -33,6 +33,9 @@
 #include <kick/smart_ptr/weak_ptr.h>
 
 namespace kick {
+	///////////////////////////////////////////////////////////////////////////////
+	// weak_ptr
+	///////////////////////////////////////////////////////////////////////////////
 	template <typename T>
 	class weak_ptr;
 	
@@ -46,69 +49,90 @@ namespace kick {
 		shared_ptr();
 		
 	public:
-		explicit shared_ptr( T* mem )
-		: smart_ptr<T>( mem )
-		, _refs_( new int( 1 ) )
-		{}
+		explicit shared_ptr( T* mem );
 		
-		shared_ptr( const shared_ptr<T>& ptr )
-		: smart_ptr<T>( ptr._mem_ )
-		, _refs_( ptr._refs_ )
-		{
-			++(*_refs_);
-		}
+		shared_ptr( const shared_ptr<T>& ptr );
+		shared_ptr( const weak_ptr<T>& ptr );
 		
-		shared_ptr( const weak_ptr<T>& ptr )
-		: smart_ptr<T>( ptr._mem_ )
-		, _refs_( ptr._refs_ )
-		{
-			++(*_refs_);
-		}
-		
-		shared_ptr& operator=( const shared_ptr<T>& rhs ){
-			if( this != rhs ){
-				this->_mem_	= rhs._mem_;
-				_refs_		= rhs._refs_;
-				
-				++(*this->_refs_);
-				
-			}
-			
-			return *this;
-			
-		}
-		
-		shared_ptr& operator=( const weak_ptr<T>& rhs ){
-			if( this != rhs ){
-				this->_mem_	= rhs._mem_;
-				_refs_		= rhs._refs_;
-				
-				++(*_refs_);
-				
-			}
-			
-			return *this;
-			
-		}
+		shared_ptr<T>& operator=( const shared_ptr<T>& rhs );
+		shared_ptr<T>& operator=( const weak_ptr<T>& rhs );
 
 #if (KICK_POLYMORPHIC_SMART_PTR > 0)
 		virtual
 #endif
-		~shared_ptr(){
-			if( *this->_refs_ )
-				--(*_refs_);
-			else {
-				delete this->_mem_;
-				delete _refs_;
-			}
-			
-		}
+		~shared_ptr();
 		
 	protected:
 		int* _refs_;
 		
 	};
 	
+	///////////////////////////////////////////////////////////////////////////////
+	// shared_ptr
+	///////////////////////////////////////////////////////////////////////////////
+	template <typename T>
+	shared_ptr<T>::shared_ptr( T* mem )
+	: smart_ptr<T>( mem )
+	, _refs_( new int( 1 ) )
+	{}
+	
+	template <typename T>
+	shared_ptr<T>::shared_ptr( const shared_ptr<T>& ptr )
+	: smart_ptr<T>( ptr._mem_ )
+	, _refs_( ptr._refs_ )
+	{
+		++(*_refs_);
+	}
+	
+	template <typename T>
+	shared_ptr<T>::shared_ptr( const weak_ptr<T>& ptr )
+	: smart_ptr<T>( ptr._mem_ )
+	, _refs_( ptr._refs_ )
+	{
+		++(*_refs_);
+	}
+	
+	template <typename T>
+	shared_ptr<T>& shared_ptr<T>::operator=( const shared_ptr<T>& rhs ){
+		if( *this != rhs ){
+			this->_mem_	= rhs._mem_;
+			_refs_		= rhs._refs_;
+			
+			++(*this->_refs_);
+			
+		}
+		
+		return *this;
+		
+	}
+	
+	template <typename T>
+	shared_ptr<T>& shared_ptr<T>::operator=( const weak_ptr<T>& rhs ){
+		if( *this != rhs ){
+			this->_mem_	= rhs._mem_;
+			_refs_		= rhs._refs_;
+			
+			++(*_refs_);
+			
+		}
+		
+		return *this;
+		
+	}
+	
+	template <typename T>
+	shared_ptr<T>::~shared_ptr(){
+		if( *_refs_ )
+			--(*_refs_);
+		
+		if( !*_refs_ ){
+			delete this->_mem_;
+			delete _refs_;
+			
+		}
+		
+	}
+		
 } // namespace kick
 
 #endif // _kick_smart_ptr_shared_ptr_h

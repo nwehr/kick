@@ -49,140 +49,151 @@ namespace kick {
 	template<typename T>
 	class array_allocator {
 	public:
-		array_allocator( const size_t alloc_ext = 4 )
-		: _asize_( 0 )
-		, _usize_( 0 )
-		, _alloc_ext_( alloc_ext )
-		{}
+		array_allocator( const size_t alloc_ext = 4 );
+		array_allocator( const array_allocator& alloc );
 		
-		array_allocator( const array_allocator& alloc )
-		: _asize_( alloc._asize_ )
-		, _usize_( alloc._usize_ )
-		, _alloc_ext_( alloc._alloc_ext_ )
-		{}
+		~array_allocator(); 
 		
-		// TODO: I don't this constructor makes sense... remove it...
-// 		array_allocator( T*& mem, size_t size = 0, const size_t alloc_ext = 4 )
-// 		: _asize_( 0 )
-// 		, _usize_( 0 )
-// 		, _alloc_ext_( alloc_ext )
-// 		{
-// 			array_allocator::malloc( mem, size );
-// 		}
+		size_t asize() const;
+		size_t usize() const;
 		
-		~array_allocator(){}
-		
-		size_t asize() const {
-			return _asize_;
-		}
-		
-		size_t usize() const {
-			return _usize_;
-		}
-		
-		T* malloc( T* mem, size_t size ){
-			_usize_ = size;
-			_asize_ = size + _alloc_ext_;
-			
-			//TODO: memory should be properly aligned for these objects
-			mem = static_cast<T*>( ::malloc( sizeof( T ) * _asize_ ) );
-			
-			for( size_t i = 0; i < _usize_; ++i )
-				new( &mem[i] ) T();
-			
-			return mem; 
-			
-		}
+		T* malloc( T* mem, size_t size );
 
-		T* realloc( T* mem, size_t size ){
-			bool reallocate( false );
-			
-			// call destructors if shrinking
-			if( size < _usize_ ) {
-				for( size_t i = size; i < _usize_; ++i )
-					mem[i].~T();
-				
-				
-			} else {
-				if( size >= _asize_ ){
-					_asize_ = size + _alloc_ext_;
-					reallocate = true;
-					
-				} else if( (_asize_ - size) > _alloc_ext_ ){
-					_asize_ = size;
-					reallocate = true;
-					
-				}
-				
-			}
-				
-			//TODO: memory should be properly aligned for these objects
-			if( reallocate )
-				mem = static_cast<T*>( ::realloc( static_cast<void*>( mem ), sizeof( T ) * _asize_ ) );
-			
-			if( size > _usize_ ){
-				for( size_t i = _usize_; i < size; ++i )
-					new( &mem[i] ) T();
-				
-				
-			}
-
-			_usize_ = size;
-			
-			return mem; 
-
-		}
+		T* realloc( T* mem, size_t size );
 		
-		T* move( T* mem, unsigned int src_index, unsigned int dest_index ){
-			// Call destructors on items if we're overwriting them...
-			if( dest_index < src_index ){
-				for( unsigned int i = dest_index; i < src_index + 1; ++i )
-					mem[i].~T();
-				
-				
-			}
-			
-			// Call destructors at the end of the memory block
-			if( dest_index > src_index ){
-				for( unsigned int i = dest_index; i < dest_index + 1; ++i )
-					mem[i].~T();
-				
-			}
-			
-			::memmove( static_cast<void*>( &mem[dest_index] )
-					, static_cast<void*>( &mem[src_index] )
-					, sizeof( T ) * (_usize_ - src_index) );
-			
-			// This was the old method of shifting the array... much, much slower...
-// 			for( int i = (_usize_ - (dest_index - src_index)); i > src_index; --i )
-// 				mem[i] = mem[i - (dest_index - src_index)];
-			
-			return mem; 
-			
-		}
+		T* move( T* mem, unsigned int src_index, unsigned int dest_index );
 		
-//		void copy( T*& src, T*& dest ){
-//			return static_cast<T*>( ::memcpy( dest, src, sizeof( T ) * _usize_ ) );
-//		}
-		
-		void free( T* mem ){
-			for( size_t i = 0; i < _usize_; ++i )
-				mem[i].~T();
-			
-			::free( mem );
-			
-		}
+		void free( T* mem );
 		
 	protected:
 		size_t _asize_;
 		size_t _usize_;
-		
-		// start position
-		unsigned int _stpos_;
+		size_t _stpos_;
 		
 		const size_t _alloc_ext_;
 		
 	};
+	
+	///////////////////////////////////////////////////////////////////////////////
+	// array_allocator
+	///////////////////////////////////////////////////////////////////////////////
+	template<typename T>
+	array_allocator<T>::array_allocator( const size_t alloc_ext )
+	: _asize_( 0 )
+	, _usize_( 0 )
+	, _alloc_ext_( alloc_ext )
+	{}
+	
+	template<typename T>
+	array_allocator<T>::array_allocator( const array_allocator& alloc )
+	: _asize_( alloc._asize_ )
+	, _usize_( alloc._usize_ )
+	, _alloc_ext_( alloc._alloc_ext_ )
+	{}
+	
+	template<typename T>
+	array_allocator<T>::~array_allocator(){}
+	
+	template<typename T>
+	size_t array_allocator<T>::asize() const {
+		return _asize_;
+	}
+	
+	template<typename T>
+	size_t array_allocator<T>::usize() const {
+		return _usize_;
+	}
+	
+	template<typename T>
+	T* array_allocator<T>::malloc( T* mem, size_t size ){
+		_usize_ = size;
+		_asize_ = size + _alloc_ext_;
+		
+		mem = static_cast<T*>( ::malloc( sizeof( T ) * _asize_ ) );
+		
+		for( size_t i = 0; i < _usize_; ++i )
+			new( &mem[i] ) T();
+		
+		return mem;
+		
+	}
+	
+	template<typename T>
+	T* array_allocator<T>::realloc( T* mem, size_t size ){
+		bool reallocate( false );
+		
+		// call destructors if shrinking
+		if( size < _usize_ ) {
+			for( size_t i = size; i < _usize_; ++i )
+				mem[i].~T();
+			
+			
+		} else {
+			if( size >= _asize_ ){
+				_asize_ = size + _alloc_ext_;
+				reallocate = true;
+				
+			} else if( (_asize_ - size) > _alloc_ext_ ){
+				_asize_ = size;
+				reallocate = true;
+				
+			}
+			
+		}
+		
+		if( reallocate )
+			mem = static_cast<T*>( ::realloc( static_cast<void*>( mem ), sizeof( T ) * _asize_ ) );
+		
+		if( size > _usize_ ){
+			for( size_t i = _usize_; i < size; ++i )
+				new( &mem[i] ) T();
+			
+			
+		}
+		
+		_usize_ = size;
+		
+		return mem;
+		
+	}
+	
+	template<typename T>
+	T* array_allocator<T>::move( T* mem, unsigned int src_index, unsigned int dest_index ){
+		// Call destructors on items if we're overwriting them...
+		if( dest_index < src_index ){
+			for( unsigned int i = dest_index; i < src_index + 1; ++i )
+				mem[i].~T();
+			
+			
+		}
+		
+		// Call destructors at the end of the memory block
+		if( dest_index > src_index ){
+			for( unsigned int i = dest_index; i < dest_index + 1; ++i )
+				mem[i].~T();
+			
+		}
+		
+		::memmove( static_cast<void*>( &mem[dest_index] )
+				  , static_cast<void*>( &mem[src_index] )
+				  , sizeof( T ) * (_usize_ - src_index) );
+		
+		// This was the old method of shifting the array... much, much slower...
+		// 			for( int i = (_usize_ - (dest_index - src_index)); i > src_index; --i )
+		// 				mem[i] = mem[i - (dest_index - src_index)];
+		
+		return mem;
+		
+	}
+	
+	template<typename T>
+	void array_allocator<T>::free( T* mem ){
+		for( size_t i = 0; i < _usize_; ++i )
+			mem[i].~T();
+		
+		::free( mem );
+		
+	}
 	
 }
 

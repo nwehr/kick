@@ -35,7 +35,6 @@
 #include <kick/allocator.h>
 #include <kick/iterator.h>
 
-/// enable or disable virtual methods to support polymorphism
 #ifndef KICK_POLYMORPHIC_VECTOR
 	#define KICK_POLYMORPHIC_VECTOR KICK_POLYMORPHIC_CONTAINERS
 #endif
@@ -49,148 +48,187 @@ namespace kick {
 	public:
 		typedef kick::array_iterator<T> iterator;
 		
-		vector( kick::size_t size = 0 )
-		: _items_( 0 )
-		, _alloc_( A() )
-		{
-			_items_ = _alloc_.malloc( _items_, size );
-		
-		}
-		
-		vector( const vector<T>& vec )
-		: _items_( 0 )
-		, _alloc_( vec._alloc_ )
-		{
-			_items_ = _alloc_.malloc( _items_, size() );
-			
-			for( kick::size_t i = 0; i < vec.size(); ++i )
-				_items_[i] = vec._items_[i]; 
-			
-			// TODO: fix this copy method
-			//_items_ = _alloc_.copy( vec._items_, _items_ );
-			
-		}
+		vector( kick::size_t size = 0 );
+		vector( const vector<T>& vec );
 
 #if (KICK_POLYMORPHIC_VECTOR > 0)
 		virtual
 #endif
-		~vector(){
-			if( _items_ )
-				_alloc_.free( _items_ ); 
-			
-		}
+		~vector();
 		
-		const vector<T>& operator=( const vector<T>& vec ){
-			_alloc_.free( _items_ );
-
-			_items_ = _alloc_.malloc( _items_, vec.size() );
-			
-			for( int i = 0; i < size(); ++i )
-				_items_[i] = vec._items_[i];
-				
-			return *this;
-			
-		}
+		const vector<T>& operator=( const vector<T>& vec );
 		
-		void clear(){
-			_alloc_.free( _items_ );			
-		}
+		void clear();
 		
-		bool empty() const {
-			return size(); 
-		}
+		bool empty() const;
 		
-		void erase( unsigned int index ){
-			if( index < size() ){
-				_items_ = _alloc_.move( _items_, index + 1, index );
-				_items_ = _alloc_.realloc( _items_, size() - 1 );
-				
-			}
-			
-		}
+		void erase( size_t index );
+		void erase( array_iterator<T> pos );
 		
-		void erase( array_iterator<T> pos ){
-			_items_ = _alloc_.move( _items_, pos.index() + 1, pos.index() );
-			_items_ = _alloc_.realloc( _items_, size() - 1 );
-			
-		}
+		void push_back( const T& item );
+		void push_front( const T& item );
 		
-		void push_back( const T& item ){
-			_items_ = _alloc_.realloc( _items_, size() + 1 );
-			
-			_items_[size() - 1] = item;
-			
-		}
+		void pop_back();
+		void pop_front();
 		
-		void push_front( const T& item ){
-			_items_ = _alloc_.realloc( _items_, size() + 1 );
-			_items_ = _alloc_.move( _items_, 0, 1 );
-			
-			_items_[0] = item;
-			
-		}
+		const size_t size() const;
+		const size_t capacity() const;
 		
-		void pop_back(){
-			if( size() )
-				_items_ = _alloc_.realloc( _items_, size() - 1 );
-			
-		}
+		T& front();
+		T& back();
 		
-		void pop_front(){
-			if( size() ){
-				_items_ = _alloc_.move( _items_, 1, 0 );
-				_items_ = _alloc_.realloc( _items_, size() - 1 );
-				
-			}
-			
-		}
+		iterator begin();
+		iterator end();
 		
-		const kick::size_t size() const {
-			return _alloc_.usize();
-		}
-		
-		const kick::size_t capacity() const {
-			return _alloc_.asize(); 
-		}
-		
-		T& front(){
-			if( size() )
-				return _items_[0];
-			
-			exit( -1 );
-			
-		}
-		
-		T& back(){
-			if( size() )
-				return _items_[size() - 1];
-			
-			exit( -1 ); 
-			
-		}
-		
-		iterator begin(){
-			return iterator( 0, _items_ );
-		}
-		
-		iterator end(){
-			return iterator( size(), _items_ );
-		}
-		
-		T& operator[]( unsigned int index ){
-			if( index < size() && index >= 0 )
-				return _items_[index];
-			
-			exit( -1 ); //TODO: out-of-range, do something!!!
-			
-		}
+		T& operator[]( size_t index );
 		
 	private:
 		T* _items_;
 		A _alloc_; 
 		
 	};
+		
 	
-}
+	///////////////////////////////////////////////////////////////////////////////
+	// vector
+	///////////////////////////////////////////////////////////////////////////////
+	template<typename T, typename A>
+	vector<T,A>::vector( kick::size_t size )
+	: _items_( 0 )
+	, _alloc_( A() )
+	{
+		_items_ = _alloc_.malloc( _items_, size );
+	}
+	
+	template<typename T, typename A>
+	vector<T,A>::vector( const vector<T>& vec )
+	: _items_( 0 )
+	, _alloc_( vec._alloc_ )
+	{
+		_items_ = _alloc_.malloc( _items_, size() );
+		
+		for( kick::size_t i = 0; i < vec.size(); ++i )
+			_items_[i] = vec._items_[i];
+		
+		
+	}
+	
+	template<typename T, typename A>
+	vector<T,A>::~vector(){
+		if( _items_ )
+			_alloc_.free( _items_ );
+		
+	}
+	
+	template<typename T, typename A>
+	const vector<T>& vector<T,A>::operator=( const vector<T>& vec ){
+		_alloc_.free( _items_ );
+		
+		_items_ = _alloc_.malloc( _items_, vec.size() );
+		
+		for( int i = 0; i < size(); ++i )
+			_items_[i] = vec._items_[i];
+		
+		return *this;
+		
+	}
+	
+	template<typename T, typename A>
+	void vector<T,A>::clear(){
+		_alloc_.free( _items_ );
+	}
+	
+	template<typename T, typename A>
+	bool vector<T,A>::empty() const {
+		return size();
+	}
+	
+	template<typename T, typename A>
+	void vector<T,A>::erase( size_t index ){
+		if( index < size() ){
+			_items_ = _alloc_.move( _items_, index + 1, index );
+			_items_ = _alloc_.realloc( _items_, size() - 1 );
+			
+		}
+		
+	}
+	
+	template<typename T, typename A>
+	void vector<T,A>::erase( array_iterator<T> pos ){
+		_items_ = _alloc_.move( _items_, pos.index() + 1, pos.index() );
+		_items_ = _alloc_.realloc( _items_, size() - 1 );
+		
+	}
+	
+	template<typename T, typename A>
+	void vector<T,A>::push_back( const T& item ){
+		_items_ = _alloc_.realloc( _items_, size() + 1 );
+		
+		_items_[size() - 1] = item;
+		
+	}
+	
+	template<typename T, typename A>
+	void vector<T,A>::push_front( const T& item ){
+		_items_ = _alloc_.realloc( _items_, size() + 1 );
+		_items_ = _alloc_.move( _items_, 0, 1 );
+		
+		_items_[0] = item;
+		
+	}
+	
+	template<typename T, typename A>
+	void vector<T,A>::pop_back(){
+		if( size() )
+			_items_ = _alloc_.realloc( _items_, size() - 1 );
+		
+	}
+	
+	template<typename T, typename A>
+	void vector<T,A>::pop_front(){
+		if( size() ){
+			_items_ = _alloc_.move( _items_, 1, 0 );
+			_items_ = _alloc_.realloc( _items_, size() - 1 );
+			
+		}
+		
+	}
+	
+	template<typename T, typename A>
+	const size_t vector<T,A>::size() const {
+		return _alloc_.usize();
+	}
+	
+	template<typename T, typename A>
+	const size_t vector<T,A>::capacity() const {
+		return _alloc_.asize();
+	}
+	
+	template<typename T, typename A>
+	T& vector<T,A>::front(){
+		return _items_[0];
+	}
+	
+	template<typename T, typename A>
+	T& vector<T,A>::back(){
+		return _items_[size() - 1];
+	}
+	
+	template<typename T, typename A>
+	typename vector<T,A>::iterator vector<T,A>::begin(){
+		return iterator( 0, _items_ );
+	}
+	
+	template<typename T, typename A>
+	typename vector<T,A>::iterator vector<T,A>::end(){
+		return iterator( size(), _items_ );
+	}
+	
+	template<typename T, typename A>
+	T& vector<T,A>::operator[]( size_t index ){
+		return _items_[index];
+	}
+
+} // namespace kick
 
 #endif // _kick_vector_h

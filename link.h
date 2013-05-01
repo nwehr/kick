@@ -37,41 +37,17 @@ namespace kick {
 	template<typename T>
 	class link {
 	public:
-		link( const T& item, link<T>* prev = 0, link<T>* next = 0 )
-		: _item_( item )
-		, _prev_( prev )
-		, _next_( next )
-		{}
+		link( const T& item, link<T>* prev = 0, link<T>* next = 0 );
+		link( const kick::link<T>& link );
 		
-		link( const kick::link<T>& link )
-		: _item_( link._item_ )
-		, _prev_( link._prev_ )
-		, _next_( link._next_ )
-		{}
+		link<T>*& prev();
+		const link<T>*& prev() const;
 		
-		link<T>*& prev(){
-			return _prev_; 
-		}
+		link<T>*& next();
+		const link<T>*& next() const;
 		
-		const link<T>*& prev() const {
-			return _prev_;
-		}
-		
-		link<T>*& next(){
-			return _next_; 
-		}
-		
-		const link<T>*& next() const {
-			return _next_; 
-		}
-		
-		T& item(){
-			return _item_; 
-		}
-		
-		const T& item() const {
-			return _item_; 
-		}
+		T& item();
+		const T& item() const;
 		
 	private:
 		T _item_;
@@ -81,6 +57,53 @@ namespace kick {
 		
 	};
 	
-}
+	///////////////////////////////////////////////////////////////////////////////
+	// link
+	///////////////////////////////////////////////////////////////////////////////
+	template<typename T>
+	link<T>::link( const T& item, link<T>* prev, link<T>* next )
+	: _item_( item )
+	, _prev_( prev )
+	, _next_( next )
+	{}
+	
+	template<typename T>
+	link<T>::link( const kick::link<T>& link )
+	: _item_( link._item_ )
+	, _prev_( link._prev_ )
+	, _next_( link._next_ )
+	{}
+	
+	template<typename T>
+	link<T>*& link<T>::prev(){
+		return _prev_;
+	}
+	
+	template<typename T>
+	const link<T>*& link<T>::prev() const {
+		return _prev_;
+	}
+	
+	template<typename T>
+	link<T>*& link<T>::next(){
+		return _next_;
+	}
+	
+	template<typename T>
+	const link<T>*& link<T>::next() const {
+		return _next_;
+	}
+	
+	template<typename T>
+	T& link<T>::item(){
+		return _item_;
+	}
+	
+	template<typename T>
+	const T& link<T>::item() const {
+		return _item_;
+	}
+	
+} // namespace kick
 
 #endif // _kick_link_h

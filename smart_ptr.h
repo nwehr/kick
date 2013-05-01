@@ -2,7 +2,7 @@
 #define _kick_smart_ptr_h
 
 //
-//      Copyright 2012-2013 Nathan Wehr. All Rights Reserved.
+//      Copyright 2013 Nathan Wehr. All Rights Reserved.
 //
 //      Redistribution and use in source and binary forms, with or without modification, are
 //      permitted provided that the following conditions are met:
@@ -37,46 +37,66 @@ namespace kick {
 	///////////////////////////////////////////////////////////////////////////////
 	// smart_ptr
 	///////////////////////////////////////////////////////////////////////////////
-	template <typename T>
+	template<typename T>
 	class smart_ptr {
 		smart_ptr();
 		
 	protected:
-		explicit smart_ptr( T* mem )
-		: _mem_( mem )
-		{}
+		explicit smart_ptr( T* mem );
 		
 	public:
 #if (KICK_POLYMORPHIC_SMART_PTR > 0)
 		virtual
 #endif
-		~smart_ptr(){}
+		~smart_ptr();
 		
-		T& operator*(){
-			return *_mem_; 
-		}
+		// Get the dereferenced memory
+		T& operator*(); 
 		
-		T* operator->(){
-			return _mem_; 
-		}
+		// Get a pointer to memory
+		T* operator->();
 		
-		T* get(){
-			return _mem_; 
-		}
+		// Get a pointer to memory
+		T* get(); 
 		
-		void reset( T* mem = 0 ){
-			delete _mem_;
-			_mem_ = mem;
-		}
-		
-		bool expired(){
-			return !static_cast<bool>( _mem_ );
-		}
+		// Determine if memory is still valid
+		bool expired() const;
 		
 	protected:
 		T* _mem_;
 		
 	};
+	
+	///////////////////////////////////////////////////////////////////////////////
+	// smart_ptr
+	///////////////////////////////////////////////////////////////////////////////
+	template<typename T>
+	smart_ptr<T>::smart_ptr( T* mem )
+	: _mem_( mem )
+	{}
+	
+	template<typename T>
+	smart_ptr<T>::~smart_ptr(){}
+	
+	template<typename T>
+	T& smart_ptr<T>::operator*(){
+		return *_mem_;
+	}
+	
+	template<typename T>
+	T* smart_ptr<T>::operator->(){
+		return _mem_;
+	}
+	
+	template<typename T>
+	T* smart_ptr<T>::get(){
+		return _mem_;
+	}
+	
+	template<typename T>
+	bool smart_ptr<T>::expired() const {
+		return !static_cast<bool>( _mem_ );
+	}
 	
 } // namespace kick
 

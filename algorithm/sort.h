@@ -1,7 +1,6 @@
 #ifndef _kick_algorithm_sort_h
 #define _kick_algorithm_sort_h
 
-
 //
 //      Copyright 2012-2013 Nathan Wehr. All Rights Reserved.
 //      Copyright 2013 Kevin H. Patterson. All Rights Reserved.

@@ -2,7 +2,7 @@
 #define _kick_smart_ptr_scoped_ptr_h
 
 //
-//      Copyright 2012-2013 Nathan Wehr. All Rights Reserved.
+//      Copyright 2013 Nathan Wehr. All Rights Reserved.
 //
 //      Redistribution and use in source and binary forms, with or without modification, are
 //      permitted provided that the following conditions are met:
@@ -35,25 +35,34 @@ namespace kick {
 	///////////////////////////////////////////////////////////////////////////////
 	// scoped_ptr
 	///////////////////////////////////////////////////////////////////////////////
-	template <typename T>
+	template<typename T>
 	class scoped_ptr : public smart_ptr<T> {
 		scoped_ptr();
-		scoped_ptr( const scoped_ptr&  );
-		scoped_ptr& operator=( const scoped_ptr& );
+		scoped_ptr( const scoped_ptr<T>&  );
+		scoped_ptr& operator=( const scoped_ptr<T>& );
 	
 	public:
-		explicit scoped_ptr( T* mem )
-		: smart_ptr<T>( mem )
-		{}
+		explicit scoped_ptr( T* mem );
 		
 #if (KICK_POLYMORPHIC_SMART_PTR > 0)
 		virtual
 #endif
-		~scoped_ptr(){
-			delete this->_mem_;
-		}
+		~scoped_ptr();
 		
 	};
+	
+	///////////////////////////////////////////////////////////////////////////////
+	// scoped_ptr
+	///////////////////////////////////////////////////////////////////////////////
+	template<typename T>
+	scoped_ptr<T>::scoped_ptr( T* mem )
+	: smart_ptr<T>( mem )
+	{}
+	
+	template<typename T>
+	scoped_ptr<T>::~scoped_ptr(){
+		delete this->_mem_;
+	}
 	
 }
 
