@@ -2,6 +2,7 @@
 .cproject
 
 .DS_Store
+*.directory
 
 kick.xcodeproj
 kick.cpp

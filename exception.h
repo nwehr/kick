@@ -1,5 +1,5 @@
-#ifndef _kick_smart_ptr_scoped_ptr_h
-#define _kick_smart_ptr_scoped_ptr_h
+#ifndef _kick_exception_h
+#define _kick_exception_h
 
 //
 //      Copyright 2013 Nathan Wehr. All Rights Reserved.
@@ -29,43 +29,28 @@
 //      or implied, of Nathan Wehr.
 //
 
-// Kick
-#include <kick/smart_ptr.h>
+#ifndef KICK_POLYMORPHIC_EXCEPTION
+	#define KICK_POLYMORPHIC_EXCEPTION KICK_POLYMORPHIC_CONTAINERS
+#endif
 
 namespace kick {
 	///////////////////////////////////////////////////////////////////////////////
-	// scoped_ptr : smart_ptr
+	// exception
 	///////////////////////////////////////////////////////////////////////////////
-	template<typename T>
-	class scoped_ptr : public smart_ptr<T> {
-		scoped_ptr();
-		scoped_ptr( const scoped_ptr<T>&  );
-		scoped_ptr& operator=( const scoped_ptr<T>& );
-	
-	public:
-		explicit scoped_ptr( T* mem );
+	class exception {
+	protected:
+		exception() {}
 		
-#if (KICK_POLYMORPHIC_SMART_PTR > 0)
+	public:
+#if	(KICK_POLYMORPHIC_EXCEPTION > 0)
 		virtual
 #endif
-		~scoped_ptr();
+		~exception() {}
 		
+		virtual const char* what() const = 0;
+				
 	};
 	
-	///////////////////////////////////////////////////////////////////////////////
-	// scoped_ptr : smart_ptr
-	///////////////////////////////////////////////////////////////////////////////
-	template<typename T>
-	scoped_ptr<T>::scoped_ptr( T* mem )
-	: smart_ptr<T>( mem )
-	{}
-	
-	template<typename T>
-	scoped_ptr<T>::~scoped_ptr(){
-		delete this->_mem_;
-	}
-	
-}
+} // namespace kick
 
-
-#endif // _kick_smart_ptr_scoped_ptr_h
+#endif // _kick_exception_h

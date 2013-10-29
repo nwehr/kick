@@ -32,6 +32,7 @@ int main( int argc, char* argv[] ){
 	
 	myMap2.insert( kick::pair<int, int>( 16, 16 ) );
 	myMap2.insert( kick::pair<int, int>( 2, 2 ) );
+	myMap2.insert( kick::pair<int, int>( 2, 2 ) );
 	myMap2.insert( kick::pair<int, int>( 1, 1 ) );
 	myMap2.insert( kick::pair<int, int>( 7, 7 ) );
 	myMap2.insert( kick::pair<int, int>( 6, 6 ) );

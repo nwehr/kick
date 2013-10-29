@@ -100,6 +100,7 @@ namespace kick {
 	
 } // namespace kick
 
+// Kick
 #include <kick/smart_ptr/shared_ptr.h>
 #include <kick/smart_ptr/weak_ptr.h>
 #include <kick/smart_ptr/scoped_ptr.h>

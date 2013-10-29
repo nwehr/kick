@@ -56,17 +56,17 @@ namespace kick {
 #endif
 		~vector();
 		
-		const vector<T>& operator=( const vector<T>& vec );
+		const vector<T>& operator=( const vector<T>& );
 		
 		void clear();
 		
 		bool empty() const;
 		
-		void erase( size_t index );
-		void erase( array_iterator<T> pos );
+		void erase( size_t );
+		void erase( array_iterator<T> );
 		
-		void push_back( const T& item );
-		void push_front( const T& item );
+		void push_back( const T& );
+		void push_front( const T& );
 		
 		void pop_back();
 		void pop_front();
@@ -80,7 +80,7 @@ namespace kick {
 		iterator begin();
 		iterator end();
 		
-		T& operator[]( size_t index );
+		T& operator[]( size_t );
 		
 	private:
 		T* _items_;

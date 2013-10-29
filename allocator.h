@@ -30,12 +30,15 @@
 //      or implied, of Nathan Wehr.
 //
 
+#include <iostream>
+
 // C
 #include <stdlib.h>
 #include <string.h>
 
 // Kick
 #include <kick/config.h>
+#include <kick/exception.h>
 
 #ifdef ARDUINO
 	// missing operator placement new on Arduino
@@ -43,6 +46,19 @@
 #endif
 
 namespace kick {
+	///////////////////////////////////////////////////////////////////////////////
+	// allocator_malloc_exception
+	///////////////////////////////////////////////////////////////////////////////
+	class allocator_malloc_exception : public exception {
+	public:
+		allocator_malloc_exception()
+		: exception()
+		{}
+		
+		virtual const char* what() const { return "Unable to allocate new memory."; }
+		
+	};
+	
 	///////////////////////////////////////////////////////////////////////////////
 	// array_allocator
 	///////////////////////////////////////////////////////////////////////////////
@@ -61,7 +77,7 @@ namespace kick {
 
 		T* realloc( T* mem, size_t size );
 		
-		T* move( T* mem, unsigned int src_index, unsigned int dest_index );
+		T* move( T* mem, size_t src_index, size_t dest_index );
 		
 		void free( T* mem );
 		
@@ -106,77 +122,134 @@ namespace kick {
 	
 	template<typename T>
 	T* array_allocator<T>::malloc( T* mem, size_t size ){
+		T* ptr = 0;
+		
 		_usize_ = size;
 		_asize_ = size + _alloc_ext_;
 		
-		mem = static_cast<T*>( ::malloc( sizeof( T ) * _asize_ ) );
+		ptr = static_cast<T*>( ::malloc( sizeof( T ) * _asize_ ) );
 		
-		for( size_t i = 0; i < _usize_; ++i )
-			new( &mem[i] ) T();
+		if( !ptr )
+			throw allocator_malloc_exception();
 		
-		return mem;
+		for( size_t i = 0; i < _asize_; ++i )
+			new( &ptr[i] ) T();
+		
+		return ptr;
+		
+	}
+	
+//	template<typename T>
+//	T* array_allocator<T>::realloc( T* mem, size_t size ){
+//		bool reallocate( false );
+//		size_t prev_size( _asize_ ); 
+//		
+//		// call destructors if shrinking
+//		if( size < _usize_ ){
+//			for( size_t i = size; i < _usize_; ++i )
+//				mem[i].~T();
+//			
+//			for( size_t i = size; i < _usize_; ++i )
+//				new( &mem[i] ) T(); 
+//			
+//		} else {
+//			if( size >= _asize_ ){
+//				_asize_ = size + _alloc_ext_;
+//				reallocate = true;
+//				
+//			} else if( (_asize_ - size) > _alloc_ext_ ){
+//				_asize_ = size;
+//				reallocate = true;
+//				
+//			}
+//			
+//		}
+//		
+//		if( reallocate )
+//			mem = static_cast<T*>( ::realloc( static_cast<void*>( mem ), sizeof( T ) * _asize_ ) );
+//		
+//		if( prev_size != _asize_ ){
+//			if( prev_size < _asize_ ){
+//				for( size_t i = prev_size; i < _asize_; ++i ){
+//					new( &mem[i] ) T();
+//					
+//				}
+//				
+//			}
+//			
+//		}
+//		
+//		_usize_ = size;
+//		
+//		return mem;
+//		
+//	}
+
+	template<typename T>
+	T* array_allocator<T>::realloc( T* mem, size_t size ){
+		T* ptr = 0;
+		
+		if( size >= _asize_ ){
+			size_t asize = size + _alloc_ext_; 
+			
+			ptr = static_cast<T*>( ::realloc( static_cast<void*>( mem ), sizeof( T ) * asize ) );
+			
+			if( !ptr )
+				throw allocator_malloc_exception();
+			
+			for( size_t i = _asize_; i < asize; ++i )
+				new( &ptr[i] ) T();
+			
+			_asize_ = asize;
+			_usize_ = size;
+			
+		} else if( size < (_asize_ - _alloc_ext_) ){
+			size_t asize = (_asize_ - _alloc_ext_);
+						
+			ptr = static_cast<T*>( ::realloc( static_cast<void*>( mem ), sizeof( T ) * asize ) );
+			
+			
+			if( !ptr )
+				throw allocator_malloc_exception();
+			
+			for( size_t i = _asize_; i >= asize; --i )
+				mem[i].~T();
+			
+			_asize_ = asize;
+			_usize_ = size;
+			
+		} else {
+			ptr = mem;
+			
+			_usize_ = size;
+			
+		}
+				
+		return ptr;
 		
 	}
 	
 	template<typename T>
-	T* array_allocator<T>::realloc( T* mem, size_t size ){
-		bool reallocate( false );
-		
-		// call destructors if shrinking
-		if( size < _usize_ ) {
-			for( size_t i = size; i < _usize_; ++i )
+	T* array_allocator<T>::move( T* mem, size_t src_index, size_t dest_index ){
+		// overwritten items
+		if( dest_index < src_index ){
+			for( size_t i = dest_index; i < src_index; ++i ){
 				mem[i].~T();
-			
-			
-		} else {
-			if( size >= _asize_ ){
-				_asize_ = size + _alloc_ext_;
-				reallocate = true;
-				
-			} else if( (_asize_ - size) > _alloc_ext_ ){
-				_asize_ = size;
-				reallocate = true;
+				//new( &mem[i] ) T();
 				
 			}
 			
 		}
 		
-		if( reallocate )
-			mem = static_cast<T*>( ::realloc( static_cast<void*>( mem ), sizeof( T ) * _asize_ ) );
+		::memmove( static_cast<void*>( &mem[dest_index] ), static_cast<void*>( &mem[src_index] ), sizeof( T ) * (_usize_ - src_index) );
 		
-		if( size > _usize_ ){
-			for( size_t i = _usize_; i < size; ++i )
-				new( &mem[i] ) T();
-			
-			
-		}
-		
-		_usize_ = size;
-		
-		return mem;
-		
-	}
-	
-	template<typename T>
-	T* array_allocator<T>::move( T* mem, unsigned int src_index, unsigned int dest_index ){
-		// Call destructors on items if we're overwriting them...
-		if( dest_index < src_index ){
-			for( unsigned int i = dest_index; i < src_index + 1; ++i )
-				mem[i].~T();
-			
-			
-		}
-		
-		// Call destructors at the end of the memory block
+		// items at the end of the memory block
 		if( dest_index > src_index ){
-			for( unsigned int i = dest_index; i < dest_index + 1; ++i )
-				mem[i].~T();
+			for( size_t i = src_index; i < dest_index; ++i ){
+				new( &mem[i] ) T();
+			}
 			
 		}
-		
-		::memmove( static_cast<void*>( &mem[dest_index] )
-				  , static_cast<void*>( &mem[src_index] )
-				  , sizeof( T ) * (_usize_ - src_index) );
 		
 		// This was the old method of shifting the array... much, much slower...
 		// 			for( int i = (_usize_ - (dest_index - src_index)); i > src_index; --i )

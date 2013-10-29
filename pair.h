@@ -45,18 +45,18 @@ namespace kick {
 	class pair {
 	public:
 		pair();
-		pair( const K& key, const V& val );
-		pair( const pair<K,V>& pair );
+		pair( const K&, const V& );
+		pair( const pair<K,V>& );
 
-		pair<K,V>& operator=( const pair<K,V>& pair );
+		pair<K,V>& operator=( const pair<K,V>& );
 		
 #if (KICK_POLYMORPHIC_PAIR > 0)
 		virtual
 #endif
 		~pair();
 		
-		bool operator==( const pair<K,V>& pair ) const;
-		bool operator!=( const pair<K,V>& pair ) const;
+		bool operator==( const pair<K,V>& ) const;
+		bool operator!=( const pair<K,V>& ) const;
 		
 		K& key();
 		const K& key() const;
@@ -92,10 +92,10 @@ namespace kick {
 	{}
 	
 	template<typename K, typename V>
-	pair<K,V>& pair<K,V>::operator=( const pair<K,V>& pair ){
-		if( *this != pair ){
-			_key_ = pair._key_;
-			_val_ = pair._val_;
+	pair<K,V>& pair<K,V>::operator=( const pair<K,V>& rhs ){
+		if( *this != rhs ){
+			_key_ = rhs._key_;
+			_val_ = rhs._val_;
 			
 		}
 		
@@ -107,13 +107,13 @@ namespace kick {
 	pair<K,V>::~pair(){}
 	
 	template<typename K, typename V>
-	bool pair<K,V>::operator==( const pair<K,V>& pair ) const {
-		return (_key_ == pair._key_ && _val_ == pair._val_);
+	bool pair<K,V>::operator==( const pair<K,V>& rhs ) const {
+		return (_key_ == rhs._key_ && _val_ == rhs._val_);
 	}
 	
 	template<typename K, typename V>
-	bool pair<K,V>::operator!=( const pair<K,V>& pair ) const {
-		return !operator==( pair );
+	bool pair<K,V>::operator!=( const pair<K,V>& rhs ) const {
+		return !operator==( rhs );
 	}
 	
 	template<typename K, typename V>

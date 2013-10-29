@@ -52,23 +52,23 @@ namespace kick {
 		typedef array_iterator< pair<K,V> > iterator;
 		
 		map( size_t size = 0 );
-		map( const map<K,V,A>& map );
+		map( const map<K,V,A>& );
 		
-		map<K,V,A>& operator=( const map<K,V,A>& map );
+		map<K,V,A>& operator=( const map<K,V,A>& );
 		
 #if (KICK_POLYMORPHIC_MAP > 0)
 		virtual
 #endif
 		~map();
 		
-		bool find( const K& key, size_t& index );
+		bool find( const K&, size_t& );
 		
-		void insert( const pair<K,V>& pair );
+		void insert( const pair<K,V>& );
 		
 		const size_t size() const;
 		const size_t capacity() const;
 		
-		V& operator[]( const K& key );
+		V& operator[]( const K& );
 		
 		iterator begin();
 		iterator end();
@@ -105,6 +105,8 @@ namespace kick {
 	template<typename K, typename V, typename A>
 	map<K,V,A>& map<K,V,A>::operator=( const map<K,V,A>& map ){
 		if( *this != map ){
+			_items_ = _alloc_.malloc( _items_, size() );
+			
 			for( size_t i = 0; i < map.size(); ++i )
 				_items_[i] = map._items_[i];
 			
@@ -160,7 +162,7 @@ namespace kick {
 		if( !find( pair.key(), index ) ){
 			_items_ = _alloc_.realloc( _items_, size() + 1 );
 			
-			if( index < size() - 1 )
+			if( index < (size() > 0 ? size() : 1) - 1 )
 				_items_ = _alloc_.move( _items_, index, index + 1 );
 			
 			_items_[index] = pair;
