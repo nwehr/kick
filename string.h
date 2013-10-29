@@ -34,7 +34,7 @@
 #include <string.h>
 
 // Kick
-#include <kick/config.h>
+#include <kick/common.h>
 #include <kick/allocator.h>
 
 /// enable or disable virtual methods to support polymorphism
@@ -132,17 +132,7 @@ namespace kick {
 		}
 		
 		bool operator==( const basic_string<T>& str ) const {
-			if( size() == str.size() ){
-				for( size_type i = 0; i < (str.size() + 1); ++i )
-					if( _cstr_[i] != str._cstr_[i] )
-						return false;
-				
-				return true;
-				
-			}
-			
-			return false;
-			
+			return (strcmp( _cstr_, str._cstr_ ) == 0 ? true : false);
 		}
 		
 		bool operator!=( const basic_string<T>& str ) const {
@@ -150,47 +140,11 @@ namespace kick {
 		}
 		
 		bool operator<( const basic_string<T>& str ) const {
-// 			switch( strncmp( _cstr_, str._cstr_, static_cast<size_t>( size() > str.size() ? str.size() : size() ) ) ){
-// 				case 0:
-// 					return false; 
-// 				break;
-// 				case 1:
-// 					return false;
-// 				break;
-// 				case -1:
-// 					return true;
-// 				break;
-// 					
-// 			}
-			
-			for( size_type i = 0; i < size(); ++i )
-				if( _cstr_[i] >= str._cstr_[i] )
-					return false;
-			
-			return true;
-			
+			return (strcmp( _cstr_, str._cstr_ ) < 0 ? true : false);
 		}
 		
 		bool operator>( const basic_string<T>& str ) const {
-// 			switch( strncmp( _cstr_, str._cstr_, static_cast<size_t>( size() > str.size() ? str.size() : size() ) ) ){
-// 				case 0:
-// 					return false;
-// 				break;
-// 				case 1:
-// 					return true;
-// 				break;
-// 				case -1:
-// 					return false;
-// 				break;
-// 					
-// 			}
-			
-			for( size_type i = 0; i < size(); ++i )
-				if( _cstr_[i] <= str._cstr_[i] )
-					return false;
-			
-			return true;
-			
+ 			return (strcmp( _cstr_, str._cstr_ ) > 0 ? true : false);
 		}
 		
 		inline T& operator[]( size_type index ){

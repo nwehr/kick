@@ -30,14 +30,12 @@
 //      or implied, of Nathan Wehr.
 //
 
-#include <iostream>
-
 // C
 #include <stdlib.h>
 #include <string.h>
 
 // Kick
-#include <kick/config.h>
+#include <kick/common.h>
 #include <kick/exception.h>
 
 #ifdef ARDUINO

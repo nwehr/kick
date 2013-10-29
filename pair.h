@@ -31,7 +31,7 @@
 //
 
 // Kick
-#include <kick/config.h>
+#include <kick/common.h>
 
 #ifndef KICK_POLYMORPHIC_PAIR
 	#define KICK_POLYMORPHIC_PAIR KICK_POLYMORPHIC_CONTAINERS

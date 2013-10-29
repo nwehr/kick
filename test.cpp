@@ -14,19 +14,19 @@
 #include <kick/map.h>
 
 int main( int argc, char* argv[] ){
-	kick::map<std::string, int> myMap;
+	kick::map<kick::string, int> myMap;
 	
-	myMap.insert( kick::pair<std::string, int>( "sixteen", 16 ) );
-	myMap.insert( kick::pair<std::string, int>( "two", 2 ) );
-	myMap.insert( kick::pair<std::string, int>( "one", 1 ) );
-	myMap.insert( kick::pair<std::string, int>( "seven", 7 ) );
-	myMap.insert( kick::pair<std::string, int>( "six", 6 ) );
-	myMap.insert( kick::pair<std::string, int>( "four", 4 ) );
-	myMap.insert( kick::pair<std::string, int>( "four", 4 ) );
-	myMap.insert( kick::pair<std::string, int>( "four", 4 ) );
+	myMap.insert( kick::pair<kick::string, int>( "sixteen", 16 ) );
+	myMap.insert( kick::pair<kick::string, int>( "two", 2 ) );
+	myMap.insert( kick::pair<kick::string, int>( "one", 1 ) );
+	myMap.insert( kick::pair<kick::string, int>( "seven", 7 ) );
+	myMap.insert( kick::pair<kick::string, int>( "six", 6 ) );
+	myMap.insert( kick::pair<kick::string, int>( "four", 4 ) );
+	myMap.insert( kick::pair<kick::string, int>( "four", 4 ) );
+	myMap.insert( kick::pair<kick::string, int>( "four", 4 ) );
 
-	for( kick::map<std::string, int>::iterator it = myMap.begin(); it != myMap.end(); ++it )
-		std::cout << (*it).key() << std::endl;
+	for( kick::map<kick::string, int>::iterator it = myMap.begin(); it != myMap.end(); ++it )
+		std::cout << (*it).key().c_str() << std::endl;
 	
 	kick::map<int, int> myMap2;
 	
