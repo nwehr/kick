@@ -49,8 +49,6 @@ namespace kick {
 	template<class T>
 	class basic_string {
 	public:
-		typedef kick::size_type size_type;
-
 		static const size_type npos = -1;
 		
 		basic_string()
@@ -498,6 +496,13 @@ namespace kick {
 
 
 	typedef basic_string<char> string;
+	
+	// Non-member overload for outputting kick strings to stream objects...
+	template<typename T>
+	T& operator<<( T& os, const string& str ) {
+		os << str.c_str();
+		return os;
+	}
 	
 }
 

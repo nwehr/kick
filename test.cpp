@@ -5,6 +5,7 @@
 // C++
 #include <iostream>
 #include <string>
+#include <vector>
 
 // Kick
 #include <kick/string.h>
@@ -12,6 +13,8 @@
 #include <kick/vector.h>
 #include <kick/deque.h>
 #include <kick/map.h>
+
+#include <kick/algorithm/sort.h>
 
 int main( int argc, char* argv[] ){
 	kick::map<kick::string, int> myMap;
@@ -40,7 +43,20 @@ int main( int argc, char* argv[] ){
 	
 	for( kick::map<int, int>::iterator it = myMap2.begin(); it != myMap2.end(); ++it )
 		std::cout << (*it).key() << std::endl;
-
+	
+	std::vector<kick::shared_ptr<int> > myVec1;
+	
+	myVec1.push_back( kick::shared_ptr<int>( new int( 3 ) ) );
+	myVec1.push_back( kick::shared_ptr<int>( new int( 5 ) ) );
+	myVec1.push_back( kick::shared_ptr<int>( new int( 4 ) ) );
+	myVec1.push_back( kick::shared_ptr<int>( new int( 2 ) ) );
+	
+//	kick::algorithm::bubble_sort( myVec1 );
+	
+	for( std::vector<kick::shared_ptr<int> >::const_iterator it = myVec1.begin(); it != myVec1.end(); ++it ) {
+		std::cout << **it << std::endl;
+	}
+	
 }
 
 #endif // ARDUINO

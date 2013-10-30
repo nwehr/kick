@@ -39,8 +39,6 @@ namespace kick {
 	///////////////////////////////////////////////////////////////////////////////
 	template<typename T>
 	class smart_ptr {
-		smart_ptr();
-		
 	protected:
 		explicit smart_ptr( T* mem );
 		
@@ -51,13 +49,16 @@ namespace kick {
 		~smart_ptr();
 		
 		// Get the dereferenced memory
-		T& operator*(); 
+		T& operator*();
+		const T& operator*() const;
 		
 		// Get a pointer to memory
 		T* operator->();
+		const T* operator->() const;
 		
 		// Get a pointer to memory
-		T* get(); 
+		T* get();
+		const T* get() const;
 		
 		// Determine if memory is still valid
 		bool expired() const;
@@ -84,12 +85,27 @@ namespace kick {
 	}
 	
 	template<typename T>
+	const T& smart_ptr<T>::operator*() const {
+		return *_mem_;
+	}
+	
+	template<typename T>
 	T* smart_ptr<T>::operator->(){
 		return _mem_;
 	}
 	
 	template<typename T>
+	const T* smart_ptr<T>::operator->() const {
+		return _mem_;
+	}
+	
+	template<typename T>
 	T* smart_ptr<T>::get(){
+		return _mem_;
+	}
+	
+	template<typename T>
+	const T* smart_ptr<T>::get() const {
 		return _mem_;
 	}
 	

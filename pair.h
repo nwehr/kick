@@ -47,13 +47,13 @@ namespace kick {
 		pair();
 		pair( const K&, const V& );
 		pair( const pair<K,V>& );
-
-		pair<K,V>& operator=( const pair<K,V>& );
 		
 #if (KICK_POLYMORPHIC_PAIR > 0)
 		virtual
 #endif
 		~pair();
+		
+		pair<K,V>& operator=( const pair<K,V>& );
 		
 		bool operator==( const pair<K,V>& ) const;
 		bool operator!=( const pair<K,V>& ) const;
@@ -92,8 +92,11 @@ namespace kick {
 	{}
 	
 	template<typename K, typename V>
+	pair<K,V>::~pair(){}
+	
+	template<typename K, typename V>
 	pair<K,V>& pair<K,V>::operator=( const pair<K,V>& rhs ){
-		if( *this != rhs ){
+		if( this != &rhs ){
 			_key_ = rhs._key_;
 			_val_ = rhs._val_;
 			
@@ -102,9 +105,6 @@ namespace kick {
 		return *this;
 		
 	}
-	
-	template<typename K, typename V>
-	pair<K,V>::~pair(){}
 	
 	template<typename K, typename V>
 	bool pair<K,V>::operator==( const pair<K,V>& rhs ) const {

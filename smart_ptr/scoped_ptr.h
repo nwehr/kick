@@ -38,12 +38,11 @@ namespace kick {
 	///////////////////////////////////////////////////////////////////////////////
 	template<typename T>
 	class scoped_ptr : public smart_ptr<T> {
-		scoped_ptr();
 		scoped_ptr( const scoped_ptr<T>&  );
 		scoped_ptr& operator=( const scoped_ptr<T>& );
 	
 	public:
-		explicit scoped_ptr( T* mem );
+		explicit scoped_ptr( T* mem = 0 );
 		
 #if (KICK_POLYMORPHIC_SMART_PTR > 0)
 		virtual

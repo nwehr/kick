@@ -50,16 +50,17 @@ namespace kick {
 	class map {
 	public:
 		typedef array_iterator< pair<K,V> > iterator;
+		typedef const_array_iterator< pair<K,V> > const_iterator;
 		
 		map( size_t size = 0 );
 		map( const map<K,V,A>& );
-		
-		map<K,V,A>& operator=( const map<K,V,A>& );
 		
 #if (KICK_POLYMORPHIC_MAP > 0)
 		virtual
 #endif
 		~map();
+		
+		map<K,V,A>& operator=( const map<K,V,A>& );
 		
 		bool find( const K&, size_t& );
 		
@@ -71,6 +72,7 @@ namespace kick {
 		V& operator[]( const K& );
 		
 		iterator begin();
+		
 		iterator end();
 		
 	private:
@@ -103,8 +105,15 @@ namespace kick {
 	}
 	
 	template<typename K, typename V, typename A>
+	map<K,V,A>::~map(){
+		if( _items_ )
+			_alloc_.free( _items_ );
+		
+	}
+	
+	template<typename K, typename V, typename A>
 	map<K,V,A>& map<K,V,A>::operator=( const map<K,V,A>& map ){
-		if( *this != map ){
+		if( this != &map ){
 			_items_ = _alloc_.malloc( _items_, size() );
 			
 			for( size_t i = 0; i < map.size(); ++i )
@@ -113,13 +122,6 @@ namespace kick {
 		}
 		
 		return *this;
-		
-	}
-	
-	template<typename K, typename V, typename A>
-	map<K,V,A>::~map(){
-		if( _items_ )
-			_alloc_.free( _items_ );
 		
 	}
 	
@@ -188,10 +190,11 @@ namespace kick {
 		if( !find( key, index ) ){
 			_items_ = _alloc_.realloc( _items_, size() + 1 );
 			
-			if( index < size() - 1 )
+			if( index < (size() > 0 ? size() : 1) - 1 )
 				_items_ = _alloc_.move( _items_, index, index + 1 );
-				
-			_items_[index] = pair<K,V>();
+			
+			// this item should be constructed in the allocator...
+			// _items_[index] = pair<K,V>();
 				
 		}
 		

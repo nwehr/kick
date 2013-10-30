@@ -30,8 +30,6 @@
 //      or implied, of Nathan Wehr.
 //
 
-#include <kick/config.hpp>
-
 namespace kick {
 	namespace algorithm {
 		///////////////////////////////////////////////////////////////////////////////

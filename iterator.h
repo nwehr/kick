@@ -47,11 +47,10 @@ namespace kick {
 		{}
 		
 		array_iterator<T>& operator=( const array_iterator<T>& it ){
-			if( this == &it )
-				return *this; 
-			
-			_index_ = it._index_; 
-			_items_ = it._items_; 
+			if( this != &it ) {
+				_index_ = it._index_;
+				_items_ = it._items_;
+			}
 			
 			return *this; 
 			
@@ -109,9 +108,25 @@ namespace kick {
 			return _index_; 
 		}
 		
-	private:
+	protected:
 		int _index_;
 		T* _items_;
+		
+	};
+	
+	///////////////////////////////////////////////////////////////////////////////
+	// const_array_iterator
+	///////////////////////////////////////////////////////////////////////////////
+	template<typename T>
+	class const_array_iterator : public array_allocator<T> {
+	public:
+		const_array_iterator( int index, T* items )
+		: array_iterator<T>( index, items )
+		{}
+		
+		const T& operator*() const {
+			return this->_items_[this->_index_];
+		}
 		
 	};
 	
@@ -130,10 +145,9 @@ namespace kick {
 		{}
 		
 		deque_iterator<T>& operator=( const deque_iterator<T>& it ){
-			if( this == &it )
-				return *this; 
-			
-			_item_ = it._item_; 
+			if( this != &it ) {
+				_item_ = it._item_;
+			}
 			
 			return *this; 
 			

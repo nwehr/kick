@@ -49,11 +49,59 @@ namespace kick {
 	///////////////////////////////////////////////////////////////////////////////
 	class allocator_malloc_exception : public exception {
 	public:
-		allocator_malloc_exception()
-		: exception()
-		{}
-		
+		allocator_malloc_exception() : exception() {}
 		virtual const char* what() const { return "Unable to allocate new memory."; }
+		
+	private:
+		void* m_Adx;
+		
+	};
+	
+	///////////////////////////////////////////////////////////////////////////////
+	// allocator_move_exception
+	///////////////////////////////////////////////////////////////////////////////
+	class allocator_move_exception : public exception {
+	public:
+		explicit allocator_move_exception( void* i_Adx )
+		: exception()
+		, m_Buffer( new char[50] )
+		{
+			sprintf( m_Buffer, "Unable to copy memory block to %02lux", (unsigned long)i_Adx );
+		}
+		
+#if	(KICK_POLYMORPHIC_EXCEPTION > 0)
+		virtual
+#endif
+		~allocator_move_exception() { delete[] m_Buffer; }
+		
+		virtual const char* what() const { return m_Buffer; }
+		
+	private:
+		char* m_Buffer;
+		
+	};
+	
+	///////////////////////////////////////////////////////////////////////////////
+	// allocator_copy_exception
+	///////////////////////////////////////////////////////////////////////////////
+	class allocator_copy_exception : public exception {
+	public:
+		explicit allocator_copy_exception( void* i_Adx )
+		: exception()
+		, m_Buffer( new char[50] )
+		{
+			sprintf( m_Buffer, "Unable to copy memory block to %02lux", (unsigned long)i_Adx );
+		}
+		
+#if	(KICK_POLYMORPHIC_EXCEPTION > 0)
+		virtual
+#endif
+		~allocator_copy_exception() { delete[] m_Buffer; }
+		
+		virtual const char* what() const { return m_Buffer; }
+		
+	private:
+		char* m_Buffer;
 		
 	};
 	
@@ -71,13 +119,11 @@ namespace kick {
 		size_t asize() const;
 		size_t usize() const;
 		
-		T* malloc( T* mem, size_t size );
-
-		T* realloc( T* mem, size_t size );
-		
-		T* move( T* mem, size_t src_index, size_t dest_index );
-		
-		void free( T* mem );
+		T* malloc	( T* mem, size_t size );
+		T* realloc	( T* mem, size_t size );
+		T* move		( T* mem, size_t src_index, size_t dest_index );
+		T* copy		( T* src, T* dest );
+		void free	( T* mem );
 		
 	protected:
 		size_t _asize_;
@@ -125,9 +171,7 @@ namespace kick {
 		_usize_ = size;
 		_asize_ = size + _alloc_ext_;
 		
-		ptr = static_cast<T*>( ::malloc( sizeof( T ) * _asize_ ) );
-		
-		if( !ptr )
+		if( !(ptr = static_cast<T*>( ::malloc( sizeof( T ) * _asize_ ) )) )
 			throw allocator_malloc_exception();
 		
 		for( size_t i = 0; i < _asize_; ++i )
@@ -136,52 +180,6 @@ namespace kick {
 		return ptr;
 		
 	}
-	
-//	template<typename T>
-//	T* array_allocator<T>::realloc( T* mem, size_t size ){
-//		bool reallocate( false );
-//		size_t prev_size( _asize_ ); 
-//		
-//		// call destructors if shrinking
-//		if( size < _usize_ ){
-//			for( size_t i = size; i < _usize_; ++i )
-//				mem[i].~T();
-//			
-//			for( size_t i = size; i < _usize_; ++i )
-//				new( &mem[i] ) T(); 
-//			
-//		} else {
-//			if( size >= _asize_ ){
-//				_asize_ = size + _alloc_ext_;
-//				reallocate = true;
-//				
-//			} else if( (_asize_ - size) > _alloc_ext_ ){
-//				_asize_ = size;
-//				reallocate = true;
-//				
-//			}
-//			
-//		}
-//		
-//		if( reallocate )
-//			mem = static_cast<T*>( ::realloc( static_cast<void*>( mem ), sizeof( T ) * _asize_ ) );
-//		
-//		if( prev_size != _asize_ ){
-//			if( prev_size < _asize_ ){
-//				for( size_t i = prev_size; i < _asize_; ++i ){
-//					new( &mem[i] ) T();
-//					
-//				}
-//				
-//			}
-//			
-//		}
-//		
-//		_usize_ = size;
-//		
-//		return mem;
-//		
-//	}
 
 	template<typename T>
 	T* array_allocator<T>::realloc( T* mem, size_t size ){
@@ -190,9 +188,7 @@ namespace kick {
 		if( size >= _asize_ ){
 			size_t asize = size + _alloc_ext_; 
 			
-			ptr = static_cast<T*>( ::realloc( static_cast<void*>( mem ), sizeof( T ) * asize ) );
-			
-			if( !ptr )
+			if( !(ptr = static_cast<T*>( ::realloc( static_cast<void*>( mem ), sizeof( T ) * asize ) )) )
 				throw allocator_malloc_exception();
 			
 			for( size_t i = _asize_; i < asize; ++i )
@@ -203,11 +199,8 @@ namespace kick {
 			
 		} else if( size < (_asize_ - _alloc_ext_) ){
 			size_t asize = (_asize_ - _alloc_ext_);
-						
-			ptr = static_cast<T*>( ::realloc( static_cast<void*>( mem ), sizeof( T ) * asize ) );
 			
-			
-			if( !ptr )
+			if( !(ptr = static_cast<T*>( ::realloc( static_cast<void*>( mem ), sizeof( T ) * asize ) )) )
 				throw allocator_malloc_exception();
 			
 			for( size_t i = _asize_; i >= asize; --i )
@@ -233,13 +226,13 @@ namespace kick {
 		if( dest_index < src_index ){
 			for( size_t i = dest_index; i < src_index; ++i ){
 				mem[i].~T();
-				//new( &mem[i] ) T();
-				
+				new( &mem[i] ) T();
 			}
 			
 		}
 		
-		::memmove( static_cast<void*>( &mem[dest_index] ), static_cast<void*>( &mem[src_index] ), sizeof( T ) * (_usize_ - src_index) );
+		if( !::memmove( static_cast<void*>( &mem[dest_index] ), static_cast<void*>( &mem[src_index] ), sizeof( T ) * (_usize_ - src_index) ) )
+			throw allocator_move_exception( static_cast<void*>( &mem[dest_index] ) );
 		
 		// items at the end of the memory block
 		if( dest_index > src_index ){
@@ -249,11 +242,18 @@ namespace kick {
 			
 		}
 		
-		// This was the old method of shifting the array... much, much slower...
-		// 			for( int i = (_usize_ - (dest_index - src_index)); i > src_index; --i )
-		// 				mem[i] = mem[i - (dest_index - src_index)];
-		
 		return mem;
+		
+	}
+	
+	template<typename T>
+	T* array_allocator<T>::copy( T* src, T* dest ) {
+		T* ptr = static_cast<T*>( ::memcpy( static_cast<void*>( dest ), static_cast<void*>( src ), sizeof( T ) ) );
+		
+		if( !ptr )
+			throw allocator_copy_exception( static_cast<void*>( dest ) );
+		
+		return ptr;
 		
 	}
 	

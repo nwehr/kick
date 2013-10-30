@@ -48,6 +48,7 @@ namespace kick {
 	class vector {
 	public:
 		typedef kick::array_iterator<T> iterator;
+		typedef kick::const_array_iterator<T> const_iterator;
 		
 		vector( kick::size_t size = 0 );
 		vector( const vector<T>& vec );
@@ -123,12 +124,16 @@ namespace kick {
 	
 	template<typename T, typename A>
 	const vector<T>& vector<T,A>::operator=( const vector<T>& vec ){
-		_alloc_.free( _items_ );
-		
-		_items_ = _alloc_.malloc( _items_, vec.size() );
-		
-		for( int i = 0; i < size(); ++i )
-			_items_[i] = vec._items_[i];
+		if( this != &vec ) {
+			_alloc_.free( _items_ );
+			
+			_items_ = _alloc_.malloc( _items_, vec.size() );
+			
+			for( int i = 0; i < size(); ++i )
+				_items_[i] = vec._items_[i];
+			
+			
+		}
 		
 		return *this;
 		

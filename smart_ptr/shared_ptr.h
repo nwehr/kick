@@ -47,21 +47,19 @@ namespace kick {
 	class shared_ptr : public smart_ptr<T> {
 		friend class weak_ptr<T>;
 		
-		shared_ptr();
-		
 	public:
-		explicit shared_ptr( T* mem );
+		explicit shared_ptr( T* mem = 0 );
 		
 		shared_ptr( const shared_ptr<T>& ptr );
 		shared_ptr( const weak_ptr<T>& ptr );
 		
-		shared_ptr<T>& operator=( const shared_ptr<T>& rhs );
-		shared_ptr<T>& operator=( const weak_ptr<T>& rhs );
-
 #if (KICK_POLYMORPHIC_SMART_PTR > 0)
 		virtual
 #endif
 		~shared_ptr();
+		
+		shared_ptr<T>& operator=( const shared_ptr<T>& rhs );
+		shared_ptr<T>& operator=( const weak_ptr<T>& rhs );
 		
 	protected:
 		int* _refs_;
@@ -74,7 +72,7 @@ namespace kick {
 	template <typename T>
 	shared_ptr<T>::shared_ptr( T* mem )
 	: smart_ptr<T>( mem )
-	, _refs_( new int( 1 ) )
+	, _refs_( new int( this->_mem_ ? 1 : 0 ) )
 	{}
 	
 	template <typename T>
@@ -94,8 +92,20 @@ namespace kick {
 	}
 	
 	template <typename T>
+	shared_ptr<T>::~shared_ptr(){
+		if( *_refs_ )
+			--(*_refs_);
+		
+		if( !*_refs_ ){
+			delete this->_mem_;
+			delete _refs_;
+		}
+		
+	}
+	
+	template <typename T>
 	shared_ptr<T>& shared_ptr<T>::operator=( const shared_ptr<T>& rhs ){
-		if( *this != rhs ){
+		if( this != &rhs ){
 			this->_mem_	= rhs._mem_;
 			_refs_		= rhs._refs_;
 			
@@ -109,7 +119,7 @@ namespace kick {
 	
 	template <typename T>
 	shared_ptr<T>& shared_ptr<T>::operator=( const weak_ptr<T>& rhs ){
-		if( *this != rhs ){
+		if( this != &rhs ){
 			this->_mem_	= rhs._mem_;
 			_refs_		= rhs._refs_;
 			
@@ -118,19 +128,6 @@ namespace kick {
 		}
 		
 		return *this;
-		
-	}
-	
-	template <typename T>
-	shared_ptr<T>::~shared_ptr(){
-		if( *_refs_ )
-			--(*_refs_);
-		
-		if( !*_refs_ ){
-			delete this->_mem_;
-			delete _refs_;
-			
-		}
 		
 	}
 		
