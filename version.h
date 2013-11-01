@@ -1,5 +1,5 @@
-#ifndef _kick_exception_h
-#define _kick_exception_h
+#ifndef _kick_version_h
+#define _kick_version_h
 
 //
 //      Copyright 2013 Nathan Wehr. All Rights Reserved.
@@ -29,36 +29,10 @@
 //      or implied, of Nathan Wehr.
 //
 
-#ifndef KICK_POLYMORPHIC_EXCEPTION
-	#define KICK_POLYMORPHIC_EXCEPTION KICK_POLYMORPHIC_CONTAINERS
-#endif
+//  KICK_VERSION % 100 is the patch level
+//  KICK_VERSION / 100 % 1000 is the minor version
+//  KICK_VERSION / 100000 is the major version
 
-namespace kick {
-	///////////////////////////////////////////////////////////////////////////////
-	// exception
-	///////////////////////////////////////////////////////////////////////////////
-	class exception {
-	protected:
-		exception() {}
-		
-	public:
-#if	(KICK_POLYMORPHIC_EXCEPTION > 0)
-		virtual
-#endif
-		~exception() {}
+#define KICK_VERSION 100000
 
-#if	(KICK_POLYMORPHIC_EXCEPTION > 0)
-		virtual
 #endif
-		const char* what() const
-#if	(KICK_POLYMORPHIC_EXCEPTION > 0)
-		= 0;
-#else
-		;
-#endif
-		
-	};
-	
-} // namespace kick
-
-#endif // _kick_exception_h

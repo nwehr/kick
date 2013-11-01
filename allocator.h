@@ -50,7 +50,11 @@ namespace kick {
 	class allocator_malloc_exception : public exception {
 	public:
 		allocator_malloc_exception() : exception() {}
-		virtual const char* what() const { return "Unable to allocate new memory."; }
+		
+#if	(KICK_POLYMORPHIC_EXCEPTION > 0)
+		virtual
+#endif
+		const char* what() const { return "Unable to allocate new memory."; }
 		
 	private:
 		void* m_Adx;
@@ -74,7 +78,10 @@ namespace kick {
 #endif
 		~allocator_move_exception() { delete[] m_Buffer; }
 		
-		virtual const char* what() const { return m_Buffer; }
+#if	(KICK_POLYMORPHIC_EXCEPTION > 0)
+		virtual
+#endif
+		const char* what() const { return m_Buffer; }
 		
 	private:
 		char* m_Buffer;
@@ -97,8 +104,11 @@ namespace kick {
 		virtual
 #endif
 		~allocator_copy_exception() { delete[] m_Buffer; }
-		
-		virtual const char* what() const { return m_Buffer; }
+
+#if	(KICK_POLYMORPHIC_EXCEPTION > 0)
+		virtual
+#endif
+		const char* what() const { return m_Buffer; }
 		
 	private:
 		char* m_Buffer;

@@ -1,6 +1,6 @@
 #ifndef ARDUINO
 
-//#define KICK_POLYMORPHIC_CONTAINERS 0
+#define KICK_POLYMORPHIC_CONTAINERS 1
 
 // C++
 #include <iostream>
@@ -12,6 +12,7 @@
 #include <kick/smart_ptr.h>
 #include <kick/vector.h>
 #include <kick/deque.h>
+#include <kick/version.h>
 #include <kick/map.h>
 
 #include <kick/algorithm/sort.h>
