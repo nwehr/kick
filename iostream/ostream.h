@@ -1,8 +1,8 @@
-#ifndef _kick_exception_h
-#define _kick_exception_h
+#ifndef _kick_iostream_ostream_h
+#define _kick_iostream_ostream_h
 
 //
-//      Copyright 2013 Nathan Wehr. All Rights Reserved.
+//      Copyright 2014 Nathan Wehr. All Rights Reserved.
 //
 //      Redistribution and use in source and binary forms, with or without modification, are
 //      permitted provided that the following conditions are met:
@@ -29,38 +29,9 @@
 //      or implied, of Nathan Wehr.
 //
 
-#include <kick/common.h>
-
-#ifndef KICK_POLYMORPHIC_EXCEPTION
-	#define KICK_POLYMORPHIC_EXCEPTION KICK_POLYMORPHIC_CONTAINERS
-#endif
-
 namespace kick {
-	///////////////////////////////////////////////////////////////////////////////
-	// exception
-	///////////////////////////////////////////////////////////////////////////////
-	class exception {
-	protected:
-		exception() {}
-		
-	public:
-#if	(KICK_POLYMORPHIC_EXCEPTION > 0)
-		virtual
-#endif
-		~exception() {}
-
-#if	(KICK_POLYMORPHIC_EXCEPTION > 0)
-		virtual
-#endif
-		const char* what() const
-#if	(KICK_POLYMORPHIC_EXCEPTION > 0)
-		= 0;
-#else
-		;
-#endif
-		
-	};
+	
 	
 } // namespace kick
 
-#endif // _kick_exception_h
+#endif // _kick_iostream_ostream_h

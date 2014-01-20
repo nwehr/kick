@@ -1,8 +1,8 @@
-#ifndef _kick_exception_h
-#define _kick_exception_h
+#ifndef _kick_iostream_ios_h
+#define _kick_iostream_ios_h
 
 //
-//      Copyright 2013 Nathan Wehr. All Rights Reserved.
+//      Copyright 2014 Nathan Wehr. All Rights Reserved.
 //
 //      Redistribution and use in source and binary forms, with or without modification, are
 //      permitted provided that the following conditions are met:
@@ -29,38 +29,83 @@
 //      or implied, of Nathan Wehr.
 //
 
-#include <kick/common.h>
+// C
+#include <stdint.h>
 
-#ifndef KICK_POLYMORPHIC_EXCEPTION
-	#define KICK_POLYMORPHIC_EXCEPTION KICK_POLYMORPHIC_CONTAINERS
+// Kick
+#include <kick/common.h>
+#include <kick/iostream/streambuf.h>
+
+#ifndef KICK_POLYMORPHIC_STREAM
+	#define KICK_POLYMORPHIC_STREAM KICK_POLYMORPHIC_IO
 #endif
 
 namespace kick {
+	typedef int pos_type;
+	typedef	int off_type;
+	
+	template<typename CharT>
+	class basic_streambuf;
+	
 	///////////////////////////////////////////////////////////////////////////////
-	// exception
+	// basic_ios
 	///////////////////////////////////////////////////////////////////////////////
-	class exception {
-	protected:
-		exception() {}
-		
+	template<typename CharT>
+	class basic_ios {
 	public:
-#if	(KICK_POLYMORPHIC_EXCEPTION > 0)
+		
+#if	(KICK_POLYMORPHIC_STREAM > 0)
 		virtual
 #endif
-		~exception() {}
-
-#if	(KICK_POLYMORPHIC_EXCEPTION > 0)
-		virtual
-#endif
-		const char* what() const
-#if	(KICK_POLYMORPHIC_EXCEPTION > 0)
-		= 0;
-#else
-		;
-#endif
+		~basic_ios(); 
+		
+		typedef uint16_t	format_t;
+		typedef uint8_t		seqmode_t;
+		
+		static const format_t boolalpha	= 0x1;
+		static const format_t showbase	= 0x2;
+		static const format_t showpoint	= 0x4;
+		static const format_t showpos	= 0x8;
+		static const format_t skipws	= 0x10;
+		static const format_t initbuf	= 0x20;
+		static const format_t uppercase	= 0x40;
+		
+		static const seqmode_t in	= 0x0;
+		static const seqmode_t out	= 0x1;
+		
+		format_t&		format();
+		const format_t& format() const;
+		
+		basic_streambuf<CharT>* sbuf();
+		
+	protected:
+		format_t _fmt_;
 		
 	};
+
+	///////////////////////////////////////////////////////////////////////////////
+	// ios
+	///////////////////////////////////////////////////////////////////////////////
+	typedef basic_ios<char> ios;
 	
+	///////////////////////////////////////////////////////////////////////////////
+	// wios
+	///////////////////////////////////////////////////////////////////////////////
+	typedef basic_ios<wchar_t> wios;
+
 } // namespace kick
 
-#endif // _kick_exception_h
+template<typename  CharT>
+kick::basic_ios<CharT>::~basic_ios() {}
+
+template<typename CharT>
+typename kick::basic_ios<CharT>::format_t& kick::basic_ios<CharT>::format() {
+	return _fmt_;
+}
+
+template<typename CharT>
+const typename kick::basic_ios<CharT>::format_t& kick::basic_ios<CharT>::format() const {
+	return _fmt_;
+}
+
+#endif // _kick_iostream_ios_h

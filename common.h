@@ -2,7 +2,7 @@
 #define _kick_config_h
 
 //
-//      Copyright 2012-2013 Nathan Wehr. All Rights Reserved.
+//      Copyright 2012-2014 Nathan Wehr. All Rights Reserved.
 //      Copyright 2013 Kevin H. Patterson. All Rights Reserved.
 //
 //      Redistribution and use in source and binary forms, with or without modification, are
@@ -30,16 +30,18 @@
 //      or implied, of Nathan Wehr.
 //
 
-/// Should Kick containers implement virtual methods to support polymorphic use?
-/// You decide. Each kick container inherits this setting, but also has its own
-/// #define which you can override on a per-container basis.
 #ifndef KICK_POLYMORPHIC_CONTAINERS
 	#define KICK_POLYMORPHIC_CONTAINERS 1
+#endif
+
+#ifndef KICK_POLYMORPHIC_IO
+	#define KICK_POLYMORPHIC_IO 1
 #endif
 
 namespace kick {
 	typedef int size_type;
 	typedef unsigned int size_t;
+	
 }
 
 #endif // _kick_config_h

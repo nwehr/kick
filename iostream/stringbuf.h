@@ -1,8 +1,8 @@
-#ifndef _kick_exception_h
-#define _kick_exception_h
+#ifndef _kick_iostream_stringbuf_h
+#define _kick_iostream_stringbuf_h
 
 //
-//      Copyright 2013 Nathan Wehr. All Rights Reserved.
+//      Copyright 2014 Nathan Wehr. All Rights Reserved.
 //
 //      Redistribution and use in source and binary forms, with or without modification, are
 //      permitted provided that the following conditions are met:
@@ -29,38 +29,47 @@
 //      or implied, of Nathan Wehr.
 //
 
-#include <kick/common.h>
-
-#ifndef KICK_POLYMORPHIC_EXCEPTION
-	#define KICK_POLYMORPHIC_EXCEPTION KICK_POLYMORPHIC_CONTAINERS
-#endif
+// Kick
+#include <kick/iostream/streambuf.h>
+#include <kick/string.h>
 
 namespace kick {
 	///////////////////////////////////////////////////////////////////////////////
-	// exception
+	// basic_stringbuf : basic_streambuf
 	///////////////////////////////////////////////////////////////////////////////
-	class exception {
-	protected:
-		exception() {}
-		
+	template<typename CharT, typename StringT = basic_string<CharT> >
+	class basic_stringbuf : public basic_streambuf<CharT> {
 	public:
-#if	(KICK_POLYMORPHIC_EXCEPTION > 0)
+#if	(KICK_POLYMORPHIC_STREAMBUF > 0)
 		virtual
 #endif
-		~exception() {}
+		~basic_stringbuf();
 
-#if	(KICK_POLYMORPHIC_EXCEPTION > 0)
+#if	(KICK_POLYMORPHIC_STREAMBUF > 0)
 		virtual
 #endif
-		const char* what() const
-#if	(KICK_POLYMORPHIC_EXCEPTION > 0)
-		= 0;
-#else
-		;
-#endif
+		StringT str();
 		
 	};
 	
+	///////////////////////////////////////////////////////////////////////////////
+	// stringbuf
+	///////////////////////////////////////////////////////////////////////////////
+	typedef basic_stringbuf<char, basic_string<char> > stringbuf;
+	
+	///////////////////////////////////////////////////////////////////////////////
+	// wstringbuf
+	///////////////////////////////////////////////////////////////////////////////
+	typedef basic_stringbuf<wchar_t, basic_string<wchar_t> > wstringbuf;
+	
 } // namespace kick
 
-#endif // _kick_exception_h
+template<typename CharT, typename StringT>
+kick::basic_stringbuf<CharT, StringT>::~basic_stringbuf() {}
+
+template<typename CharT, typename StringT>
+StringT kick::basic_stringbuf<CharT, StringT>::str() {
+	return StringT( this->_buf_ );
+}
+
+#endif // _kick_iostream_stringbuf_h
