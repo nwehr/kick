@@ -62,7 +62,7 @@ namespace kick {
 		shared_ptr<T>& operator=( const weak_ptr<T>& rhs );
 		
 	protected:
-		int* _refs_;
+		unsigned int* _refs_;
 		
 	};
 	

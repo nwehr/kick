@@ -65,6 +65,7 @@ namespace kick {
 		bool find( const K&, size_t& );
 		
 		void insert( const pair<K,V>& );
+		void insert( const K&, const V& );
 		
 		const size_t size() const;
 		const size_t capacity() const;
@@ -171,6 +172,11 @@ namespace kick {
 			
 		}
 		
+	}
+	
+	template<typename K, typename V, typename A>
+	void map<K,V,A>::insert( const K& key, const V& val ){
+		insert( pair<K,V>( key, val ) );
 	}
 	
 	template<typename K, typename V, typename A>

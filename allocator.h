@@ -56,9 +56,6 @@ namespace kick {
 #endif
 		const char* what() const { return "Unable to allocate new memory."; }
 		
-	private:
-		void* m_Adx;
-		
 	};
 	
 	///////////////////////////////////////////////////////////////////////////////
@@ -66,25 +63,25 @@ namespace kick {
 	///////////////////////////////////////////////////////////////////////////////
 	class allocator_move_exception : public exception {
 	public:
-		explicit allocator_move_exception( void* i_Adx )
+		explicit allocator_move_exception( void* adx )
 		: exception()
-		, m_Buffer( new char[50] )
+		, _msg_( new char[50] )
 		{
-			sprintf( m_Buffer, "Unable to copy memory block to %02lux", (unsigned long)i_Adx );
+			sprintf( _msg_, "Unable to move memory block to %02lux", (unsigned long)adx );
 		}
 		
 #if	(KICK_POLYMORPHIC_EXCEPTION > 0)
 		virtual
 #endif
-		~allocator_move_exception() { delete[] m_Buffer; }
+		~allocator_move_exception() { delete[] _msg_; }
 		
 #if	(KICK_POLYMORPHIC_EXCEPTION > 0)
 		virtual
 #endif
-		const char* what() const { return m_Buffer; }
+		const char* what() const { return _msg_; }
 		
 	private:
-		char* m_Buffer;
+		char* _msg_;
 		
 	};
 	
@@ -93,25 +90,25 @@ namespace kick {
 	///////////////////////////////////////////////////////////////////////////////
 	class allocator_copy_exception : public exception {
 	public:
-		explicit allocator_copy_exception( void* i_Adx )
+		explicit allocator_copy_exception( void* adx )
 		: exception()
-		, m_Buffer( new char[50] )
+		, _msg_( new char[50] )
 		{
-			sprintf( m_Buffer, "Unable to copy memory block to %02lux", (unsigned long)i_Adx );
+			sprintf( _msg_, "Unable to copy memory block to %02lux", (unsigned long)adx );
 		}
 		
 #if	(KICK_POLYMORPHIC_EXCEPTION > 0)
 		virtual
 #endif
-		~allocator_copy_exception() { delete[] m_Buffer; }
+		~allocator_copy_exception() { delete[] _msg_; }
 
 #if	(KICK_POLYMORPHIC_EXCEPTION > 0)
 		virtual
 #endif
-		const char* what() const { return m_Buffer; }
+		const char* what() const { return _msg_; }
 		
 	private:
-		char* m_Buffer;
+		char* _msg_;
 		
 	};
 	

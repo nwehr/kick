@@ -39,8 +39,7 @@
 
 namespace kick {
 	typedef int size_type;
-	typedef unsigned int size_t; 
-
+	typedef unsigned int size_t;
 }
 
 #endif // _kick_config_h
