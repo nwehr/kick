@@ -44,6 +44,9 @@ namespace kick {
 	typedef int pos_type;
 	typedef	int off_type;
 	
+	///////////////////////////////////////////////////////////////////////////////
+	// basic_streambuf (forward declaration)
+	///////////////////////////////////////////////////////////////////////////////
 	template<typename CharT>
 	class basic_streambuf;
 	
@@ -52,8 +55,10 @@ namespace kick {
 	///////////////////////////////////////////////////////////////////////////////
 	template<typename CharT>
 	class basic_ios {
-	public:
+	protected:
+		basic_ios();
 		
+	public:
 #if	(KICK_POLYMORPHIC_STREAM > 0)
 		virtual
 #endif
@@ -73,14 +78,13 @@ namespace kick {
 		static const seqmode_t in	= 0x0;
 		static const seqmode_t out	= 0x1;
 		
-		format_t&		format();
-		const format_t& format() const;
+		format_t& fmt();
+		const format_t& fmt() const;
 		
 		basic_streambuf<CharT>* sbuf();
 		
 	protected:
 		format_t _fmt_;
-		
 	};
 
 	///////////////////////////////////////////////////////////////////////////////
@@ -95,16 +99,21 @@ namespace kick {
 
 } // namespace kick
 
+template<typename CharT>
+kick::basic_ios<CharT>::basic_ios()
+: _fmt_( kick::basic_ios<CharT>::boolalpha )
+{}
+
 template<typename  CharT>
 kick::basic_ios<CharT>::~basic_ios() {}
 
 template<typename CharT>
-typename kick::basic_ios<CharT>::format_t& kick::basic_ios<CharT>::format() {
+typename kick::basic_ios<CharT>::format_t& kick::basic_ios<CharT>::fmt() {
 	return _fmt_;
 }
 
 template<typename CharT>
-const typename kick::basic_ios<CharT>::format_t& kick::basic_ios<CharT>::format() const {
+const typename kick::basic_ios<CharT>::format_t& kick::basic_ios<CharT>::fmt() const {
 	return _fmt_;
 }
 

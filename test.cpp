@@ -21,15 +21,15 @@
 #include <kick/iostream/istream.h>
 
 int main( int argc, char* argv[] ) {
-	char myBuf[] = "13";
-	int myVal = 0;
+	char myBuffer[] = "13.4";
+	float myVal = 0.0;
 	
-	kick::istream myIstream( new kick::streambuf() );
-	myIstream.sbuf()->setbuf( myBuf, 2 );
+	kick::istream myIstream( new kick::stringbuf() );
+	myIstream.sbuf()->setbuf( myBuffer, 4 );
 	
-	myIstream >> myVal; 
+	myIstream >> myVal;
 	
-	std::cout << myVal << std::endl;
+	std::cout << myVal << std::endl; 
 	
 //	kick::map<kick::string, int> myMap;
 //	

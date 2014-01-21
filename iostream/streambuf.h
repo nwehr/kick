@@ -47,6 +47,9 @@ namespace kick {
 	template <typename CharT>
 	class basic_streambuf {
 	public:
+		basic_streambuf();
+		basic_streambuf( const basic_streambuf& );
+		
 #if	(KICK_POLYMORPHIC_STREAMBUF > 0)
 		virtual
 #endif
@@ -137,6 +140,12 @@ namespace kick {
 #if	(KICK_POLYMORPHIC_STREAMBUF > 0)
 		virtual
 #endif
+		const CharT* buf() const;
+
+		
+#if	(KICK_POLYMORPHIC_STREAMBUF > 0)
+		virtual
+#endif
 		basic_streambuf<CharT>* setbuf( CharT*, size_t );
 		
 	protected:
@@ -165,7 +174,33 @@ namespace kick {
 } // namespace kick
 
 template<typename CharT>
-kick::basic_streambuf<CharT>::~basic_streambuf() {}
+kick::basic_streambuf<CharT>::basic_streambuf()
+: _ipos_	( 0 )
+, _ipos_beg_( 0 )
+, _ipos_end_( 0 )
+, _opos_	( 0 )
+, _opos_beg_( 0 )
+, _opos_end_( 0 )
+, _buf_		( new CharT[0] )
+{}
+
+template<typename CharT>
+kick::basic_streambuf<CharT>::basic_streambuf( const kick::basic_streambuf<CharT>& streambuf )
+: _ipos_	( streambuf._ipos_ )
+, _ipos_beg_( streambuf._ipos_beg_ )
+, _ipos_end_( streambuf._ipos_end_ )
+, _opos_	( streambuf._opos_ )
+, _opos_beg_( streambuf._opos_beg_ )
+, _opos_end_( streambuf._opos_end_ )
+, _buf_		( new CharT[sizeof(streambuf._buf_) / sizeof(CharT)] )
+{
+	::memcpy( _buf_, streambuf._buf_, sizeof(streambuf._buf_) / sizeof(CharT) );
+}
+
+template<typename CharT>
+kick::basic_streambuf<CharT>::~basic_streambuf() {
+	delete[] _buf_;
+}
 
 template<typename CharT>
 CharT* kick::basic_streambuf<CharT>::pos( typename kick::basic_ios<CharT>::seqmode_t seq ) {
@@ -237,6 +272,11 @@ kick::pos_type kick::basic_streambuf<CharT>::seekpos( kick::pos_type pos, typena
 
 template<typename CharT>
 CharT* kick::basic_streambuf<CharT>::buf() {
+	return _buf_;
+}
+
+template<typename CharT>
+const CharT* kick::basic_streambuf<CharT>::buf() const {
 	return _buf_;
 }
 

@@ -29,6 +29,9 @@
 //      or implied, of Nathan Wehr.
 //
 
+// C
+#include <stdlib.h>
+
 // Kick
 #include <kick/common.h>
 #include <kick/iostream/ios.h>
@@ -43,6 +46,7 @@ namespace kick {
 		
 	public:
 		basic_istream( basic_streambuf<CharT>* );
+		basic_istream( const basic_istream<CharT>& );
 		
 #if	(KICK_POLYMORPHIC_STREAM > 0)
 		virtual
@@ -62,6 +66,7 @@ namespace kick {
 		basic_istream& operator>>( void*& );
 		
 		basic_streambuf<CharT>* sbuf();
+		const basic_streambuf<CharT>* sbuf() const;
 		
 	protected:
 		basic_streambuf<CharT>* _sbuf_;
@@ -86,10 +91,20 @@ kick::basic_istream<CharT>::basic_istream( kick::basic_streambuf<CharT>* sbuf )
 {}
 
 template<typename CharT>
+kick::basic_istream<CharT>::basic_istream( const kick::basic_istream<CharT>& stream )
+: _sbuf_( stream.sbuf() )
+{}
+
+template<typename CharT>
 kick::basic_istream<CharT>::~basic_istream() {}
 
 template<typename CharT>
 kick::basic_streambuf<CharT>* kick::basic_istream<CharT>::sbuf() {
+	return _sbuf_;
+}
+
+template<typename CharT>
+const kick::basic_streambuf<CharT>* kick::basic_istream<CharT>::sbuf() const {
 	return _sbuf_;
 }
 
@@ -100,51 +115,61 @@ kick::basic_istream<CharT>& kick::basic_istream<CharT>::operator>>( bool& val ) 
 
 template<typename CharT>
 kick::basic_istream<CharT>& kick::basic_istream<CharT>::operator>>( short& val ) {
+	val = atoi( _sbuf_->buf() );
 	return *this;
 }
 
 template<typename CharT>
 kick::basic_istream<CharT>& kick::basic_istream<CharT>::operator>>( unsigned short& val ) {
+	val = atoi( _sbuf_->buf() );
 	return *this;
 }
 
 template<typename CharT>
 kick::basic_istream<CharT>& kick::basic_istream<CharT>::operator>>( int& val ) {
+	val = atoi( _sbuf_->buf() );
 	return *this;
 }
 
 template<typename CharT>
 kick::basic_istream<CharT>& kick::basic_istream<CharT>::operator>>( unsigned int& val ) {
+	val = atoi( _sbuf_->buf() );
 	return *this;
 }
 
 template<typename CharT>
 kick::basic_istream<CharT>& kick::basic_istream<CharT>::operator>>( long& val ) {
+	val = atol( _sbuf_->buf() );
 	return *this;
 }
 
 template<typename CharT>
 kick::basic_istream<CharT>& kick::basic_istream<CharT>::operator>>( unsigned long& val ) {
+	val = atol( _sbuf_->buf() );
 	return *this;
 }
 
 template<typename CharT>
 kick::basic_istream<CharT>& kick::basic_istream<CharT>::operator>>( float& val ) {
+	val = atof( _sbuf_->buf() );
 	return *this;
 }
 
 template<typename CharT>
 kick::basic_istream<CharT>& kick::basic_istream<CharT>::operator>>( double& val ) {
+	val = atof( _sbuf_->buf() );
 	return *this;
 }
 
 template<typename CharT>
 kick::basic_istream<CharT>& kick::basic_istream<CharT>::operator>>( long double& val ) {
+	val = atof( _sbuf_->buf() );
 	return *this;
 }
 
 template<typename CharT>
 kick::basic_istream<CharT>& kick::basic_istream<CharT>::operator>>( void*& val ) {
+	val = _sbuf_->buf();
 	return *this;
 }
 
