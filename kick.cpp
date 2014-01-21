@@ -22,14 +22,25 @@
 
 int main( int argc, char* argv[] ) {
 	char myBuffer[] = "13.4";
-	float myVal = 0.0;
+//	float myVal = 0.0;
 	
-	kick::istream myIstream( new kick::stringbuf() );
-	myIstream.sbuf()->setbuf( myBuffer, 4 );
+	kick::stringbuf myStringBuf1;
+	myStringBuf1.setbuf( myBuffer, 4 );
 	
-	myIstream >> myVal;
+	kick::stringbuf myStringBuf2;
+//	myStringBuf2.setbuf( "", 4 );
 	
-	std::cout << myVal << std::endl; 
+
+	
+	kick::istream myIstream( &myStringBuf1 );
+	
+	myIstream >> myStringBuf2;
+	
+	std::cout << myStringBuf2.buf() << std::endl;
+	
+	kick::string myString = "Hello, World!";
+	
+	std::cout << myString << std::endl; 
 	
 //	kick::map<kick::string, int> myMap;
 //	

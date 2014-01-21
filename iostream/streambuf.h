@@ -55,97 +55,26 @@ namespace kick {
 #endif
 		~basic_streambuf();
 		
-		// reading
-#if	(KICK_POLYMORPHIC_STREAMBUF > 0)
-		virtual
-#endif
-		CharT getc();
-#if	(KICK_POLYMORPHIC_STREAMBUF > 0)
-		virtual
-#endif
-		CharT bumpc();
-#if	(KICK_POLYMORPHIC_STREAMBUF > 0)
-		virtual
-#endif
-		CharT nextc();
+		inline CharT getc();
+		inline CharT bumpc();
+		inline CharT nextc();
 		
-		// writing
-#if	(KICK_POLYMORPHIC_STREAMBUF > 0)
-		virtual
-#endif
-		CharT putc( CharT c );
+		inline CharT putc( CharT c );
 		
-		// get ios::in positions
-#if	(KICK_POLYMORPHIC_STREAMBUF > 0)
-		virtual
-#endif
-		CharT* ipos();
-#if	(KICK_POLYMORPHIC_STREAMBUF > 0)
-		virtual
-#endif
-		CharT* ipos_beg();
-#if	(KICK_POLYMORPHIC_STREAMBUF > 0)
-		virtual
-#endif
-		CharT* ipos_end();
+		inline pos_type ipos();
+		inline pos_type ipos_beg();
+		inline pos_type ipos_end();
 	
-		// get ios::out positions
-#if	(KICK_POLYMORPHIC_STREAMBUF > 0)
-		virtual
-#endif
-		CharT* opos();
-#if	(KICK_POLYMORPHIC_STREAMBUF > 0)
-		virtual
-#endif
-		CharT* opos_beg();
-#if	(KICK_POLYMORPHIC_STREAMBUF > 0)
-		virtual
-#endif
-		CharT* opos_end();
+		inline pos_type opos();
+		inline pos_type opos_beg();
+		inline pos_type opos_end();
 		
-		// get ios::in or ios::out positions
-#if	(KICK_POLYMORPHIC_STREAMBUF > 0)
-		virtual
-#endif
-		CharT* pos( typename basic_ios<CharT>::seqmode_t );
-#if	(KICK_POLYMORPHIC_STREAMBUF > 0)
-		virtual
-#endif
-		CharT* pos_beg( typename basic_ios<CharT>::seqmode_t );
-#if	(KICK_POLYMORPHIC_STREAMBUF > 0)
-		virtual
-#endif
-		CharT* pos_end( typename basic_ios<CharT>::seqmode_t );
+		inline pos_type iseekpos( pos_type );
+		inline pos_type oseekpos( pos_type );
 		
-		
-		// set ios::in or ios::out positions
-#if	(KICK_POLYMORPHIC_STREAMBUF > 0)
-		virtual
-#endif
-		pos_type iseekpos( pos_type );
-#if	(KICK_POLYMORPHIC_STREAMBUF > 0)
-		virtual
-#endif
-		pos_type oseekpos( pos_type );
-#if	(KICK_POLYMORPHIC_STREAMBUF > 0)
-		virtual
-#endif
-		pos_type seekpos( pos_type, typename basic_ios<CharT>::seqmode_t );
-		
-		// buffer direct access
-#if	(KICK_POLYMORPHIC_STREAMBUF > 0)
-		virtual
-#endif
-		CharT* buf();
-#if	(KICK_POLYMORPHIC_STREAMBUF > 0)
-		virtual
-#endif
-		const CharT* buf() const;
+		inline CharT* buf();
+		inline const CharT* buf() const;
 
-		
-#if	(KICK_POLYMORPHIC_STREAMBUF > 0)
-		virtual
-#endif
 		basic_streambuf<CharT>* setbuf( CharT*, size_t );
 		
 	protected:
@@ -185,16 +114,16 @@ kick::basic_streambuf<CharT>::basic_streambuf()
 {}
 
 template<typename CharT>
-kick::basic_streambuf<CharT>::basic_streambuf( const kick::basic_streambuf<CharT>& streambuf )
-: _ipos_	( streambuf._ipos_ )
-, _ipos_beg_( streambuf._ipos_beg_ )
-, _ipos_end_( streambuf._ipos_end_ )
-, _opos_	( streambuf._opos_ )
-, _opos_beg_( streambuf._opos_beg_ )
-, _opos_end_( streambuf._opos_end_ )
-, _buf_		( new CharT[sizeof(streambuf._buf_) / sizeof(CharT)] )
+kick::basic_streambuf<CharT>::basic_streambuf( const kick::basic_streambuf<CharT>& sbuf )
+: _ipos_	( sbuf._ipos_ )
+, _ipos_beg_( sbuf._ipos_beg_ )
+, _ipos_end_( sbuf._ipos_end_ )
+, _opos_	( sbuf._opos_ )
+, _opos_beg_( sbuf._opos_beg_ )
+, _opos_end_( sbuf._opos_end_ )
+, _buf_		( new CharT[sizeof(sbuf._buf_) / sizeof(CharT)] )
 {
-	::memcpy( _buf_, streambuf._buf_, sizeof(streambuf._buf_) / sizeof(CharT) );
+	::memcpy( _buf_, sbuf._buf_, sizeof(sbuf._buf_) / sizeof(CharT) );
 }
 
 template<typename CharT>
@@ -203,71 +132,65 @@ kick::basic_streambuf<CharT>::~basic_streambuf() {
 }
 
 template<typename CharT>
-CharT* kick::basic_streambuf<CharT>::pos( typename kick::basic_ios<CharT>::seqmode_t seq ) {
-	switch( seq ) {
-		case kick::basic_ios<CharT>::in:
-		{
-			return ipos();
-		}
-		break;
-		case kick::basic_ios<CharT>::out:
-		{
-			return opos();
-		}
-		break;
-	}
-	
+CharT kick::basic_streambuf<CharT>::getc() {
+	return _buf_[_ipos_];
 }
 
 template<typename CharT>
-CharT* kick::basic_streambuf<CharT>::pos_beg( typename kick::basic_ios<CharT>::seqmode_t seq ) {
-	switch( seq ) {
-		case kick::basic_ios<CharT>::in:
-		{
-			return ipos_beg();
-		}
-		break;
-		case kick::basic_ios<CharT>::out:
-		{
-			return opos_beg();
-		}
-		break;
-	}
-	
+CharT kick::basic_streambuf<CharT>::bumpc() {
+	return _buf_[_ipos_++];
 }
 
 template<typename CharT>
-CharT* kick::basic_streambuf<CharT>::pos_end( typename kick::basic_ios<CharT>::seqmode_t seq ) {
-	switch( seq ) {
-		case kick::basic_ios<CharT>::in:
-		{
-			return ipos_end();
-		}
-		break;
-		case kick::basic_ios<CharT>::out:
-		{
-			return opos_end();
-		}
-		break;
-	}
-	
+CharT kick::basic_streambuf<CharT>::nextc() {
+	return _buf_[++_ipos_];
 }
 
 template<typename CharT>
-kick::pos_type kick::basic_streambuf<CharT>::seekpos( kick::pos_type pos, typename kick::basic_ios<CharT>::seqmode_t seq ) {
-	switch( seq ) {
-		case kick::basic_ios<CharT>::in:
-		{
-			return iseekpos( pos );
-		}
-		break;
-		case kick::basic_ios<CharT>::out:
-		{
-			return oseekpos( pos );
-		}
-		break;
-	}
-	
+CharT kick::basic_streambuf<CharT>::putc( CharT c ) {
+	return _buf_[_opos_++] = c;
+}
+
+template<typename CharT>
+kick::pos_type kick::basic_streambuf<CharT>::ipos() {
+	return _ipos_;
+}
+
+template<typename CharT>
+kick::pos_type kick::basic_streambuf<CharT>::ipos_beg() {
+	return _ipos_beg_;
+}
+
+template<typename CharT>
+kick::pos_type kick::basic_streambuf<CharT>::ipos_end() {
+	return _ipos_end_;
+}
+
+template<typename CharT>
+kick::pos_type kick::basic_streambuf<CharT>::opos() {
+	return _opos_;
+}
+
+template<typename CharT>
+kick::pos_type kick::basic_streambuf<CharT>::opos_beg() {
+	return _opos_beg_;
+}
+
+template<typename CharT>
+kick::pos_type kick::basic_streambuf<CharT>::opos_end() {
+	return _opos_end_;
+}
+
+template<typename CharT>
+kick::pos_type kick::basic_streambuf<CharT>::iseekpos( kick::pos_type pos ) {
+	_ipos_ = pos;
+	return _ipos_;
+}
+
+template<typename CharT>
+kick::pos_type kick::basic_streambuf<CharT>::oseekpos( kick::pos_type pos ) {
+	_opos_ = pos;
+	return _opos_; 
 }
 
 template<typename CharT>
@@ -286,6 +209,12 @@ kick::basic_streambuf<CharT>* kick::basic_streambuf<CharT>::setbuf( CharT* buf, 
 		delete[] _buf_;
 	
 	_buf_ = new CharT[size];
+	
+	_ipos_ = 0;
+	_opos_ = 0;
+	
+	_ipos_end_ = (size - 1);
+	_opos_end_ = (size - 1);
 	
 	::memcpy( _buf_, buf, size );
 	

@@ -65,52 +65,52 @@ namespace kick {
 		
 	};
 	
-	///////////////////////////////////////////////////////////////////////////////
-	// weak_ptr : smart_ptr
-	///////////////////////////////////////////////////////////////////////////////
-	template <typename T>
-	weak_ptr<T>::weak_ptr()
-	: smart_ptr<T>( 0 )
-	, _refs_( 0 )
-	{}
-	
-	template <typename T>
-	weak_ptr<T>::weak_ptr( const weak_ptr<T>& ptr )
-	: smart_ptr<T>( ptr._mem_ )
-	, _refs_( ptr._refs_ )
-	{}
-	
-	template <typename T>
-	weak_ptr<T>::weak_ptr( const shared_ptr<T>& ptr )
-	: smart_ptr<T>( ptr._mem_ )
-	, _refs_( ptr._refs_ )
-	{}
-	
-	template <typename T>
-	weak_ptr<T>::~weak_ptr(){}
-	
-	template <typename T>
-	weak_ptr<T>& weak_ptr<T>::operator=( const weak_ptr<T>& rhs ){
-		if( this != &rhs ){
-			this->_mem_		= rhs._mem_;
-			_refs_			= rhs._refs_;
-		}
-		
-		return *this;
-		
-	}
-	
-	template <typename T>
-	weak_ptr<T>& weak_ptr<T>::operator=( const shared_ptr<T>& rhs ){
-		if( this != &rhs ){
-			this->_mem_		= rhs._mem_;
-			_refs_			= rhs._refs_;
-		}
-		
-		return *this;
-		
-	}
-	
 } // namespace kick
+
+///////////////////////////////////////////////////////////////////////////////
+// weak_ptr : smart_ptr
+///////////////////////////////////////////////////////////////////////////////
+template <typename T>
+kick::weak_ptr<T>::weak_ptr()
+: kick::smart_ptr<T>( 0 )
+, _refs_( 0 )
+{}
+
+template <typename T>
+kick::weak_ptr<T>::weak_ptr( const kick::weak_ptr<T>& ptr )
+: kick::smart_ptr<T>( ptr._mem_ )
+, _refs_( ptr._refs_ )
+{}
+
+template <typename T>
+kick::weak_ptr<T>::weak_ptr( const kick::shared_ptr<T>& ptr )
+: kick::smart_ptr<T>( ptr._mem_ )
+, _refs_( ptr._refs_ )
+{}
+
+template <typename T>
+kick::weak_ptr<T>::~weak_ptr(){}
+
+template <typename T>
+kick::weak_ptr<T>& kick::weak_ptr<T>::operator=( const kick::weak_ptr<T>& rhs ){
+	if( this != &rhs ){
+		this->_mem_		= rhs._mem_;
+		_refs_			= rhs._refs_;
+	}
+	
+	return *this;
+	
+}
+
+template <typename T>
+kick::weak_ptr<T>& kick::weak_ptr<T>::operator=( const kick::shared_ptr<T>& rhs ){
+	if( this != &rhs ){
+		this->_mem_		= rhs._mem_;
+		_refs_			= rhs._refs_;
+	}
+	
+	return *this;
+	
+}
 
 #endif // _kick_smart_ptr_weak_ptr_h

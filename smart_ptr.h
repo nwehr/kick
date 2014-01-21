@@ -49,72 +49,69 @@ namespace kick {
 		~smart_ptr();
 		
 		// Get the dereferenced memory
-		T& operator*();
-		const T& operator*() const;
+		inline T& operator*();
+		inline const T& operator*() const;
 		
 		// Get a pointer to memory
-		T* operator->();
-		const T* operator->() const;
+		inline T* operator->();
+		inline const T* operator->() const;
 		
 		// Get a pointer to memory
-		T* get();
-		const T* get() const;
+		inline T* get();
+		inline const T* get() const;
 		
 		// Determine if memory is still valid
-		bool expired() const;
+		inline bool expired() const;
 		
 	protected:
 		T* _mem_;
 		
 	};
 	
-	///////////////////////////////////////////////////////////////////////////////
-	// smart_ptr
-	///////////////////////////////////////////////////////////////////////////////
-	template<typename T>
-	smart_ptr<T>::smart_ptr( T* mem )
-	: _mem_( mem )
-	{}
-	
-	template<typename T>
-	smart_ptr<T>::~smart_ptr(){}
-	
-	template<typename T>
-	T& smart_ptr<T>::operator*(){
-		return *_mem_;
-	}
-	
-	template<typename T>
-	const T& smart_ptr<T>::operator*() const {
-		return *_mem_;
-	}
-	
-	template<typename T>
-	T* smart_ptr<T>::operator->(){
-		return _mem_;
-	}
-	
-	template<typename T>
-	const T* smart_ptr<T>::operator->() const {
-		return _mem_;
-	}
-	
-	template<typename T>
-	T* smart_ptr<T>::get(){
-		return _mem_;
-	}
-	
-	template<typename T>
-	const T* smart_ptr<T>::get() const {
-		return _mem_;
-	}
-	
-	template<typename T>
-	bool smart_ptr<T>::expired() const {
-		return !static_cast<bool>( _mem_ );
-	}
-	
 } // namespace kick
+
+template<typename T>
+kick::smart_ptr<T>::smart_ptr( T* mem )
+: _mem_( mem )
+{}
+
+template<typename T>
+kick::smart_ptr<T>::~smart_ptr(){}
+
+template<typename T>
+T& kick::smart_ptr<T>::operator*(){
+	return *_mem_;
+}
+
+template<typename T>
+const T& kick::smart_ptr<T>::operator*() const {
+	return *_mem_;
+}
+
+template<typename T>
+T* kick::smart_ptr<T>::operator->(){
+	return _mem_;
+}
+
+template<typename T>
+const T* kick::smart_ptr<T>::operator->() const {
+	return _mem_;
+}
+
+template<typename T>
+T* kick::smart_ptr<T>::get(){
+	return _mem_;
+}
+
+template<typename T>
+const T* kick::smart_ptr<T>::get() const {
+	return _mem_;
+}
+
+template<typename T>
+bool kick::smart_ptr<T>::expired() const {
+	return !static_cast<bool>( _mem_ );
+}
 
 // Kick
 #include <kick/smart_ptr/shared_ptr.h>

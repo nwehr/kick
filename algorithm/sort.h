@@ -36,32 +36,38 @@ namespace kick {
 		// swap
 		///////////////////////////////////////////////////////////////////////////////
 		template<typename T>
-		void swap( T& a, T& b ){
-			T c( a );
-			a = b;
-			b = c;
-			
-		}
+		void swap( T& a, T& b );
 		
 		///////////////////////////////////////////////////////////////////////////////
 		// bubble_sort
 		///////////////////////////////////////////////////////////////////////////////
 		template<typename T>
-		void bubble_sort( T& seq ){
-			for( typename T::iterator it = seq.begin(); it != seq.end(); ++it ){
-				for( typename T::iterator nt = it; nt != seq.end(); ++nt ){
-					if( *nt < *it )
-						swap( *nt, *it );
-					
-					
-				}
-				
-			}
-			
-		}
+		void bubble_sort( T& seq );
 
 	} // namespace algorithm
 	
 } // namespace kick
+
+template<typename T>
+void kick::algorithm::swap( T& a, T& b ) {
+	T c( a );
+	a = b;
+	b = c;
+	
+}
+
+template<typename T>
+void kick::algorithm::bubble_sort( T& seq ) {
+	for( typename T::iterator it = seq.begin(); it != seq.end(); ++it ){
+		for( typename T::iterator nt = it; nt != seq.end(); ++nt ){
+			if( *nt < *it )
+				kick::algorithm::swap( *nt, *it );
+			
+			
+		}
+		
+	}
+	
+}
 
 #endif // _kick_algorithm_sort_h

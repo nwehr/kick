@@ -65,28 +65,24 @@ namespace kick {
 #endif
 		~basic_ios(); 
 		
-		typedef uint16_t	format_t;
-		typedef uint8_t		seqmode_t;
+		typedef uint16_t fmt_t;
 		
-		static const format_t boolalpha	= 0x1;
-		static const format_t showbase	= 0x2;
-		static const format_t showpoint	= 0x4;
-		static const format_t showpos	= 0x8;
-		static const format_t skipws	= 0x10;
-		static const format_t initbuf	= 0x20;
-		static const format_t uppercase	= 0x40;
+		static const fmt_t boolalpha	= 0x1;
+		static const fmt_t showbase		= 0x2;
+		static const fmt_t showpoint	= 0x4;
+		static const fmt_t showpos		= 0x8;
+		static const fmt_t skipws		= 0x10;
+		static const fmt_t initbuf		= 0x20;
+		static const fmt_t uppercase	= 0x40;
 		
-		static const seqmode_t in	= 0x0;
-		static const seqmode_t out	= 0x1;
+		inline fmt_t& fmt();
+		inline const fmt_t& fmt() const;
 		
-		format_t& fmt();
-		const format_t& fmt() const;
-		
-		basic_streambuf<CharT>* sbuf();
-		const basic_streambuf<CharT>* sbuf() const;
+		inline basic_streambuf<CharT>* sbuf();
+		inline const basic_streambuf<CharT>* sbuf() const;
 		
 	protected:
-		format_t _fmt_;
+		fmt_t _fmt_;
 		basic_streambuf<CharT>* _sbuf_;
 		
 	};
@@ -119,12 +115,12 @@ template<typename  CharT>
 kick::basic_ios<CharT>::~basic_ios() {}
 
 template<typename CharT>
-typename kick::basic_ios<CharT>::format_t& kick::basic_ios<CharT>::fmt() {
+typename kick::basic_ios<CharT>::fmt_t& kick::basic_ios<CharT>::fmt() {
 	return _fmt_;
 }
 
 template<typename CharT>
-const typename kick::basic_ios<CharT>::format_t& kick::basic_ios<CharT>::fmt() const {
+const typename kick::basic_ios<CharT>::fmt_t& kick::basic_ios<CharT>::fmt() const {
 	return _fmt_;
 }
 

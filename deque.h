@@ -61,16 +61,16 @@ namespace kick {
 		void pop_back();
 		void pop_front();
 		
-		int size();
+		inline int size();
 		
-		T& front();
-		T& back();
+		inline T& front();
+		inline T& back();
 		
-		link<T>*& front_link();
-		link<T>*& back_link(); 
+		inline link<T>*& front_link();
+		inline link<T>*& back_link();
 		
-		iterator begin();
-		iterator end();
+		inline iterator begin();
+		inline iterator end();
 		
 	private:
 		int _size_;
@@ -80,126 +80,123 @@ namespace kick {
 		
 	};
 	
-	///////////////////////////////////////////////////////////////////////////////
-	// deque
-	///////////////////////////////////////////////////////////////////////////////
-	template<typename T>
-	deque<T>::deque()
-	: _front_( 0 )
-	, _back_( 0 )
-	{}
+} // namespace kick
+
+template<typename T>
+kick::deque<T>::deque()
+: _front_( 0 )
+, _back_( 0 )
+{}
+
+template<typename T>
+kick::deque<T>::~deque() {
+	kick::link<T>* link = _front_;
 	
-	template<typename T>
-	deque<T>::~deque(){
-		kick::link<T>* link = _front_;
-		
-		while( link ){
-			delete link;
-			link = link->next();
-			
-		}
+	while( link ){
+		delete link;
+		link = link->next();
 		
 	}
 	
-	template<typename T>
-	void deque<T>::push_back( const T& item ){
-		link<T>* t = new link<T>( item, _back_, 0 );
+}
+
+template<typename T>
+void kick::deque<T>::push_back( const T& item ) {
+	link<T>* t = new link<T>( item, _back_, 0 );
+	
+	if( _back_ )
+		_back_->next() = t;
+	
+	if( !_front_ )
+		_front_ = t;
+	
+	_back_ = t;
+	
+	++_size_;
+	
+}
+
+template<typename T>
+void kick::deque<T>::push_front( const T& item ) {
+	link<T>* t = new link<T>( item, 0, _front_ );
+	
+	if( _front_ )
+		_front_->prev() = t;
+	
+	if( !_back_ )
+		_back_ = t;
+	
+	_front_ = t;
+	
+	++_size_;
+	
+}
+
+template<typename T>
+void kick::deque<T>::pop_back() {
+	if( _size_ ){
+		link<T>* t = _back_->prev();
 		
-		if( _back_ )
-			_back_->next() = t;
-		
-		if( !_front_ )
-			_front_ = t;
+		delete _back_;
 		
 		_back_ = t;
+		_back_->next() = 0;
 		
-		++_size_;
+		--_size_;
 		
 	}
 	
-	template<typename T>
-	void deque<T>::push_front( const T& item ){
-		link<T>* t = new link<T>( item, 0, _front_ );
+}
+
+template<typename T>
+void kick::deque<T>::pop_front() {
+	if( _size_ ){
+		link<T>* t = _front_->next();
 		
-		if( _front_ )
-			_front_->prev() = t;
-		
-		if( !_back_ )
-			_back_ = t;
+		delete _front_;
 		
 		_front_ = t;
+		_front_->prev() = 0;
 		
-		++_size_;
-		
-	}
-	
-	template<typename T>
-	void deque<T>::pop_back(){
-		if( _size_ ){
-			link<T>* t = _back_->prev();
-			
-			delete _back_;
-			
-			_back_ = t;
-			_back_->next() = 0;
-			
-			--_size_;
-			
-		}
+		--_size_;
 		
 	}
 	
-	template<typename T>
-	void deque<T>::pop_front(){
-		if( _size_ ){
-			link<T>* t = _front_->next();
-			
-			delete _front_;
-			
-			_front_ = t;
-			_front_->prev() = 0;
-			
-			--_size_;
-			
-		}
-		
-	}
-	
-	template<typename T>
-	int deque<T>::size(){
-		return _size_;
-	}
-	
-	template<typename T>
-	T& deque<T>::front(){
-		return _front_->item();
-	}
-	
-	template<typename T>
-	T& deque<T>::back(){
-		return _back_->item();
-	}
-	
-	template<typename T>
-	link<T>*& deque<T>::front_link(){
-		return _front_;
-	}
-	
-	template<typename T>
-	link<T>*& deque<T>::back_link(){
-		return _back_;
-	}
-	
-	template<typename T>
-	typename deque<T>::iterator deque<T>::begin(){
-		return iterator( _front_ );
-	}
-	
-	template<typename T>
-	typename deque<T>::iterator deque<T>::end(){
-		return iterator( _back_->next() );
-	}
-	
-} // namespace kick
+}
+
+template<typename T>
+int kick::deque<T>::size() {
+	return _size_;
+}
+
+template<typename T>
+T& kick::deque<T>::front() {
+	return _front_->item();
+}
+
+template<typename T>
+T& kick::deque<T>::back() {
+	return _back_->item();
+}
+
+template<typename T>
+kick::link<T>*& kick::deque<T>::front_link() {
+	return _front_;
+}
+
+template<typename T>
+kick::link<T>*& kick::deque<T>::back_link() {
+	return _back_;
+}
+
+template<typename T>
+typename kick::deque<T>::iterator kick::deque<T>::begin() {
+	return iterator( _front_ );
+}
+
+template<typename T>
+typename kick::deque<T>::iterator kick::deque<T>::end() {
+	return iterator( _back_->next() );
+}
 
 #endif // _kick_deque_h

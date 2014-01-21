@@ -33,7 +33,6 @@
 #include <stdlib.h>
 
 // Kick
-#include <kick/common.h>
 #include <kick/iostream/ios.h>
 
 namespace kick {
@@ -53,17 +52,19 @@ namespace kick {
 #endif
 		~basic_istream();
 		
-		basic_istream& operator>>( bool& );
-		basic_istream& operator>>( short& );
-		basic_istream& operator>>( unsigned short& );
-		basic_istream& operator>>( int& );
-		basic_istream& operator>>( unsigned int& );
-		basic_istream& operator>>( long& );
-		basic_istream& operator>>( unsigned long& );
-		basic_istream& operator>>( float& );
-		basic_istream& operator>>( double& );
-		basic_istream& operator>>( long double& );
-		basic_istream& operator>>( void*& );
+		inline basic_istream& operator>>( bool& );
+		inline basic_istream& operator>>( short& );
+		inline basic_istream& operator>>( unsigned short& );
+		inline basic_istream& operator>>( int& );
+		inline basic_istream& operator>>( unsigned int& );
+		inline basic_istream& operator>>( long& );
+		inline basic_istream& operator>>( unsigned long& );
+		inline basic_istream& operator>>( float& );
+		inline basic_istream& operator>>( double& );
+		inline basic_istream& operator>>( long double& );
+		inline basic_istream& operator>>( void*& );
+		
+		basic_istream& operator>> ( basic_streambuf<CharT>& );
 		
 	protected:
 		
@@ -157,6 +158,20 @@ template<typename CharT>
 kick::basic_istream<CharT>& kick::basic_istream<CharT>::operator>>( void*& val ) {
 	val = this->_sbuf_->buf();
 	return *this;
+}
+
+template<typename CharT>
+kick::basic_istream<CharT>& kick::basic_istream<CharT>::operator>>( basic_streambuf<CharT>& sbuf ) {
+	this->_sbuf_->iseekpos( 0 );
+	sbuf.oseekpos( sbuf.opos_end() );
+	
+	CharT c;
+	while( (c = this->_sbuf_->bumpc()) ) {
+		sbuf.putc( c );
+	}
+	
+	return *this;
+	
 }
 
 #endif // _kick_iostream_istream_h

@@ -63,74 +63,70 @@ namespace kick {
 		
 	protected:
 		unsigned int* _refs_;
-		
 	};
 	
-	///////////////////////////////////////////////////////////////////////////////
-	// shared_ptr : smart_ptr
-	///////////////////////////////////////////////////////////////////////////////
-	template <typename T>
-	shared_ptr<T>::shared_ptr( T* mem )
-	: smart_ptr<T>( mem )
-	, _refs_( new int( this->_mem_ ? 1 : 0 ) )
-	{}
-	
-	template <typename T>
-	shared_ptr<T>::shared_ptr( const shared_ptr<T>& ptr )
-	: smart_ptr<T>( ptr._mem_ )
-	, _refs_( ptr._refs_ )
-	{
-		++(*_refs_);
-	}
-	
-	template <typename T>
-	shared_ptr<T>::shared_ptr( const weak_ptr<T>& ptr )
-	: smart_ptr<T>( ptr._mem_ )
-	, _refs_( ptr._refs_ )
-	{
-		++(*_refs_);
-	}
-	
-	template <typename T>
-	shared_ptr<T>::~shared_ptr(){
-		if( *_refs_ )
-			--(*_refs_);
-		
-		if( !*_refs_ ){
-			delete this->_mem_;
-			delete _refs_;
-		}
-		
-	}
-	
-	template <typename T>
-	shared_ptr<T>& shared_ptr<T>::operator=( const shared_ptr<T>& rhs ){
-		if( this != &rhs ){
-			this->_mem_	= rhs._mem_;
-			_refs_		= rhs._refs_;
-			
-			++(*_refs_);
-			
-		}
-		
-		return *this;
-		
-	}
-	
-	template <typename T>
-	shared_ptr<T>& shared_ptr<T>::operator=( const weak_ptr<T>& rhs ){
-		if( this != &rhs ){
-			this->_mem_	= rhs._mem_;
-			_refs_		= rhs._refs_;
-			
-			++(*_refs_);
-			
-		}
-		
-		return *this;
-		
-	}
-		
 } // namespace kick
+
+template <typename T>
+kick::shared_ptr<T>::shared_ptr( T* mem )
+: kick::smart_ptr<T>( mem )
+, _refs_( new int( this->_mem_ ? 1 : 0 ) )
+{}
+
+template <typename T>
+kick::shared_ptr<T>::shared_ptr( const kick::shared_ptr<T>& ptr )
+: kick::smart_ptr<T>( ptr._mem_ )
+, _refs_( ptr._refs_ )
+{
+	++(*_refs_);
+}
+
+template <typename T>
+kick::shared_ptr<T>::shared_ptr( const kick::weak_ptr<T>& ptr )
+: kick::smart_ptr<T>( ptr._mem_ )
+, _refs_( ptr._refs_ )
+{
+	++(*_refs_);
+}
+
+template <typename T>
+kick::shared_ptr<T>::~shared_ptr(){
+	if( *_refs_ )
+		--(*_refs_);
+	
+	if( !*_refs_ ){
+		delete this->_mem_;
+		delete _refs_;
+	}
+	
+}
+
+template <typename T>
+kick::shared_ptr<T>& kick::shared_ptr<T>::operator=( const kick::shared_ptr<T>& rhs ){
+	if( this != &rhs ){
+		this->_mem_	= rhs._mem_;
+		_refs_		= rhs._refs_;
+		
+		++(*_refs_);
+		
+	}
+	
+	return *this;
+	
+}
+
+template <typename T>
+kick::shared_ptr<T>& kick::shared_ptr<T>::operator=( const kick::weak_ptr<T>& rhs ){
+	if( this != &rhs ){
+		this->_mem_	= rhs._mem_;
+		_refs_		= rhs._refs_;
+		
+		++(*_refs_);
+		
+	}
+	
+	return *this;
+	
+}
 
 #endif // _kick_smart_ptr_shared_ptr_h

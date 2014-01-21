@@ -45,10 +45,7 @@ namespace kick {
 #endif
 		~basic_stringbuf();
 
-#if	(KICK_POLYMORPHIC_STREAMBUF > 0)
-		virtual
-#endif
-		StringT str();
+		inline StringT str();
 		
 	};
 	

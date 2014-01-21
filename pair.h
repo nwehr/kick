@@ -41,101 +41,98 @@ namespace kick {
 	///////////////////////////////////////////////////////////////////////////////
 	// pair
 	///////////////////////////////////////////////////////////////////////////////
-	template<typename K, typename V>
+	template<typename KeyT, typename ValT>
 	class pair {
 	public:
 		pair();
-		pair( const K&, const V& );
-		pair( const pair<K,V>& );
+		pair( const KeyT&, const ValT& );
+		pair( const pair<KeyT,ValT>& );
 		
 #if (KICK_POLYMORPHIC_PAIR > 0)
 		virtual
 #endif
 		~pair();
 		
-		pair<K,V>& operator=( const pair<K,V>& );
+		pair<KeyT,ValT>& operator=( const pair<KeyT,ValT>& );
 		
-		bool operator==( const pair<K,V>& ) const;
-		bool operator!=( const pair<K,V>& ) const;
+		inline bool operator==( const pair<KeyT,ValT>& ) const;
+		inline bool operator!=( const pair<KeyT,ValT>& ) const;
 		
-		K& key();
-		const K& key() const;
+		inline KeyT& key();
+		inline const KeyT& key() const;
 		
-		V& val();
-		const V& val() const;
+		inline ValT& val();
+		inline const ValT& val() const;
 		
 	private:
-		K _key_;
-		V _val_;
+		KeyT _key_;
+		ValT _val_;
 		
 	};
 	
-	///////////////////////////////////////////////////////////////////////////////
-	// pair
-	///////////////////////////////////////////////////////////////////////////////
-	template<typename K, typename V>
-	pair<K,V>::pair()
-	: _key_( K() )
-	, _val_( V() )
-	{}
-	
-	template<typename K, typename V>
-	pair<K,V>::pair( const K& key, const V& val )
-	: _key_( key )
-	, _val_( val )
-	{}
-	
-	template<typename K, typename V>
-	pair<K,V>::pair( const pair<K,V>& pair )
-	: _key_( pair._key_ )
-	, _val_( pair._val_ )
-	{}
-	
-	template<typename K, typename V>
-	pair<K,V>::~pair(){}
-	
-	template<typename K, typename V>
-	pair<K,V>& pair<K,V>::operator=( const pair<K,V>& rhs ){
-		if( this != &rhs ){
-			_key_ = rhs._key_;
-			_val_ = rhs._val_;
-			
-		}
-		
-		return *this;
-		
-	}
-	
-	template<typename K, typename V>
-	bool pair<K,V>::operator==( const pair<K,V>& rhs ) const {
-		return (_key_ == rhs._key_ && _val_ == rhs._val_);
-	}
-	
-	template<typename K, typename V>
-	bool pair<K,V>::operator!=( const pair<K,V>& rhs ) const {
-		return !operator==( rhs );
-	}
-	
-	template<typename K, typename V>
-	K& pair<K,V>::key(){
-		return _key_;
-	}
-	
-	template<typename K, typename V>
-	const K& pair<K,V>::key() const {
-		return _key_;
-	}
-	
-	template<typename K, typename V>
-	V& pair<K,V>::val(){
-		return _val_;
-	}
-	
-	template<typename K, typename V>
-	const V& pair<K,V>::val() const {
-		return _val_;
-	}
-	
 } // namespace kick
+
+template<typename KeyT, typename ValT>
+kick::pair<KeyT,ValT>::pair()
+: _key_( KeyT() )
+, _val_( ValT() )
+{}
+
+template<typename KeyT, typename ValT>
+kick::pair<KeyT,ValT>::pair( const KeyT& key, const ValT& val )
+: _key_( key )
+, _val_( val )
+{}
+
+template<typename KeyT, typename ValT>
+kick::pair<KeyT,ValT>::pair( const pair<KeyT,ValT>& pair )
+: _key_( pair._key_ )
+, _val_( pair._val_ )
+{}
+
+template<typename KeyT, typename ValT>
+kick::pair<KeyT,ValT>::~pair(){}
+
+template<typename KeyT, typename ValT>
+kick::pair<KeyT,ValT>& kick::pair<KeyT,ValT>::operator=( const kick::pair<KeyT,ValT>& rhs ) {
+	if( this != &rhs ){
+		_key_ = rhs._key_;
+		_val_ = rhs._val_;
+		
+	}
+	
+	return *this;
+	
+}
+
+template<typename KeyT, typename ValT>
+bool kick::pair<KeyT,ValT>::operator==( const kick::pair<KeyT,ValT>& rhs ) const {
+	return (_key_ == rhs._key_ && _val_ == rhs._val_);
+}
+
+template<typename KeyT, typename ValT>
+bool kick::pair<KeyT,ValT>::operator!=( const kick::pair<KeyT,ValT>& rhs ) const {
+	return !operator==( rhs );
+}
+
+template<typename KeyT, typename ValT>
+KeyT& kick::pair<KeyT,ValT>::key() {
+	return _key_;
+}
+
+template<typename KeyT, typename ValT>
+const kick::KeyT& pair<KeyT,ValT>::key() const {
+	return _key_;
+}
+
+template<typename KeyT, typename ValT>
+ValT& kick::pair<KeyT,ValT>::val() {
+	return _val_;
+}
+
+template<typename KeyT, typename ValT>
+const ValT& kick::pair<KeyT,ValT>::val() const {
+	return _val_;
+}
 
 #endif // _kick_pair_h
