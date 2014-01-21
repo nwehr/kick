@@ -57,6 +57,7 @@ namespace kick {
 	class basic_ios {
 	protected:
 		basic_ios();
+		basic_ios( basic_streambuf<CharT>* );
 		
 	public:
 #if	(KICK_POLYMORPHIC_STREAM > 0)
@@ -82,9 +83,12 @@ namespace kick {
 		const format_t& fmt() const;
 		
 		basic_streambuf<CharT>* sbuf();
+		const basic_streambuf<CharT>* sbuf() const;
 		
 	protected:
 		format_t _fmt_;
+		basic_streambuf<CharT>* _sbuf_;
+		
 	};
 
 	///////////////////////////////////////////////////////////////////////////////
@@ -102,6 +106,13 @@ namespace kick {
 template<typename CharT>
 kick::basic_ios<CharT>::basic_ios()
 : _fmt_( kick::basic_ios<CharT>::boolalpha )
+, _sbuf_( 0 )
+{}
+
+template<typename CharT>
+kick::basic_ios<CharT>::basic_ios( kick::basic_streambuf<CharT>* sbuf )
+: _fmt_( kick::basic_ios<CharT>::boolalpha )
+, _sbuf_( sbuf )
 {}
 
 template<typename  CharT>
@@ -115,6 +126,16 @@ typename kick::basic_ios<CharT>::format_t& kick::basic_ios<CharT>::fmt() {
 template<typename CharT>
 const typename kick::basic_ios<CharT>::format_t& kick::basic_ios<CharT>::fmt() const {
 	return _fmt_;
+}
+
+template<typename CharT>
+kick::basic_streambuf<CharT>* kick::basic_ios<CharT>::sbuf() {
+	return _sbuf_;
+}
+
+template<typename CharT>
+const kick::basic_streambuf<CharT>* kick::basic_ios<CharT>::sbuf() const {
+	return _sbuf_;
 }
 
 #endif // _kick_iostream_ios_h
