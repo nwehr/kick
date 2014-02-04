@@ -436,6 +436,7 @@ namespace JsonBox {
 	}
 
 	int Value::getInt() const {
+		if (type == DOUBLE) return (*data.doubleValue);
 		return (type == INTEGER) ? (*data.intValue) : (EMPTY_INT);
 	}
 
@@ -451,6 +452,7 @@ namespace JsonBox {
 	}
 
 	double Value::getDouble() const {
+		if (type == INTEGER) return (*data.intValue);
 		return (type == DOUBLE) ? (*data.doubleValue) : (EMPTY_DOUBLE);
 	}
 
@@ -1080,7 +1082,12 @@ namespace JsonBox {
 			break;
 
 		case Value::DOUBLE:
-			output << v.getDouble();
+			{
+				std::streamsize p = output.precision();
+				output.precision(17);
+				output << v.getDouble();
+				output.precision(p);
+			}
 			break;
 
 		case Value::OBJECT:
