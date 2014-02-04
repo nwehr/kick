@@ -1,6 +1,7 @@
 #ifndef ARDUINO
 
 #define KICK_POLYMORPHIC_CONTAINERS 1
+#define KICK_POLYMORPHIC_IO 1
 
 // C++
 #include <iostream>
@@ -28,20 +29,13 @@ int main( int argc, char* argv[] ) {
 	myStringBuf1.setbuf( myBuffer, 4 );
 	
 	kick::stringbuf myStringBuf2;
-//	myStringBuf2.setbuf( "", 4 );
-	
-
 	
 	kick::istream myIstream( &myStringBuf1 );
 	
 	myIstream >> myStringBuf2;
 	
 	std::cout << myStringBuf2.buf() << std::endl;
-	
-	kick::string myString = "Hello, World!";
-	
-	std::cout << myString << std::endl; 
-	
+		
 //	kick::map<kick::string, int> myMap;
 //	
 //	myMap.insert( kick::pair<kick::string, int>( "sixteen", 16 ) );
