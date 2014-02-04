@@ -30,8 +30,8 @@
 //
 
 // Kick
-#include <kick/smart_ptr.h>
-#include <kick/smart_ptr/shared_ptr.h>
+#include "../smart_ptr.h"
+#include "shared_ptr.h"
 
 namespace kick {
 	///////////////////////////////////////////////////////////////////////////////

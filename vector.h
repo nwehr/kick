@@ -31,10 +31,10 @@
 //
 
 // Kick
-#include <kick/common.h>
+#include "common.h"
 
-#include <kick/allocator.h>
-#include <kick/iterator.h>
+#include "allocator.h"
+#include "iterator.h"
 
 #ifndef KICK_POLYMORPHIC_VECTOR
 	#define KICK_POLYMORPHIC_VECTOR KICK_POLYMORPHIC_CONTAINERS

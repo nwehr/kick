@@ -114,8 +114,8 @@ bool kick::smart_ptr<T>::expired() const {
 }
 
 // Kick
-#include <kick/smart_ptr/shared_ptr.h>
-#include <kick/smart_ptr/weak_ptr.h>
-#include <kick/smart_ptr/scoped_ptr.h>
+#include "smart_ptr/shared_ptr.h"
+#include "smart_ptr/weak_ptr.h"
+#include "smart_ptr/scoped_ptr.h"
 
 #endif // _kick_smart_ptr_h

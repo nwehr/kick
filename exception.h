@@ -29,7 +29,7 @@
 //      or implied, of Nathan Wehr.
 //
 
-#include <kick/common.h>
+#include "common.h"
 
 #ifndef KICK_POLYMORPHIC_EXCEPTION
 	#define KICK_POLYMORPHIC_EXCEPTION KICK_POLYMORPHIC_CONTAINERS

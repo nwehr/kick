@@ -9,17 +9,17 @@
 #include <vector>
 
 // Kick
-#include <kick/string.h>
-#include <kick/smart_ptr.h>
-#include <kick/vector.h>
-#include <kick/deque.h>
-#include <kick/version.h>
-#include <kick/map.h>
+#include <lib.kick/string.h>
+#include <lib.kick/smart_ptr.h>
+#include <lib.kick/vector.h>
+#include <lib.kick/deque.h>
+#include <lib.kick/version.h>
+#include <lib.kick/map.h>
 
-#include <kick/algorithm/sort.h>
+#include <lib.kick/algorithm/sort.h>
 
-#include <kick/iostream/stringbuf.h>
-#include <kick/iostream/istream.h>
+#include <lib.kick/iostream/stringbuf.h>
+#include <lib.kick/iostream/istream.h>
 
 int main( int argc, char* argv[] ) {
 	char myBuffer[] = "13.4";

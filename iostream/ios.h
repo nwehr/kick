@@ -33,8 +33,8 @@
 #include <stdint.h>
 
 // Kick
-#include <kick/common.h>
-#include <kick/iostream/streambuf.h>
+#include "../common.h"
+#include "streambuf.h"
 
 #ifndef KICK_POLYMORPHIC_STREAM
 	#define KICK_POLYMORPHIC_STREAM KICK_POLYMORPHIC_IO

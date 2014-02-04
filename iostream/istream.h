@@ -33,7 +33,7 @@
 #include <stdlib.h>
 
 // Kick
-#include <kick/iostream/ios.h>
+#include "ios.h"
 
 namespace kick {
 	///////////////////////////////////////////////////////////////////////////////

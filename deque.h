@@ -31,9 +31,9 @@
 //
 
 // Kick
-#include <kick/common.h>
-#include <kick/iterator.h>
-#include <kick/link.h>
+#include "common.h"
+#include "iterator.h"
+#include "link.h"
 
 #ifndef KICK_POLYMORPHIC_DEQUE
 	#define KICK_POLYMORPHIC_DEQUE KICK_POLYMORPHIC_CONTAINERS

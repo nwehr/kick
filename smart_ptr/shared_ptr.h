@@ -30,8 +30,8 @@
 //
 
 // Kick
-#include <kick/smart_ptr.h>
-#include <kick/smart_ptr/weak_ptr.h>
+#include "../smart_ptr.h"
+#include "weak_ptr.h"
 
 namespace kick {
 	///////////////////////////////////////////////////////////////////////////////
@@ -70,7 +70,7 @@ namespace kick {
 template <typename T>
 kick::shared_ptr<T>::shared_ptr( T* mem )
 : kick::smart_ptr<T>( mem )
-, _refs_( new int( this->_mem_ ? 1 : 0 ) )
+, _refs_( new unsigned int( this->_mem_ ? 1 : 0 ) )
 {}
 
 template <typename T>

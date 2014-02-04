@@ -34,8 +34,8 @@
 #include <string.h>
 
 // Kick
-#include <kick/common.h>
-#include <kick/allocator.h>
+#include "common.h"
+#include "allocator.h"
 
 /// enable or disable virtual methods to support polymorphism
 #ifndef KICK_POLYMORPHIC_STRING
@@ -107,10 +107,10 @@ namespace kick {
 		inline size_type find_first_not_of( const CharT* buf, size_type spos, size_type len ) const;
 		inline size_type find_first_not_of( CharT c, size_type spos = 0 ) const;
 		
-		size_type find_last_not_of( const basic_string<CharT>& nstr, size_type spos = npos ) const;
-		inline size_type find_last_not_of( const CharT* buf, size_type spos = npos ) const;
-		inline size_type find_last_not_of( const CharT* buf, size_type spos, size_type len ) const;
-		inline size_type find_last_not_of( CharT c, size_type spos = npos ) const;
+//		size_type find_last_not_of( const basic_string<CharT>& nstr, size_type spos = npos ) const;
+//		inline size_type find_last_not_of( const CharT* buf, size_type spos = npos ) const;
+//		inline size_type find_last_not_of( const CharT* buf, size_type spos, size_type len ) const;
+//		inline size_type find_last_not_of( CharT c, size_type spos = npos ) const;
 		
 		size_type find_first_less_than( CharT c, size_type spos = 0 ) const;
 		size_type find_first_greater_than( CharT c, size_type spos = 0 ) const;
@@ -263,7 +263,7 @@ bool kick::basic_string<CharT>::empty() const {
 }
 
 template<typename CharT>
-size_type kick::basic_string<CharT>::capacity() const {
+kick::size_type kick::basic_string<CharT>::capacity() const {
 	return _alloc_.asize();
 }
 
@@ -345,7 +345,7 @@ kick::size_type kick::basic_string<CharT>::find( CharT c, kick::size_type spos )
 }
 
 template<typename CharT>
-kick::size_type kick::basic_string<CharT>::rfind( const kick::basic_string<CharT>& nstr, kick::size_type spos = npos ) const {
+kick::size_type kick::basic_string<CharT>::rfind( const kick::basic_string<CharT>& nstr, kick::size_type spos ) const {
 	const size_type nsize = nstr.size();
 	const size_type hsize = size();
 	
@@ -376,7 +376,7 @@ kick::size_type kick::basic_string<CharT>::rfind( const kick::basic_string<CharT
 
 //TODO: Optimized search for C string
 template<typename CharT>
-kick::size_type kick::basic_string<CharT>::rfind( const CharT* buf, kick::size_type spos = npos ) const {
+kick::size_type kick::basic_string<CharT>::rfind( const CharT* buf, kick::size_type spos ) const {
 	basic_string<CharT> n( buf );
 	return rfind( n, spos );
 }
@@ -390,7 +390,7 @@ kick::size_type kick::basic_string<CharT>::rfind( const CharT* buf, kick::size_t
 
 //TODO: Optimized search for single char
 template<typename CharT>
-kick::size_type kick::basic_string<CharT>::rfind( CharT c, kick::size_type spos = npos ) const {
+kick::size_type kick::basic_string<CharT>::rfind( CharT c, kick::size_type spos ) const {
 	basic_string<CharT> n( &c, 1 );
 	return rfind( n );
 }
@@ -438,7 +438,7 @@ kick::size_type kick::basic_string<CharT>::find_first_of( CharT c, kick::size_ty
 }
 
 template<typename CharT>
-kick::size_type kick::basic_string<CharT>::find_last_of( const kick::basic_string<CharT>& nstr, kick::size_type spos = npos ) const {
+kick::size_type kick::basic_string<CharT>::find_last_of( const kick::basic_string<CharT>& nstr, kick::size_type spos ) const {
 	const size_type nsize = nstr.size();
 	const size_type hsize = size();
 	
@@ -460,7 +460,7 @@ kick::size_type kick::basic_string<CharT>::find_last_of( const kick::basic_strin
 
 //TODO: Optimized search for C string
 template<typename CharT>
-kick::size_type kick::basic_string<CharT>::find_last_of( const CharT* buf, kick::size_type spos = npos ) const {
+kick::size_type kick::basic_string<CharT>::find_last_of( const CharT* buf, kick::size_type spos ) const {
 	basic_string<CharT> n( buf );
 	return find_last_of( n, spos );
 }
@@ -474,7 +474,7 @@ kick::size_type kick::basic_string<CharT>::find_last_of( const CharT* buf, kick:
 
 //TODO: Optimized search for single char
 template<typename CharT>
-kick::size_type kick::basic_string<CharT>::find_last_of( CharT c, kick::size_type spos = npos ) const {
+kick::size_type kick::basic_string<CharT>::find_last_of( CharT c, kick::size_type spos ) const {
 	basic_string<CharT> n( &c, 1 );
 	return find_last_of( n );
 }
@@ -522,48 +522,48 @@ kick::size_type kick::basic_string<CharT>::find_first_not_of( CharT c, kick::siz
 	return find_first_not_of( n );
 }
 
-template<typename CharT>
-kick::size_type kick::basic_string<CharT>::find_last_not_of( const kick::basic_string<CharT>& nstr, kick::size_type spos = npos ) const {
-	const size_type nsize = nstr.size();
-	const size_type hsize = size();
-	
-	if( nsize < 1 ) return npos;
-	
-	if( spos == npos || spos > hsize - 1 ) spos = hsize - 1;
-	while( spos >= 0 ) {
-		size_type npos = 0;
-		while( _cstr_[spos] != nstr._cstr_[npos] && npos < nsize )
-			++npos;
-		
-		if( npos < nsize )
-			--spos;
-		else
-			return spos;
-	}
-	
-	return npos;
-}
-
-//TODO: Optimized search for C string
-template<typename CharT>
-kick::size_type kick::basic_string<CharT>::find_last_not_of( const CharT* buf, kick::size_type spos = npos ) const {
-	basic_string<CharT> n( buf );
-	return find_last_not_of( n, spos );
-}
-
-//TODO: Optimized search for char buffer
-template<typename CharT>
-kick::size_type kick::basic_string<CharT>::find_last_not_of( const CharT* buf, size_type spos, size_type len ) const {
-	basic_string<CharT> n( buf, len );
-	return find_last_not_of( n, spos );
-}
-
-//TODO: Optimized search for single char
-template<typename CharT>
-inline size_type find_last_not_of( CharT c, kick::size_type spos = npos ) const {
-	basic_string<CharT> n( &c, 1 );
-	return find_last_not_of( n, spos );
-}
+//template<typename CharT>
+//kick::size_type kick::basic_string<CharT>::find_last_not_of( const kick::basic_string<CharT>& nstr, kick::size_type spos ) const {
+//	const size_type nsize = nstr.size();
+//	const size_type hsize = size();
+//	
+//	if( nsize < 1 ) return npos;
+//	
+//	if( spos == npos || spos > hsize - 1 ) spos = hsize - 1;
+//	while( spos >= 0 ) {
+//		size_type npos = 0;
+//		while( _cstr_[spos] != nstr._cstr_[npos] && npos < nsize )
+//			++npos;
+//		
+//		if( npos < nsize )
+//			--spos;
+//		else
+//			return spos;
+//	}
+//	
+//	return npos;
+//}
+//
+////TODO: Optimized search for C string
+//template<typename CharT>
+//kick::size_type kick::basic_string<CharT>::find_last_not_of( const CharT* buf, kick::size_type spos ) const {
+//	basic_string<CharT> n( buf );
+//	return find_last_not_of( n, spos );
+//}
+//
+////TODO: Optimized search for char buffer
+//template<typename CharT>
+//kick::size_type kick::basic_string<CharT>::find_last_not_of( const CharT* buf, size_type spos, size_type len ) const {
+//	basic_string<CharT> n( buf, len );
+//	return find_last_not_of( n, spos );
+//}
+//
+////TODO: Optimized search for single char
+//template<typename CharT>
+//kick::size_type find_last_not_of( CharT c, kick::size_type spos ) const {
+//	basic_string<CharT> n( &c, 1 );
+//	return find_last_not_of( n, spos );
+//}
 
 template<typename CharT>
 kick::size_type kick::basic_string<CharT>::find_first_less_than( CharT c, kick::size_type spos ) const {
@@ -584,7 +584,7 @@ kick::size_type kick::basic_string<CharT>::find_first_greater_than( CharT c, kic
 }
 
 template<typename CharT>
-kick::basic_string<CharT> kick::basic_string<CharT>::substr( kick::size_type pos, kick::size_type len = npos ) const {
+kick::basic_string<CharT> kick::basic_string<CharT>::substr( kick::size_type pos, kick::size_type len ) const {
 	if( len == npos ) len = size();
 	if( pos < 0 || len <= 0 || pos >= size() )
 		return basic_string<CharT>();

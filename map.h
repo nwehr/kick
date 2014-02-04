@@ -31,12 +31,12 @@
 //
 
 // Kick
-#include <kick/common.h>
+#include "common.h"
 
-#include <kick/allocator.h>
-#include <kick/iterator.h>
+#include "allocator.h"
+#include "iterator.h"
 
-#include <kick/pair.h>
+#include "pair.h"
 
 #ifndef KICK_POLYMORPHIC_MAP
 	#define KICK_POLYMORPHIC_MAP KICK_POLYMORPHIC_CONTAINERS
@@ -183,7 +183,7 @@ const kick::size_t kick::map<KeyT,ValT,AllocT>::size() const {
 }
 
 template<typename KeyT, typename ValT, typename AllocT>
-const size_t kick::map<KeyT,ValT,AllocT>::capacity() const {
+const kick::size_t kick::map<KeyT,ValT,AllocT>::capacity() const {
 	return _alloc_.asize();
 }
 
@@ -204,7 +204,7 @@ ValT& kick::map<KeyT,ValT,AllocT>::operator[]( const KeyT& key ) {
 }
 
 template<typename KeyT, typename ValT, typename AllocT>
-typename map<KeyT,ValT,AllocT>::iterator map<KeyT,ValT,AllocT>::begin() {
+typename kick::map<KeyT,ValT,AllocT>::iterator kick::map<KeyT,ValT,AllocT>::begin() {
 	return iterator( 0, _items_ );
 }
 

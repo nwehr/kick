@@ -31,7 +31,7 @@
 //
 
 // Kick
-#include <kick/common.h>
+#include "common.h"
 
 #ifndef KICK_POLYMORPHIC_PAIR
 	#define KICK_POLYMORPHIC_PAIR KICK_POLYMORPHIC_CONTAINERS
@@ -121,7 +121,7 @@ KeyT& kick::pair<KeyT,ValT>::key() {
 }
 
 template<typename KeyT, typename ValT>
-const kick::KeyT& pair<KeyT,ValT>::key() const {
+const KeyT& kick::pair<KeyT,ValT>::key() const {
 	return _key_;
 }
 

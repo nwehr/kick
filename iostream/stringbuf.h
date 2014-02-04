@@ -30,8 +30,8 @@
 //
 
 // Kick
-#include <kick/iostream/streambuf.h>
-#include <kick/string.h>
+#include "../string.h"
+#include "streambuf.h"
 
 namespace kick {
 	///////////////////////////////////////////////////////////////////////////////

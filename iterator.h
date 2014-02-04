@@ -31,8 +31,8 @@
 //
 
 // Kick
-#include <kick/common.h>
-#include <kick/link.h>
+#include "common.h"
+#include "link.h"
 
 namespace kick {
 	///////////////////////////////////////////////////////////////////////////////
