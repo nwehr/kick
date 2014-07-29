@@ -1,0 +1,24 @@
+PortSystem			1.0
+
+PortGroup			bitbucket 1.0
+bitbucket.setup		nwehr kick 0.1 v
+
+name				kick
+categories			devel
+platforms			darwin
+maintainers			gmail.com:gtolemans
+license				BSD
+homepage			https://bitbucket.org/nwehr/kick/
+
+description			Logging library built on top of C++ standard output streams
+long_description	The kick library provides containers with better performance and a smaller \
+					footprint compared to much larger libraries (STL, C++ Standard Library, boost). \
+					Header-only files also make it easy to import kick into any existing project.
+
+configure			{}
+build				{}
+destroot			{
+	xinstall -m 755 -d ${destroot}${prefix}/${name}
+	xinstall -m 755 [glob ${worksrcpath}/*.h ${worksrcpath}/iostream/*.h ${worksrcpath}/algorithm/*.h ${worksrcpath}/smart_ptr/*.h] ${destroot}${prefix}/${name}
+
+}
