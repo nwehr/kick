@@ -2,32 +2,11 @@
 #define _kick_map_h
 
 //
-//      Copyright 2013 Nathan Wehr. All Rights Reserved.
-//      Copyright 2013 Kevin H. Patterson. All Rights Reserved.
+// Copyright 2012-2014 Kick project developers.
+// See COPYRIGHT.txt or https://bitbucket.org/nwehr/kick/downloads/COPYRIGHT.txt
 //
-//      Redistribution and use in source and binary forms, with or without modification, are
-//      permitted provided that the following conditions are met:
-//
-//              1. Redistributions of source code must retain the above copyright notice, this list of
-//              conditions and the following disclaimer.
-//
-//              2. Redistributions in binary form must reproduce the above copyright notice, this list
-//              of conditions and the following disclaimer in the documentation and/or other materials
-//              provided with the distribution.
-//
-//      THIS SOFTWARE IS PROVIDED BY NATHAN WEHR ''AS IS'' AND ANY EXPRESS OR IMPLIED
-//      WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND
-//      FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL NATHAN WEHR OR
-//      CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
-//      CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
-//      SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
-//      ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
-//      NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
-//      ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-//
-//      The views and conclusions contained in the software and documentation are those of the
-//      authors and should not be interpreted as representing official policies, either expressed
-//      or implied, of Nathan Wehr.
+// This file is part of the Kick project and subject to license terms.
+// See LICENSE.txt or https://bitbucket.org/nwehr/kick/downloads/LICENSE.txt
 //
 
 // Kick
@@ -39,7 +18,7 @@
 #include "pair.h"
 
 #ifndef KICK_POLYMORPHIC_MAP
-	#define KICK_POLYMORPHIC_MAP KICK_POLYMORPHIC_CONTAINERS
+#define KICK_POLYMORPHIC_MAP KICK_POLYMORPHIC_CONTAINERS
 #endif
 
 namespace kick {
@@ -76,7 +55,7 @@ namespace kick {
 		inline iterator end();
 		
 	private:
-		pair<KeyT,ValT>* _items_;
+		pair<KeyT,ValT>* _mem_;
 		AllocT _alloc_;
 		
 	};
@@ -85,38 +64,38 @@ namespace kick {
 
 template<typename KeyT, typename ValT, typename AllocT>
 kick::map<KeyT,ValT,AllocT>::map( size_t size )
-: _items_( 0 )
+: _mem_( 0 )
 , _alloc_( AllocT() )
 {
-	_items_ = _alloc_.malloc( _items_, size );
+	_mem_ = _alloc_.malloc( _mem_, size );
 }
 
 template<typename KeyT, typename ValT, typename AllocT>
 kick::map<KeyT,ValT,AllocT>::map( const map<KeyT,ValT,AllocT>& map )
-: _items_( 0 )
+: _mem_( 0 )
 , _alloc_( map._alloc_ )
 {
-	_items_ = _alloc_.malloc( _items_, size() );
+	_mem_ = _alloc_.malloc( _mem_, size() );
 	
 	for( size_t i = 0; i < map.size(); ++i )
-		_items_[i] = map._items_[i];
+		_mem_[i] = map._mem_[i];
 	
 }
 
 template<typename KeyT, typename ValT, typename AllocT>
 kick::map<KeyT,ValT,AllocT>::~map(){
-	if( _items_ )
-		_alloc_.free( _items_ );
+	if( _mem_ )
+		_alloc_.free( _mem_ );
 	
 }
 
 template<typename KeyT, typename ValT, typename AllocT>
 kick::map<KeyT,ValT,AllocT>& kick::map<KeyT,ValT,AllocT>::operator=( const map<KeyT,ValT,AllocT>& map ) {
 	if( this != &map ){
-		_items_ = _alloc_.malloc( _items_, size() );
+		_mem_ = _alloc_.malloc( _mem_, size() );
 		
 		for( size_t i = 0; i < map.size(); ++i )
-			_items_[i] = map._items_[i];
+			_mem_[i] = map._mem_[i];
 		
 	}
 	
@@ -133,18 +112,18 @@ bool kick::map<KeyT,ValT,AllocT>::find( const KeyT& key, size_t& index ) {
 	while( min + 1 < max ){
 		mid = (min + max) / 2;
 		
-		if( _items_[mid].key() > key ) max = mid;
+		if( _mem_[mid].key() > key ) max = mid;
 		else min = mid;
 		
 	}
 	
 	if( max ){
-		if( _items_[min].key() == key ){
+		if( _mem_[min].key() == key ){
 			index = min;
 			return true;
 			
 		} else {
-			index = _items_[min].key() > key ? (min == 0 ? min : min - 1) : min + 1;
+			index = _mem_[min].key() > key ? (min == 0 ? min : min - 1) : min + 1;
 			return false;
 			
 		}
@@ -158,15 +137,15 @@ bool kick::map<KeyT,ValT,AllocT>::find( const KeyT& key, size_t& index ) {
 
 template<typename KeyT, typename ValT, typename AllocT>
 void kick::map<KeyT,ValT,AllocT>::insert( const pair<KeyT,ValT>& pair ) {
-	size_t index( 0 );
+	size_t index = 0;
 	
 	if( !find( pair.key(), index ) ){
-		_items_ = _alloc_.realloc( _items_, size() + 1 );
+		_mem_ = _alloc_.realloc( _mem_, size() + 1 );
 		
 		if( index < (size() > 0 ? size() : 1) - 1 )
-			_items_ = _alloc_.move( _items_, index, index + 1 );
+			_mem_ = _alloc_.move( _mem_, index, index + 1 );
 		
-		_items_[index] = pair;
+		_mem_[index] = pair;
 		
 	}
 	
@@ -189,28 +168,30 @@ const kick::size_t kick::map<KeyT,ValT,AllocT>::capacity() const {
 
 template<typename KeyT, typename ValT, typename AllocT>
 ValT& kick::map<KeyT,ValT,AllocT>::operator[]( const KeyT& key ) {
-	size_t index( 0 );
+	size_t index = 0;
 	
 	if( !find( key, index ) ){
-		_items_ = _alloc_.realloc( _items_, size() + 1 );
+		_mem_ = _alloc_.realloc( _mem_, size() + 1 );
 		
 		if( index < (size() > 0 ? size() : 1) - 1 )
-			_items_ = _alloc_.move( _items_, index, index + 1 );
+			_mem_ = _alloc_.move( _mem_, index, index + 1 );
+		
+		_mem_[index] = pair<KeyT, ValT>( key, ValT() );
 		
 	}
 	
-	return _items_[index].val();
+	return _mem_[index].val();
 	
 }
 
 template<typename KeyT, typename ValT, typename AllocT>
 typename kick::map<KeyT,ValT,AllocT>::iterator kick::map<KeyT,ValT,AllocT>::begin() {
-	return iterator( 0, _items_ );
+	return iterator( 0, _mem_ );
 }
 
 template<typename KeyT, typename ValT, typename AllocT>
 typename kick::map<KeyT,ValT,AllocT>::iterator kick::map<KeyT,ValT,AllocT>::end() {
-	return iterator( size(), _items_ );
+	return iterator( size(), _mem_ );
 }
 
 #endif // _kick_map_h

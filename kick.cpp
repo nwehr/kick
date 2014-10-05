@@ -1,7 +1,6 @@
 #ifndef ARDUINO
 
-#define KICK_POLYMORPHIC_CONTAINERS 1
-#define KICK_POLYMORPHIC_IO 1
+// #define KICK_POLYMORPHIC 1
 
 // C++
 #include <iostream>
@@ -21,17 +20,51 @@
 #include <lib.kick/iostream/stringbuf.h>
 #include <lib.kick/iostream/istream.h>
 
-int main( int argc, char* argv[] ) {
-	kick::vector<kick::string> MyVector;
+#include <lib.kick/optional.h>
+
+#include <lib.kick/event.h>
 	
-	MyVector.push_back( "three" );
-	MyVector.push_back( "two" );
-	MyVector.push_back( "one" );
-	
-	for( kick::vector<kick::string>::iterator it = MyVector.begin(); it != MyVector.end(); ++it ) {
-		std::cout << *it << std::endl;
+class A {
+public:
+	void Trigger() {
+		m_Event();
 	}
 	
+	kick::event<>& Event() {
+		return m_Event;
+	}
+	
+private:
+	kick::event<> m_Event;
+	
+};
+
+class B {
+public:
+	B() {}
+	
+	void Print() {
+		std::cout << "B::Print()" << std::endl;
+	}
+	
+	kick::delegate& Delegate() {
+		return m_Delegate;
+	}
+	
+private:
+	kick::delegate m_Delegate;
+	
+};
+
+int main( int argc, char* argv[] ) {
+	std::cout << "kick version: " << KICK_VERSION_MAJOR << "." << KICK_VERSION_MINOR << "." << KICK_VERSION_PATCH << std::endl;
+	
+	A MyA;
+	B MyB;
+
+	MyB.Delegate().connect( &MyB, &B::Print, &MyA.Event() );
+	
+	MyA.Trigger();
 	
 }
 
