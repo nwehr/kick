@@ -13,63 +13,26 @@
 
 namespace kick {
 	///////////////////////////////////////////////////////////////////////////////
-	// base_delegate
-	///////////////////////////////////////////////////////////////////////////////
-	class base_delegate {
-	public:
-		virtual ~base_delegate() {}
-		
-	};
-	
-	template<typename... ArgT> class event;
-	
-	///////////////////////////////////////////////////////////////////////////////
 	// abstract_delegate
 	///////////////////////////////////////////////////////////////////////////////
 	template<typename... ArgT>
-	class abstract_delegate : public base_delegate {
+	class abstract_delegate {
 	public:
-		virtual void execute( ArgT... arg ) = 0;
-		
-	protected:
-		kick::vector<event<ArgT...>*> _e_;
-	};
-	
-	///////////////////////////////////////////////////////////////////////////////
-	// concrete_delegate
-	///////////////////////////////////////////////////////////////////////////////
-	template<typename ObjectT, typename... ArgT>
-	class concrete_delegate : public abstract_delegate<ArgT...> {
-	public:
-		concrete_delegate( ObjectT* o, void (ObjectT::*f)(ArgT...), event<ArgT...>* e )
-		: _o_( o )
-		, _f_( f )
-		{
-			e->connect( this );
-			this->_e_.push_back( e );
-		}
-		
-		virtual void execute( ArgT... a ) {
-			return (_o_->*_f_)( a... );
-		}
-		
-	protected:
-		ObjectT* _o_;
-		void (ObjectT::*_f_)(ArgT...);
+		virtual void execute( const ArgT&... a  );
 	};
 	
 	///////////////////////////////////////////////////////////////////////////////
 	// delegate
 	///////////////////////////////////////////////////////////////////////////////
-	class delegate {
+	template<typename ObjectT, typename... ArgT>
+	class delegate : public abstract_delegate<ArgT...> {
 	public:
-		template<typename ObjectT, typename... ArgT>
-		void connect( ObjectT* o, void (ObjectT::*f)(ArgT...), event<ArgT...>* e ) {
-			_d_.push_back( new concrete_delegate<ObjectT, ArgT...>( o, f, e ) );
-		}
+		delegate( ObjectT* o, void (ObjectT::*f)(ArgT...) );
+		virtual void execute( const ArgT&... a );
 		
-	protected:
-		kick::vector<base_delegate*> _d_;
+	private:
+		ObjectT* _o_;
+		void (ObjectT::*_f_)(ArgT...);
 	};
 	
 	///////////////////////////////////////////////////////////////////////////////
@@ -78,29 +41,49 @@ namespace kick {
 	template<typename... ArgT>
 	class event {
 	public:
-		virtual void operator()( ArgT... arg ) {
-			for( typename kick::vector<abstract_delegate<ArgT...>*>::iterator it = _d_.begin(); it != _d_.end(); ++it ) {
-				(*it)->execute( arg... );
-			}
-		};
-		
-		void connect( abstract_delegate<ArgT...>* d ) {
-			_d_.push_back( d );
-		}
-		
-		void disconnect( abstract_delegate<ArgT...>& d ) {
-			for( typename kick::vector<abstract_delegate<ArgT...> >::iterator it = _d_.begin(); it != _d_.end(); ++it ) {
-				if( d == *it ) {
-					_d_.erase( it ); break;
-				}
-			}
-		}
+		void operator()( const ArgT&... a );
+		void connect( abstract_delegate<ArgT...>* d );
 		
 	private:
 		kick::vector<abstract_delegate<ArgT...>*> _d_;
-		
 	};
 	
+}
+
+///////////////////////////////////////////////////////////////////////////////
+// abstract_delegate
+///////////////////////////////////////////////////////////////////////////////
+template<typename... ArgT>
+void kick::abstract_delegate<ArgT...>::execute( const ArgT&... a  ) {}
+
+///////////////////////////////////////////////////////////////////////////////
+// delegate
+///////////////////////////////////////////////////////////////////////////////
+template<typename ObjectT, typename... ArgT>
+kick::delegate<ObjectT,ArgT...>::delegate( ObjectT* o, void (ObjectT::*f)(ArgT...) )
+: _o_( o )
+, _f_( f )
+{}
+
+template<typename ObjectT, typename... ArgT>
+void kick::delegate<ObjectT,ArgT...>::execute( const ArgT&... a ) {
+	(_o_->*_f_)( a... );
+}
+
+///////////////////////////////////////////////////////////////////////////////
+// event
+///////////////////////////////////////////////////////////////////////////////
+template<typename... ArgT>
+void kick::event<ArgT...>::operator()( const ArgT&... a ) {
+	for( typename kick::vector<abstract_delegate<ArgT...>*>::iterator it = _d_.begin(); it != _d_.end(); ++it ) {
+		(*it)->execute( a... );
+	}
+	
+}
+
+template<typename... ArgT>
+void kick::event<ArgT...>::connect( abstract_delegate<ArgT...>* d ) {
+	_d_.push_back( d );
 }
 
 #endif

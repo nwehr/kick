@@ -11,85 +11,96 @@
 
 // C
 #include <stdlib.h>
+#include <stdio.h>
 #include <string.h>
 
 // Kick
 #include "common.h"
 #include "exception.h"
 
-#ifdef ARDUINO
-	// missing operator placement new on Arduino
-	void* operator new( size_t size, void* ptr ) { return ptr; }
+#ifdef OPERATOR_NEW
+void* operator new( size_t size, void* ptr ) {
+	return ptr;
+}
+
+void* operator new( size_t n ) {
+	void* const p = malloc( n );
+	return p;
+}
+
+void operator delete( void* p ) {
+	free( p );
+}
 #endif
 
 namespace kick {
-	///////////////////////////////////////////////////////////////////////////////
-	// allocator_malloc_exception
-	///////////////////////////////////////////////////////////////////////////////
-	class allocator_malloc_exception : public exception {
-	public:
-		allocator_malloc_exception() : exception() {}
-		
-#if	(KICK_POLYMORPHIC_EXCEPTION > 0)
-		virtual
-#endif
-		const char* what() const { return "Unable to allocate new memory."; }
-		
-	};
-	
-	///////////////////////////////////////////////////////////////////////////////
-	// allocator_move_exception
-	///////////////////////////////////////////////////////////////////////////////
-	class allocator_move_exception : public exception {
-	public:
-		explicit allocator_move_exception( void* adx )
-		: exception()
-		, _msg_( new char[50] )
-		{
-			sprintf( _msg_, "Unable to move memory block to %02lux", (unsigned long)adx );
-		}
-		
-#if	(KICK_POLYMORPHIC_EXCEPTION > 0)
-		virtual
-#endif
-		~allocator_move_exception() { delete[] _msg_; }
-		
-#if	(KICK_POLYMORPHIC_EXCEPTION > 0)
-		virtual
-#endif
-		const char* what() const { return _msg_; }
-		
-	private:
-		char* _msg_;
-		
-	};
-	
-	///////////////////////////////////////////////////////////////////////////////
-	// allocator_copy_exception
-	///////////////////////////////////////////////////////////////////////////////
-	class allocator_copy_exception : public exception {
-	public:
-		explicit allocator_copy_exception( void* adx )
-		: exception()
-		, _msg_( new char[50] )
-		{
-			sprintf( _msg_, "Unable to copy memory block to %02lux", (unsigned long)adx );
-		}
-		
-#if	(KICK_POLYMORPHIC_EXCEPTION > 0)
-		virtual
-#endif
-		~allocator_copy_exception() { delete[] _msg_; }
-
-#if	(KICK_POLYMORPHIC_EXCEPTION > 0)
-		virtual
-#endif
-		const char* what() const { return _msg_; }
-		
-	private:
-		char* _msg_;
-		
-	};
+//	///////////////////////////////////////////////////////////////////////////////
+//	// allocator_malloc_exception
+//	///////////////////////////////////////////////////////////////////////////////
+//	class allocator_malloc_exception : public exception {
+//	public:
+//		allocator_malloc_exception() : exception() {}
+//		
+//#if	(KICK_POLYMORPHIC_EXCEPTION > 0)
+//		virtual
+//#endif
+//		const char* what() const { return "Unable to allocate new memory."; }
+//		
+//	};
+//	
+//	///////////////////////////////////////////////////////////////////////////////
+//	// allocator_move_exception
+//	///////////////////////////////////////////////////////////////////////////////
+//	class allocator_move_exception : public exception {
+//	public:
+//		explicit allocator_move_exception( void* adx )
+//		: exception()
+//		, _msg_( new char[50] )
+//		{
+//			sprintf( _msg_, "Unable to move memory block to %02lux", (unsigned long)adx );
+//		}
+//		
+//#if	(KICK_POLYMORPHIC_EXCEPTION > 0)
+//		virtual
+//#endif
+//		~allocator_move_exception() { delete[] _msg_; }
+//		
+//#if	(KICK_POLYMORPHIC_EXCEPTION > 0)
+//		virtual
+//#endif
+//		const char* what() const { return _msg_; }
+//		
+//	private:
+//		char* _msg_;
+//		
+//	};
+//	
+//	///////////////////////////////////////////////////////////////////////////////
+//	// allocator_copy_exception
+//	///////////////////////////////////////////////////////////////////////////////
+//	class allocator_copy_exception : public exception {
+//	public:
+//		explicit allocator_copy_exception( void* adx )
+//		: exception()
+//		, _msg_( new char[50] )
+//		{
+//			sprintf( _msg_, "Unable to copy memory block to %02lux", (unsigned long)adx );
+//		}
+//		
+//#if	(KICK_POLYMORPHIC_EXCEPTION > 0)
+//		virtual
+//#endif
+//		~allocator_copy_exception() { delete[] _msg_; }
+//
+//#if	(KICK_POLYMORPHIC_EXCEPTION > 0)
+//		virtual
+//#endif
+//		const char* what() const { return _msg_; }
+//		
+//	private:
+//		char* _msg_;
+//		
+//	};
 	
 	///////////////////////////////////////////////////////////////////////////////
 	// array_allocator
@@ -157,8 +168,11 @@ namespace kick {
 		_usize_ = size;
 		_asize_ = size + _alloc_ext_;
 		
-		if( !(ptr = static_cast<T*>( ::malloc( sizeof( T ) * _asize_ ) )) )
-			throw allocator_malloc_exception();
+		if( !(ptr = static_cast<T*>( ::malloc( sizeof( T ) * _asize_ ) )) ){
+			// TODO: use something other than exceptions
+			// throw allocator_malloc_exception();
+		}
+		
 		
 		for( size_t i = 0; i < _asize_; ++i )
 			new( &ptr[i] ) T();
@@ -174,8 +188,11 @@ namespace kick {
 		if( size >= _asize_ ){
 			size_t asize = size + _alloc_ext_; 
 			
-			if( !(ptr = static_cast<T*>( ::realloc( static_cast<void*>( mem ), sizeof( T ) * asize ) )) )
-				throw allocator_malloc_exception();
+			if( !(ptr = static_cast<T*>( ::realloc( static_cast<void*>( mem ), sizeof( T ) * asize ) )) ) {
+				// TODO: use something other than exceptions
+				// throw allocator_malloc_exception();
+			}
+			
 			
 			for( size_t i = _asize_; i < asize; ++i )
 				new( &ptr[i] ) T();
@@ -186,8 +203,11 @@ namespace kick {
 		} else if( size < (_asize_ - _alloc_ext_) ){
 			size_t asize = (_asize_ - _alloc_ext_);
 			
-			if( !(ptr = static_cast<T*>( ::realloc( static_cast<void*>( mem ), sizeof( T ) * asize ) )) )
-				throw allocator_malloc_exception();
+			if( !(ptr = static_cast<T*>( ::realloc( static_cast<void*>( mem ), sizeof( T ) * asize ) )) ) {
+				// TODO: use something other than exceptions
+				// throw allocator_malloc_exception();
+			}
+			
 			
 			for( size_t i = _asize_; i >= asize; --i )
 				mem[i].~T();
@@ -217,8 +237,11 @@ namespace kick {
 			
 		}
 		
-		if( !::memmove( static_cast<void*>( &mem[dest_index] ), static_cast<void*>( &mem[src_index] ), sizeof( T ) * (_usize_ - src_index) ) )
-			throw allocator_move_exception( static_cast<void*>( &mem[dest_index] ) );
+		if( !::memmove( static_cast<void*>( &mem[dest_index] ), static_cast<void*>( &mem[src_index] ), sizeof( T ) * (_usize_ - src_index) ) ) {
+			// TODO: use something other than exceptions
+			// throw allocator_move_exception( static_cast<void*>( &mem[dest_index] ) );
+		}
+		
 		
 		// items at the end of the memory block
 		if( dest_index > src_index ){
@@ -236,8 +259,11 @@ namespace kick {
 	T* array_allocator<T>::copy( T* src, T* dest ) {
 		T* ptr = static_cast<T*>( ::memcpy( static_cast<void*>( dest ), static_cast<void*>( src ), sizeof( T ) ) );
 		
-		if( !ptr )
-			throw allocator_copy_exception( static_cast<void*>( dest ) );
+		if( !ptr ) {
+			// TODO: use something other than exceptions
+			// throw allocator_copy_exception( static_cast<void*>( dest ) );
+		}
+		
 		
 		return ptr;
 		

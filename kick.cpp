@@ -22,38 +22,73 @@
 
 #include <lib.kick/optional.h>
 
-#include <lib.kick/event.h>
+//#include <lib.kick/event.h>
 	
+namespace kick {
+	template<typename... ArgT>
+	class abstract_delegate {
+	public:
+		virtual void execute( const ArgT&... a  ) {}
+	};
+	
+	template<typename ObjectT, typename... ArgT>
+	class delegate : public abstract_delegate<ArgT...> {
+	public:
+		delegate( ObjectT* o, void (ObjectT::*f)(ArgT...) )
+		: _o_( o )
+		, _f_( f )
+		{}
+		
+		virtual void execute( const ArgT&... a ) {
+			(_o_->*_f_)( a... );
+		}
+		
+	private:
+		ObjectT* _o_;
+		void (ObjectT::*_f_)(ArgT...);
+	};
+	
+	template<typename... ArgT>
+	class event {
+	public:
+		void operator()( const ArgT&... a ) {
+			for( typename kick::vector<abstract_delegate<ArgT...>*>::iterator it = _d_.begin(); it != _d_.end(); ++it ) {
+				(*it)->execute( a... );
+			}
+			
+		}
+		
+		void connect( abstract_delegate<ArgT...>* d ) {
+			_d_.push_back( d );
+		}
+		
+	private:
+		kick::vector<abstract_delegate<ArgT...>*> _d_;
+	};
+	
+}
+
 class A {
 public:
-	void Trigger() {
-		m_Event();
-	}
-	
-	kick::event<>& Event() {
-		return m_Event;
-	}
-	
+	kick::event<>& Event() { return m_Event; }
 private:
 	kick::event<> m_Event;
-	
 };
 
 class B {
 public:
-	B() {}
+	B ()
+	: m_Delegate( this, &B::Print )
+	{}
 	
 	void Print() {
 		std::cout << "B::Print()" << std::endl;
 	}
 	
-	kick::delegate& Delegate() {
-		return m_Delegate;
-	}
+	kick::delegate<B>& Delegate() { return m_Delegate; }
 	
 private:
-	kick::delegate m_Delegate;
-	
+	kick::delegate<B> m_Delegate;
 };
 
 int main( int argc, char* argv[] ) {
@@ -61,10 +96,10 @@ int main( int argc, char* argv[] ) {
 	
 	A MyA;
 	B MyB;
-
-	MyB.Delegate().connect( &MyB, &B::Print, &MyA.Event() );
 	
-	MyA.Trigger();
+	MyA.Event().connect( &MyB.Delegate() );
+	
+	MyA.Event()();
 	
 }
 
