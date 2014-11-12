@@ -9,7 +9,9 @@
 // See LICENSE.txt or https://bitbucket.org/nwehr/kick/downloads/LICENSE.txt
 //
 
-#include "common.h"
+#include "./common.hpp"
+
+#if (KICK_EXCEPTION > 0)
 
 #ifndef KICK_POLYMORPHIC_EXCEPTION
 #define KICK_POLYMORPHIC_EXCEPTION KICK_POLYMORPHIC_CONTAINERS
@@ -43,4 +45,5 @@ namespace kick {
 	
 } // namespace kick
 
+#endif // KICK_EXCEPTION
 #endif // _kick_exception_h

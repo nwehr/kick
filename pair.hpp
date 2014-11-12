@@ -10,7 +10,7 @@
 //
 
 // Kick
-#include "common.h"
+#include "./common.hpp"
 
 #ifndef KICK_POLYMORPHIC_PAIR
 #define KICK_POLYMORPHIC_PAIR KICK_POLYMORPHIC_CONTAINERS

@@ -16,12 +16,14 @@ namespace kick {
 	template<typename ReturnT, typename... ArgT>
 	class function {
 	public:
-		function( ReturnT (*f)(ArgT...) );
-		ReturnT operator()( ArgT... a );
+		function( ReturnT (*)(ArgT...) );
+		function<ReturnT, ArgT...>& operator=( const function<ReturnT,ArgT...>& );
+		function<ReturnT, ArgT...>& operator=( ReturnT (*)(ArgT...) );
+		
+		ReturnT operator()( ArgT... );
 		
 	private:
 		ReturnT (*_f_)(ArgT...);
-		
 	};
 	
 	///////////////////////////////////////////////////////////////////////////////
@@ -30,12 +32,11 @@ namespace kick {
 	template<typename ObjectT, typename ReturnT, typename... ArgT>
 	class mem_fn {
 	public:
-		mem_fn( ReturnT (ObjectT::*f)(ArgT...) );
-		ReturnT operator()( ObjectT& o, ArgT... a );
+		mem_fn( ReturnT (ObjectT::*)(ArgT...) );
+		ReturnT operator()( ObjectT&, ArgT... );
 		
 	private:
 		ReturnT (ObjectT::*_f_)(ArgT...);
-		
 	};
 	
 }
@@ -43,21 +44,40 @@ namespace kick {
 ///////////////////////////////////////////////////////////////////////////////
 // function
 ///////////////////////////////////////////////////////////////////////////////
+template<typename ReturnT, typename... ArgT>
 kick::function<ReturnT,ArgT...>::function( ReturnT (*f)(ArgT...) )
 : _f_( f )
 {}
 
-ReturnT kick::function<ReturnT,ArgT...>::operator()( ArgT... a ) {
+template<typename ReturnT, typename... ArgT>
+kick::function<ReturnT, ArgT...>& kick::function<ReturnT, ArgT...>::operator=( const kick::function<ReturnT,ArgT...>& rhs )
+{
+	_f_ = rhs._f_;
+	return *this;
+}
+
+template<typename ReturnT, typename... ArgT>
+kick::function<ReturnT, ArgT...>& kick::function<ReturnT, ArgT...>::operator=( ReturnT (*f)(ArgT...) )
+{
+	_f_ = f;
+	return *this;
+}
+
+template<typename ReturnT, typename... ArgT>
+ReturnT kick::function<ReturnT,ArgT...>::operator()( ArgT... a )
+{
 	return _f_( a... );
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 // mem_fn
 ///////////////////////////////////////////////////////////////////////////////
+template<typename ObjectT, typename ReturnT, typename... ArgT>
 kick::mem_fn<ObjectT,ReturnT,ArgT...>::mem_fn( ReturnT (ObjectT::*f)(ArgT...) )
 : _f_( f )
 {}
 
+template<typename ObjectT, typename ReturnT, typename... ArgT>
 ReturnT kick::mem_fn<ObjectT,ReturnT,ArgT...>::operator()( ObjectT& o, ArgT... a ) {
 	return (o.*_f_)( a... );
 }

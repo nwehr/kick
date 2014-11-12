@@ -10,12 +10,12 @@
 //
 
 // Kick
-#include "common.h"
+#include "./common.hpp"
 
-#include "allocator.h"
-#include "iterator.h"
+#include "./allocator/contiguous_allocator.hpp"
+#include "./iterator.hpp"
 
-#include "pair.h"
+#include "./pair.hpp"
 
 #ifndef KICK_POLYMORPHIC_MAP
 #define KICK_POLYMORPHIC_MAP KICK_POLYMORPHIC_CONTAINERS
@@ -25,13 +25,13 @@ namespace kick {
 	///////////////////////////////////////////////////////////////////////////////
 	// map
 	///////////////////////////////////////////////////////////////////////////////
-	template<typename KeyT, typename ValT, typename AllocT = array_allocator< pair<KeyT,ValT> > >
+	template<typename KeyT, typename ValT, typename AllocT = contiguous_allocator< pair<KeyT,ValT> > >
 	class map {
 	public:
 		typedef array_iterator< pair<KeyT,ValT> > iterator;
 		typedef const_array_iterator< pair<KeyT,ValT> > const_iterator;
 		
-		map( size_t size = 0 );
+		map( size_t size = 0, AllocT alloc = AllocT() );
 		map( const map<KeyT,ValT,AllocT>& );
 		
 #if (KICK_POLYMORPHIC_MAP > 0)
@@ -63,9 +63,9 @@ namespace kick {
 } // namespace kick
 
 template<typename KeyT, typename ValT, typename AllocT>
-kick::map<KeyT,ValT,AllocT>::map( size_t size )
+kick::map<KeyT,ValT,AllocT>::map( size_t size, AllocT alloc )
 : _mem_( 0 )
-, _alloc_( AllocT() )
+, _alloc_( alloc )
 {
 	_mem_ = _alloc_.malloc( _mem_, size );
 }

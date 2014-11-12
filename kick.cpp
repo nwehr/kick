@@ -8,98 +8,81 @@
 #include <vector>
 
 // Kick
-#include <lib.kick/string.h>
-#include <lib.kick/smart_ptr.h>
-#include <lib.kick/vector.h>
-#include <lib.kick/deque.h>
-#include <lib.kick/version.h>
-#include <lib.kick/map.h>
+//#include <lib.kick/string.h>
+//#include <lib.kick/smart_ptr.h>
+//#include <lib.kick/vector.h>
+//#include <lib.kick/deque.h>
+//#include <lib.kick/version.h>
+//#include <lib.kick/map.h>
 
-#include <lib.kick/algorithm/sort.h>
+//#include <lib.kick/algorithm/sort.h>
+//
+//#include <lib.kick/iostream/stringbuf.h>
+//#include <lib.kick/iostream/istream.h>
+//
+//#include <lib.kick/optional.h>
 
-#include <lib.kick/iostream/stringbuf.h>
-#include <lib.kick/iostream/istream.h>
+#include <lib.kick/event.hpp>
+#include <lib.kick/vector.hpp>
+#include <lib.kick/map.hpp>
+#include <lib.kick/string.hpp>
 
-#include <lib.kick/optional.h>
 
-//#include <lib.kick/event.h>
-	
-namespace kick {
-	template<typename... ArgT>
-	class abstract_delegate {
-	public:
-		virtual void execute( const ArgT&... a  ) {}
-	};
-	
-	template<typename ObjectT, typename... ArgT>
-	class delegate : public abstract_delegate<ArgT...> {
-	public:
-		delegate( ObjectT* o, void (ObjectT::*f)(ArgT...) )
-		: _o_( o )
-		, _f_( f )
-		{}
-		
-		virtual void execute( const ArgT&... a ) {
-			(_o_->*_f_)( a... );
-		}
-		
-	private:
-		ObjectT* _o_;
-		void (ObjectT::*_f_)(ArgT...);
-	};
-	
-	template<typename... ArgT>
-	class event {
-	public:
-		void operator()( const ArgT&... a ) {
-			for( typename kick::vector<abstract_delegate<ArgT...>*>::iterator it = _d_.begin(); it != _d_.end(); ++it ) {
-				(*it)->execute( a... );
-			}
-			
-		}
-		
-		void connect( abstract_delegate<ArgT...>* d ) {
-			_d_.push_back( d );
-		}
-		
-	private:
-		kick::vector<abstract_delegate<ArgT...>*> _d_;
-	};
-	
-}
+// #include <lib.kick/bitset.h>
 
-class A {
-public:
-	kick::event<>& Event() { return m_Event; }
-private:
-	kick::event<> m_Event;
-};
-
-class B {
-public:
-	B ()
-	: m_Delegate( this, &B::Print )
-	{}
-	
-	void Print() {
-		std::cout << "B::Print()" << std::endl;
-	}
-	
-	kick::delegate<B>& Delegate() { return m_Delegate; }
-	
-private:
-	kick::delegate<B> m_Delegate;
-};
+//class A {
+//public:
+//	void Trigger() {
+//		Event();
+//	}
+//	
+//	void Trigger2() {
+//		Event2();
+//	}
+//	
+//	kick::event<> Event;
+//	kick::event<> Event2;
+//};
+//
+//class B {
+//public:
+//	void Print() { std::cout << "Hello, World!" << std::endl; }
+//	void Print2() { std::cout << "Hello, World! (2)" << std::endl; }
+//	
+//	kick::delegate Delegate;
+//};
 
 int main( int argc, char* argv[] ) {
-	std::cout << "kick version: " << KICK_VERSION_MAJOR << "." << KICK_VERSION_MINOR << "." << KICK_VERSION_PATCH << std::endl;
+//	A MyA;
+//	B MyB;
+//	
+//	MyB.Delegate.connect( &MyB, &B::Print, &MyA.Event );
+//	MyB.Delegate.connect( &MyB, &B::Print2, &MyA.Event );
+//	
+//	MyA.Trigger();
 	
-	A MyA;
-	B MyB;
+	kick::vector<int> V;
 	
-	MyA.Event().connect( &MyB.Delegate() );
+	V.push_back( 1 );
+	V.push_back( 2 );
+	V.push_back( 3 );
+	V.push_back( 4 );
+	V.push_back( 5 );
+	V.push_back( 6 );
 	
-	MyA.Event()();
+	for( int i = 0; i < V.size(); ++i ) {
+		std::cout << V[i] << std::endl; 
+	}
+	
+	kick::map<kick::string, int> M;
+	
+	M["one"] = 1;
+	M["two"] = 2;
+	M["three"] = 3;
+	
+	for( kick::map<kick::string, int>::iterator it = M.begin(); it != M.end(); ++it ) {
+		std::cout << (*it).key() << " = " << (*it).val() << std::endl;
+	}
 	
 }
 

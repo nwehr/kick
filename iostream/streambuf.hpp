@@ -13,8 +13,8 @@
 #include <string.h>
 
 // Kick
-#include "../common.h"
-#include "ios.h"
+#include "../common.hpp"
+#include "./ios.hpp"
 
 #ifndef KICK_POLYMORPHIC_STREAMBUF
 	#define KICK_POLYMORPHIC_STREAMBUF KICK_POLYMORPHIC_IO

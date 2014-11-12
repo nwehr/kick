@@ -9,6 +9,10 @@
 // See LICENSE.txt or https://bitbucket.org/nwehr/kick/downloads/LICENSE.txt
 //
 
+#ifndef KICK_EXCEPTION
+#define KICK_EXCEPTION 1
+#endif
+
 #ifndef KICK_POLYMORPHIC
 #define KICK_POLYMORPHIC 1
 #endif
@@ -24,7 +28,6 @@
 namespace kick {
 	typedef int size_type;
 	typedef unsigned int size_t;
-	
 }
 
 #endif // _kick_config_h

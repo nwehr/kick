@@ -13,8 +13,8 @@
 #include <stdint.h>
 
 // Kick
-#include "../common.h"
-#include "streambuf.h"
+#include "../common.hpp"
+#include "./streambuf.hpp"
 
 #ifndef KICK_POLYMORPHIC_STREAM
 	#define KICK_POLYMORPHIC_STREAM KICK_POLYMORPHIC_IO

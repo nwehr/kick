@@ -14,19 +14,21 @@
 #endif
 
 namespace kick {
-//	///////////////////////////////////////////////////////////////////////////////
-//	// optional_exception : exception
-//	///////////////////////////////////////////////////////////////////////////////
-//	class optional_exception : public exception {
-//	public:
-//		optional_exception() : exception() {}
-//		
-//#if	(KICK_POLYMORPHIC_EXCEPTION > 0)
-//		virtual
-//#endif
-//		const char* what() const { return "unable to dereference uninitialized object."; }
-//		
-//	};
+#if (KICK_EXCEPTION > 0)
+	///////////////////////////////////////////////////////////////////////////////
+	// optional_exception : exception
+	///////////////////////////////////////////////////////////////////////////////
+	class optional_exception : public exception {
+	public:
+		optional_exception() : exception() {}
+		
+#if	(KICK_POLYMORPHIC_EXCEPTION > 0)
+		virtual
+#endif
+		const char* what() const { return "unable to dereference uninitialized object."; }
+		
+	};
+#endif
 	
 	///////////////////////////////////////////////////////////////////////////////
 	// optional
@@ -105,12 +107,14 @@ kick::optional<T>::operator bool() const {
 	return is_initialized();
 }
 
-
 template<typename T>
 T& kick::optional<T>::get() {
 	if( !_mem_ ) {
-		// TODO: use something other than exceptions
-		// throw optional_exception();
+#if (KICK_EXCEPTION > 0)
+		throw optional_exception();
+#else 
+		
+#endif
 	}
 	
 	return *_mem_;
@@ -124,8 +128,11 @@ const T& kick::optional<T>::get() const {
 template<typename T>
 T& kick::optional<T>::operator*() {
 	if( !_mem_ ) {
-		// TODO: use something other than exceptions
-		// throw optional_exception();
+#if (KICK_EXCEPTION > 0)
+		 throw optional_exception();
+#else
+		
+#endif
 	}
 	
 	return *_mem_;

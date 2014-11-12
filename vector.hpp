@@ -10,10 +10,12 @@
 //
 
 // Kick
-#include "common.h"
+#include "./common.hpp"
 
-#include "allocator.h"
-#include "iterator.h"
+#include "./allocator/contiguous_allocator.hpp"
+
+#include "./iterator.hpp"
+#include "./functional.hpp"
 
 #ifndef KICK_POLYMORPHIC_VECTOR
 #define KICK_POLYMORPHIC_VECTOR KICK_POLYMORPHIC_CONTAINERS
@@ -23,13 +25,13 @@ namespace kick {
 	///////////////////////////////////////////////////////////////////////////////
 	// vector
 	///////////////////////////////////////////////////////////////////////////////
-	template<typename T, typename AllocT = array_allocator<T> >
+	template<typename T, typename AllocT = contiguous_allocator<T> >
 	class vector {
 	public:
 		typedef kick::array_iterator<T> iterator;
 		typedef kick::const_array_iterator<T> const_iterator;
 		
-		vector( kick::size_t size = 0 );
+		vector( kick::size_t size = 0, AllocT alloc = AllocT() );
 		vector( const vector<T>& vec );
 
 #if (KICK_POLYMORPHIC_VECTOR > 0)
@@ -73,9 +75,9 @@ namespace kick {
 	// vector
 	///////////////////////////////////////////////////////////////////////////////
 	template<typename T, typename AllocT>
-	vector<T,AllocT>::vector( kick::size_t size )
+	vector<T,AllocT>::vector( kick::size_t size, AllocT alloc )
 	: _items_( 0 )
-	, _alloc_( AllocT() )
+	, _alloc_( alloc )
 	{
 		_items_ = _alloc_.malloc( _items_, size );
 	}

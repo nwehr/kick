@@ -10,8 +10,8 @@
 //
 
 // Kick
-#include "common.h"
-#include "link.h"
+#include "./common.hpp"
+#include "./link.hpp"
 
 namespace kick {
 	///////////////////////////////////////////////////////////////////////////////
@@ -97,7 +97,7 @@ namespace kick {
 	// const_array_iterator
 	///////////////////////////////////////////////////////////////////////////////
 	template<typename T>
-	class const_array_iterator : public array_allocator<T> {
+	class const_array_iterator : public contiguous_allocator<T> {
 	public:
 		const_array_iterator( int index, T* items )
 		: array_iterator<T>( index, items )

@@ -1,5 +1,5 @@
-#ifndef _kick_iostream_stringbuf_h
-#define _kick_iostream_stringbuf_h
+#ifndef _kick_iostream_ostream_h
+#define _kick_iostream_ostream_h
 
 //
 // Copyright 2012-2014 Kick project developers.
@@ -10,43 +10,27 @@
 //
 
 // Kick
-#include "../string.h"
-#include "streambuf.h"
+#include "./ios.hpp"
 
 namespace kick {
 	///////////////////////////////////////////////////////////////////////////////
-	// basic_stringbuf : basic_streambuf
+	// basic_ostream : basic_ios
 	///////////////////////////////////////////////////////////////////////////////
-	template<typename CharT, typename StringT = basic_string<CharT> >
-	class basic_stringbuf : public basic_streambuf<CharT> {
-	public:
-#if	(KICK_POLYMORPHIC_STREAMBUF > 0)
-		virtual
-#endif
-		~basic_stringbuf();
-
-		inline StringT str();
+	template<typename CharT>
+	class basic_ostream : public virtual basic_ios<CharT> {
 		
 	};
 	
 	///////////////////////////////////////////////////////////////////////////////
-	// stringbuf
+	// ostream
 	///////////////////////////////////////////////////////////////////////////////
-	typedef basic_stringbuf<char, basic_string<char> > stringbuf;
+	typedef basic_ostream<char> ostream;
 	
 	///////////////////////////////////////////////////////////////////////////////
-	// wstringbuf
+	// wostream
 	///////////////////////////////////////////////////////////////////////////////
-	typedef basic_stringbuf<wchar_t, basic_string<wchar_t> > wstringbuf;
+	typedef basic_ostream<wchar_t> wostream; 
 	
 } // namespace kick
 
-template<typename CharT, typename StringT>
-kick::basic_stringbuf<CharT, StringT>::~basic_stringbuf() {}
-
-template<typename CharT, typename StringT>
-StringT kick::basic_stringbuf<CharT, StringT>::str() {
-	return StringT( this->_buf_ );
-}
-
-#endif // _kick_iostream_stringbuf_h
+#endif // _kick_iostream_ostream_h

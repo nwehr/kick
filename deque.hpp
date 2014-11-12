@@ -10,9 +10,9 @@
 //
 
 // Kick
-#include "common.h"
-#include "iterator.h"
-#include "link.h"
+#include "./common.hpp"
+#include "./iterator.hpp"
+#include "./link.hpp"
 
 #ifndef KICK_POLYMORPHIC_DEQUE
 #define KICK_POLYMORPHIC_DEQUE KICK_POLYMORPHIC_CONTAINERS
