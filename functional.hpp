@@ -73,9 +73,9 @@ kick::function<ReturnT, ArgT...>& kick::function<ReturnT, ArgT...>::operator=( R
 }
 
 template<typename ReturnT, typename... ArgT>
-kick::function<ReturnT, ArgT...>& kick::function<ReturnT, ArgT...>::operator=( const kick::function<ReturnT,ArgT...>& rhs )
+kick::function<ReturnT, ArgT...>& kick::function<ReturnT, ArgT...>::operator=( const kick::function<ReturnT,ArgT...>& f )
 {
-	_f = rhs._f;
+	_f = f._f;
 	return *this;
 }
 
