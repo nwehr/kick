@@ -29,19 +29,19 @@ namespace kick {
 		
 	public:
 		weak_ptr();
-		weak_ptr( const weak_ptr<T>& ptr );
-		weak_ptr( const shared_ptr<T>& ptr );
+		weak_ptr( const weak_ptr<T>& );
+		weak_ptr( const shared_ptr<T>& );
 		
 #if (KICK_POLYMORPHIC_SMART_PTR > 0)
 		virtual
 #endif
 		~weak_ptr();
 		
-		weak_ptr<T>& operator=( const weak_ptr<T>& rhs );
-		weak_ptr<T>& operator=( const shared_ptr<T>& rhs );
+		weak_ptr<T>& operator=( const weak_ptr<T>& );
+		weak_ptr<T>& operator=( const shared_ptr<T>& );
 		
 	protected:
-		int* _refs_;
+		int* _refs;
 		
 	};
 	
@@ -53,29 +53,29 @@ namespace kick {
 template <typename T>
 kick::weak_ptr<T>::weak_ptr()
 : kick::smart_ptr<T>( 0 )
-, _refs_( 0 )
+, _refs( 0 )
 {}
 
 template <typename T>
 kick::weak_ptr<T>::weak_ptr( const kick::weak_ptr<T>& ptr )
-: kick::smart_ptr<T>( ptr._mem_ )
-, _refs_( ptr._refs_ )
+: kick::smart_ptr<T>( ptr._mem )
+, _refs( ptr._refs )
 {}
 
 template <typename T>
 kick::weak_ptr<T>::weak_ptr( const kick::shared_ptr<T>& ptr )
-: kick::smart_ptr<T>( ptr._mem_ )
-, _refs_( ptr._refs_ )
+: kick::smart_ptr<T>( ptr._mem )
+, _refs( ptr._refs )
 {}
 
 template <typename T>
 kick::weak_ptr<T>::~weak_ptr(){}
 
 template <typename T>
-kick::weak_ptr<T>& kick::weak_ptr<T>::operator=( const kick::weak_ptr<T>& rhs ){
-	if( this != &rhs ){
-		this->_mem_		= rhs._mem_;
-		_refs_			= rhs._refs_;
+kick::weak_ptr<T>& kick::weak_ptr<T>::operator=( const kick::weak_ptr<T>& ptr ){
+	if( this != &ptr ){
+		this->_mem		= ptr._mem;
+		_refs			= ptr._refs;
 	}
 	
 	return *this;
@@ -83,10 +83,10 @@ kick::weak_ptr<T>& kick::weak_ptr<T>::operator=( const kick::weak_ptr<T>& rhs ){
 }
 
 template <typename T>
-kick::weak_ptr<T>& kick::weak_ptr<T>::operator=( const kick::shared_ptr<T>& rhs ){
-	if( this != &rhs ){
-		this->_mem_		= rhs._mem_;
-		_refs_			= rhs._refs_;
+kick::weak_ptr<T>& kick::weak_ptr<T>::operator=( const kick::shared_ptr<T>& ptr ){
+	if( this != &ptr ){
+		this->_mem		= ptr._mem;
+		_refs			= ptr._refs;
 	}
 	
 	return *this;

@@ -16,8 +16,9 @@
 
 // Kick
 #include "../common.hpp"
-#include "../exception.hpp"
 #include "../functional.hpp"
+
+#include "./mem_exception.hpp"
 
 kick::size_t default_calc( kick::size_t size, kick::size_t asize )
 {
@@ -32,40 +33,6 @@ kick::size_t default_calc( kick::size_t size, kick::size_t asize )
 }
 
 namespace kick {
-#if (KICK_EXCEPTION > 0)
-	///////////////////////////////////////////////////////////////////////////////
-	// malloc_exception
-	///////////////////////////////////////////////////////////////////////////////
-	class malloc_exception : public exception {
-	public:
-		malloc_exception() : exception() {}
-		const char* what() const { return "Unable to allocate new memory."; }
-		
-	};
-	
-	///////////////////////////////////////////////////////////////////////////////
-	// move_exception
-	///////////////////////////////////////////////////////////////////////////////
-	class move_exception : public exception {
-	public:
-		explicit move_exception( void* adx )
-		: exception()
-		, _msg( new char[50] )
-		{
-			sprintf( _msg, "Unable to move memory block to %02lux", reinterpret_cast<unsigned long>( adx ) );
-		}
-
-		~move_exception() { delete[] _msg; }
-		
-		const char* what() const { return _msg; }
-		
-	private:
-		char* _msg;
-		
-	};
-	
-#endif // KICK_EXCEPTION
-	
 	///////////////////////////////////////////////////////////////////////////////
 	// contiguous_allocator
 	///////////////////////////////////////////////////////////////////////////////

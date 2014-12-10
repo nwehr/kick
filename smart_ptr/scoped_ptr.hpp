@@ -40,7 +40,7 @@ kick::scoped_ptr<T>::scoped_ptr( T* mem )
 
 template<typename T>
 kick::scoped_ptr<T>::~scoped_ptr(){
-	delete this->_mem_;
+	delete this->_mem;
 }
 
 

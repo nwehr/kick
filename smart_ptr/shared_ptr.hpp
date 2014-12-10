@@ -30,19 +30,19 @@ namespace kick {
 	public:
 		explicit shared_ptr( T* mem = 0 );
 		
-		shared_ptr( const shared_ptr<T>& ptr );
-		shared_ptr( const weak_ptr<T>& ptr );
+		shared_ptr( const shared_ptr<T>& );
+		shared_ptr( const weak_ptr<T>& );
 		
 #if (KICK_POLYMORPHIC_SMART_PTR > 0)
 		virtual
 #endif
 		~shared_ptr();
 		
-		shared_ptr<T>& operator=( const shared_ptr<T>& rhs );
-		shared_ptr<T>& operator=( const weak_ptr<T>& rhs );
+		shared_ptr<T>& operator=( const shared_ptr<T>& );
+		shared_ptr<T>& operator=( const weak_ptr<T>& );
 		
 	protected:
-		unsigned int* _refs_;
+		unsigned int* _refs;
 	};
 	
 } // namespace kick
@@ -50,44 +50,44 @@ namespace kick {
 template <typename T>
 kick::shared_ptr<T>::shared_ptr( T* mem )
 : kick::smart_ptr<T>( mem )
-, _refs_( new unsigned int( this->_mem_ ? 1 : 0 ) )
+, _refs( new unsigned int( this->_mem ? 1 : 0 ) )
 {}
 
 template <typename T>
 kick::shared_ptr<T>::shared_ptr( const kick::shared_ptr<T>& ptr )
-: kick::smart_ptr<T>( ptr._mem_ )
-, _refs_( ptr._refs_ )
+: kick::smart_ptr<T>( ptr._mem )
+, _refs( ptr._refs )
 {
-	++(*_refs_);
+	++(*_refs);
 }
 
 template <typename T>
 kick::shared_ptr<T>::shared_ptr( const kick::weak_ptr<T>& ptr )
-: kick::smart_ptr<T>( ptr._mem_ )
-, _refs_( ptr._refs_ )
+: kick::smart_ptr<T>( ptr._mem )
+, _refs( ptr._refs )
 {
-	++(*_refs_);
+	++(*_refs);
 }
 
 template <typename T>
 kick::shared_ptr<T>::~shared_ptr(){
-	if( *_refs_ )
-		--(*_refs_);
+	if( *_refs )
+		--(*_refs);
 	
-	if( !*_refs_ ){
-		delete this->_mem_;
-		delete _refs_;
+	if( !*_refs ){
+		delete this->_mem;
+		delete _refs;
 	}
 	
 }
 
 template <typename T>
-kick::shared_ptr<T>& kick::shared_ptr<T>::operator=( const kick::shared_ptr<T>& rhs ){
-	if( this != &rhs ){
-		this->_mem_	= rhs._mem_;
-		_refs_		= rhs._refs_;
+kick::shared_ptr<T>& kick::shared_ptr<T>::operator=( const kick::shared_ptr<T>& ptr ){
+	if( this != &ptr ){
+		this->_mem	= ptr._mem;
+		_refs		= ptr._refs;
 		
-		++(*_refs_);
+		++(*_refs);
 		
 	}
 	
@@ -96,12 +96,12 @@ kick::shared_ptr<T>& kick::shared_ptr<T>::operator=( const kick::shared_ptr<T>& 
 }
 
 template <typename T>
-kick::shared_ptr<T>& kick::shared_ptr<T>::operator=( const kick::weak_ptr<T>& rhs ){
-	if( this != &rhs ){
-		this->_mem_	= rhs._mem_;
-		_refs_		= rhs._refs_;
+kick::shared_ptr<T>& kick::shared_ptr<T>::operator=( const kick::weak_ptr<T>& ptr ){
+	if( this != &ptr ){
+		this->_mem	= ptr._mem;
+		_refs		= ptr._refs;
 		
-		++(*_refs_);
+		++(*_refs);
 		
 	}
 	

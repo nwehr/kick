@@ -20,15 +20,15 @@ namespace kick {
 	template<typename T>
 	class array_iterator {
 	public:
-		array_iterator( int index, T* items )
-		: _index_( index )
-		, _items_( items )
+		array_iterator( int index, T* mem )
+		: _index( index )
+		, _mem( mem )
 		{}
 		
 		array_iterator<T>& operator=( const array_iterator<T>& it ){
 			if( this != &it ) {
-				_index_ = it._index_;
-				_items_ = it._items_;
+				_index = it._index;
+				_mem = it._mem;
 			}
 			
 			return *this; 
@@ -36,60 +36,60 @@ namespace kick {
 		}
 		
 		T& operator*(){
-			return _items_[_index_];
+			return _mem[_index];
 		}
 		
 		array_iterator operator+( int rh ){
-			return array_iterator( _index_ + rh, _items_ );
+			return array_iterator( _index + rh, _mem );
 		}
 		
 		array_iterator operator+( const array_iterator& rh ){
-			return array_iterator( _index_ + rh._index_, _items_ );
+			return array_iterator( _index + rh._index, _mem );
 		}
 		
 		array_iterator operator-( int rh ){
-			return array_iterator( _index_ - rh, _items_ );
+			return array_iterator( _index - rh, _mem );
 		}
 		
 		array_iterator operator-( const array_iterator& rh ){
-			return array_iterator( _index_ - rh._index_, _items_ );
+			return array_iterator( _index - rh._index, _mem );
 		}
 		
 		void operator++(){
-			++_index_;
+			++_index;
 		}
 		
 		void operator++(int){
-			++_index_;
+			++_index;
 		}
 		
 		void operator--(){
-			if( _index_ )
-				--_index_;
+			if( _index )
+				--_index;
 			
 		}
 		
 		void operator--(int){
-			if( _index_ )
-				--_index_;
+			if( _index )
+				--_index;
 			
 		}
 		
 		bool operator==( const array_iterator<T>& it ) const {
-			return _index_ == it._index_;
+			return _index == it._index;
 		}
 		
 		bool operator!=( const array_iterator<T>& it ) const {
-			return _index_ != it._index_;
+			return _index != it._index;
 		}
 		
 		int index() const {
-			return _index_; 
+			return _index; 
 		}
 		
 	protected:
-		int _index_;
-		T* _items_;
+		int _index;
+		T* _mem;
 		
 	};
 	
@@ -99,12 +99,12 @@ namespace kick {
 	template<typename T>
 	class const_array_iterator : public contiguous_allocator<T> {
 	public:
-		const_array_iterator( int index, T* items )
-		: array_iterator<T>( index, items )
+		const_array_iterator( int index, T* mem )
+		: array_iterator<T>( index, mem )
 		{}
 		
 		const T& operator*() const {
-			return this->_items_[this->_index_];
+			return this->_mem[this->_index];
 		}
 		
 	};
@@ -115,17 +115,17 @@ namespace kick {
 	template<typename T>
 	class deque_iterator {
 	public:
-		deque_iterator( kick::link<T>* item )
-		: _item_( item )
+		deque_iterator( kick::link<T>* mem )
+		: _mem( mem )
 		{}
 		
 		deque_iterator( const deque_iterator<T>& it )
-		: _item_( it._item_ )
+		: _mem( it._mem )
 		{}
 		
 		deque_iterator<T>& operator=( const deque_iterator<T>& it ){
 			if( this != &it ) {
-				_item_ = it._item_;
+				_mem = it._mem;
 			}
 			
 			return *this; 
@@ -133,14 +133,14 @@ namespace kick {
 		}
 		
 		T& operator*(){
-			return _item_->item(); 
+			return _mem->item(); 
 		}
 		
 		deque_iterator<T> operator+( unsigned int rh ){
 			for( unsigned int i = 0; i < rh; ++i )
 				operator++(); 
 			
-			return deque_iterator<T>( _item_ ); 
+			return deque_iterator<T>( _mem ); 
 			
 		}
 		
@@ -148,36 +148,36 @@ namespace kick {
 			for( unsigned int i = 0; i < rh; ++i )
 				operator--(); 
 			
-			return deque_iterator<T>( _item_ ); 
+			return deque_iterator<T>( _mem ); 
 			
 		}
 		
 		void operator++(){
-			_item_ = _item_->next();
+			_mem = _mem->next();
 		}
 		
 		void operator++(int){
-			_item_ = _item_->next();
+			_mem = _mem->next();
 		}
 		
 		void operator--(){
-			_item_ = _item_->prev();
+			_mem = _mem->prev();
 		}
 		
 		void operator--(int){
-			_item_ = _item_->prev();
+			_mem = _mem->prev();
 		}
 		
 		bool operator==( const deque_iterator& it ) const {
-			return _item_ == it._item_;
+			return _mem == it._mem;
 		}
 		
 		bool operator!=( const deque_iterator& it ) const {
-			return _item_ != it._item_;
+			return _mem != it._mem;
 		}
 		
 	private:
-		kick::link<T>* _item_;
+		kick::link<T>* _mem;
 		
 	};
 	

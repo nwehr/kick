@@ -97,8 +97,8 @@ namespace kick {
 		basic_string<CharT, AllocT> substr( size_type pos, size_type len = npos ) const;
 		
 	protected:
-		CharT* _cstr_;
-		AllocT _alloc_;
+		CharT* _mem;
+		AllocT _alloc;
 		
 	};
 
@@ -116,81 +116,81 @@ namespace kick {
 
 template<typename CharT, typename AllocT>
 kick::basic_string<CharT, AllocT>::basic_string( AllocT alloc )
-: _cstr_( 0 )
-, _alloc_( alloc )
+: _mem( 0 )
+, _alloc( alloc )
 {
-	_cstr_ = _alloc_.malloc( _cstr_, 0 );
-	_cstr_[0] = 0;
+	_mem = _alloc.malloc( _mem, 0 );
+	_mem[0] = 0;
 }
 
 template<typename CharT, typename AllocT>
 kick::basic_string<CharT, AllocT>::basic_string( const CharT* cstr, AllocT alloc )
-: _cstr_( 0 )
-, _alloc_( alloc )
+: _mem( 0 )
+, _alloc( alloc )
 {
 	size_type size( 0 );
 	
 	while( cstr[size] )
 		++size;
 	
-	_cstr_ = _alloc_.malloc( _cstr_, ++size );
+	_mem = _alloc.malloc( _mem, ++size );
 	
 	for( size_type i = 0; i < size; ++i )
-		_cstr_[i] = cstr[i];
+		_mem[i] = cstr[i];
 	
 }
 
 template<typename CharT, typename AllocT>
 kick::basic_string<CharT, AllocT>::basic_string( const CharT* cstr, kick::size_type size, AllocT alloc )
-: _cstr_( 0 )
-, _alloc_( alloc )
+: _mem( 0 )
+, _alloc( alloc )
 {
-	_cstr_ = _alloc_.malloc( _cstr_, size + 1 );
+	_mem = _alloc.malloc( _mem, size + 1 );
 	
 	for( size_type i = 0; i < size; ++i )
-		_cstr_[i] = cstr[i];
+		_mem[i] = cstr[i];
 	
-	_cstr_[size] = 0;
+	_mem[size] = 0;
 	
 }
 
 template<typename CharT, typename AllocT>
 kick::basic_string<CharT, AllocT>::basic_string( kick::size_type size, AllocT alloc )
-: _cstr_( 0 )
-, _alloc_( alloc )
+: _mem( 0 )
+, _alloc( alloc )
 {
-	_cstr_ = _alloc_.malloc( _cstr_, size + 1 );
-	_cstr_[0] = 0;
-	_cstr_[size] = 0;
+	_mem = _alloc.malloc( _mem, size + 1 );
+	_mem[0] = 0;
+	_mem[size] = 0;
 }
 
 template<typename CharT, typename AllocT>
 kick::basic_string<CharT, AllocT>::basic_string( const kick::basic_string<CharT, AllocT>& str )
-: _cstr_( 0 )
-, _alloc_( str._alloc_ )
+: _mem( 0 )
+, _alloc( str._alloc )
 {
 	size_type size( str.size() + 1 );
 	
-	_cstr_ = _alloc_.malloc( _cstr_, size );
+	_mem = _alloc.malloc( _mem, size );
 	
 	for( size_type i = 0; i < size; ++i )
-		_cstr_[i] = str._cstr_[i];
+		_mem[i] = str._mem[i];
 	
 }
 
 template<typename CharT, typename AllocT>
 kick::basic_string<CharT, AllocT>::~basic_string() {
-	if( _cstr_ )
-		_alloc_.free( _cstr_ );
+	if( _mem )
+		_alloc.free( _mem );
 	
 }
 
 template<typename CharT, typename AllocT>
 kick::basic_string<CharT, AllocT>& kick::basic_string<CharT, AllocT>::operator=( const kick::basic_string<CharT, AllocT>& str ) {
-	_cstr_ = _alloc_.malloc( _cstr_, (str.size() + 1) );
+	_mem = _alloc.malloc( _mem, (str.size() + 1) );
 	
 	for( size_type i = 0; i < (str.size() + 1); ++i )
-		_cstr_[i] = str._cstr_[i];
+		_mem[i] = str._mem[i];
 	
 	return *this;
 	
@@ -198,7 +198,7 @@ kick::basic_string<CharT, AllocT>& kick::basic_string<CharT, AllocT>::operator=(
 
 template<typename CharT, typename AllocT>
 bool kick::basic_string<CharT, AllocT>::operator==( const kick::basic_string<CharT, AllocT>& str ) const {
-	return (strcmp( _cstr_, str._cstr_ ) == 0 ? true : false);
+	return (strcmp( _mem, str._mem ) == 0 ? true : false);
 }
 
 template<typename CharT, typename AllocT>
@@ -208,24 +208,24 @@ bool kick::basic_string<CharT, AllocT>::operator!=( const kick::basic_string<Cha
 
 template<typename CharT, typename AllocT>
 bool kick::basic_string<CharT, AllocT>::operator<( const kick::basic_string<CharT, AllocT>& str ) const {
-	return (strcmp( _cstr_, str._cstr_ ) < 0 ? true : false);
+	return (strcmp( _mem, str._mem ) < 0 ? true : false);
 }
 
 template<typename CharT, typename AllocT>
 bool kick::basic_string<CharT, AllocT>::operator>( const kick::basic_string<CharT, AllocT>& str ) const {
-	return (strcmp( _cstr_, str._cstr_ ) > 0 ? true : false);
+	return (strcmp( _mem, str._mem ) > 0 ? true : false);
 }
 
 template<typename CharT, typename AllocT>
 CharT& kick::basic_string<CharT, AllocT>::operator[]( kick::size_type index ) {
-	return _cstr_[index];
+	return _mem[index];
 	
 }
 
 template<typename CharT, typename AllocT>
 kick::size_type kick::basic_string<CharT, AllocT>::size() const {
-	if( _alloc_.usize() )
-		return _alloc_.usize() - 1;
+	if( _alloc.usize() )
+		return _alloc.usize() - 1;
 	
 	return 0;
 	
@@ -243,12 +243,12 @@ bool kick::basic_string<CharT, AllocT>::empty() const {
 
 template<typename CharT, typename AllocT>
 kick::size_type kick::basic_string<CharT, AllocT>::capacity() const {
-	return _alloc_.asize();
+	return _alloc.asize();
 }
 
 template<typename CharT, typename AllocT>
 CharT* kick::basic_string<CharT, AllocT>::c_str() const {
-	return _cstr_;
+	return _mem;
 }
 
 template<typename CharT, typename AllocT>
@@ -265,7 +265,7 @@ kick::size_type kick::basic_string<CharT, AllocT>::copy( CharT* str, kick::size_
 	
 	size_type di = 0;
 	for( size_type i = pos; i < ssize; ++i ) {
-		str[di] = _cstr_[i];
+		str[di] = _mem[i];
 		++di;
 	}
 	
@@ -283,12 +283,12 @@ kick::size_type kick::basic_string<CharT, AllocT>::find( const kick::basic_strin
 	
 	const size_type smax = hsize - nsize;
 	while( spos <= smax ) {
-		while( spos < smax && _cstr_[spos] != nstr._cstr_[0] )
+		while( spos < smax && _mem[spos] != nstr._mem[0] )
 			++spos;
 		
 		size_type hpos = spos + 1;
 		size_type epos = 1;
-		while( hpos < hsize && epos < nsize && _cstr_[hpos] == nstr._cstr_[epos] ) {
+		while( hpos < hsize && epos < nsize && _mem[hpos] == nstr._mem[epos] ) {
 			++hpos;
 			++epos;
 		}
@@ -334,12 +334,12 @@ kick::size_type kick::basic_string<CharT, AllocT>::rfind( const kick::basic_stri
 	
 	const size_type smin = nsize - 1;
 	while( spos >= smin ) {
-		while( spos >= smin && _cstr_[spos] != nstr._cstr_[nsize - 1] )
+		while( spos >= smin && _mem[spos] != nstr._mem[nsize - 1] )
 			--spos;
 		
 		size_type hpos = spos - 1;
 		size_type epos = nsize - 2;
-		while( hpos >= 0 && epos >= 0 && _cstr_[hpos] == nstr._cstr_[epos] ) {
+		while( hpos >= 0 && epos >= 0 && _mem[hpos] == nstr._mem[epos] ) {
 			--hpos;
 			--epos;
 		}
@@ -384,7 +384,7 @@ kick::size_type kick::basic_string<CharT, AllocT>::find_first_of( const kick::ba
 	if( spos < 0 ) spos = 0;
 	while( spos < hsize ) {
 		size_type npos = 0;
-		while( _cstr_[spos] != nstr._cstr_[npos] && npos < nsize )
+		while( _mem[spos] != nstr._mem[npos] && npos < nsize )
 			++npos;
 		
 		if( npos < nsize ) return spos;
@@ -426,7 +426,7 @@ kick::size_type kick::basic_string<CharT, AllocT>::find_last_of( const kick::bas
 	if( spos == npos || spos > hsize - 1 ) spos = hsize - 1;
 	while( spos >= 0 ) {
 		size_type npos = 0;
-		while( _cstr_[spos] != nstr._cstr_[npos] && npos < nsize )
+		while( _mem[spos] != nstr._mem[npos] && npos < nsize )
 			++npos;
 		
 		if( npos < nsize ) return spos;
@@ -468,7 +468,7 @@ kick::size_type kick::basic_string<CharT, AllocT>::find_first_not_of( const kick
 	if( spos < 0 ) spos = 0;
 	while( spos < hsize ) {
 		size_type npos = 0;
-		while( _cstr_[spos] != nstr._cstr_[npos] && npos < nsize )
+		while( _mem[spos] != nstr._mem[npos] && npos < nsize )
 			++npos;
 		
 		if( npos < nsize )
@@ -511,7 +511,7 @@ kick::size_type kick::basic_string<CharT, AllocT>::find_first_not_of( CharT c, k
 //	if( spos == npos || spos > hsize - 1 ) spos = hsize - 1;
 //	while( spos >= 0 ) {
 //		size_type npos = 0;
-//		while( _cstr_[spos] != nstr._cstr_[npos] && npos < nsize )
+//		while( _mem[spos] != nstr._mem[npos] && npos < nsize )
 //			++npos;
 //		
 //		if( npos < nsize )
@@ -548,7 +548,7 @@ template<typename CharT, typename AllocT>
 kick::size_type kick::basic_string<CharT, AllocT>::find_first_less_than( CharT c, kick::size_type spos ) const {
 	const size_type hsize = size();
 	for( ; spos < hsize; ++spos )
-		if( _cstr_[spos] < c ) return spos;
+		if( _mem[spos] < c ) return spos;
 	
 	return npos;
 }
@@ -557,7 +557,7 @@ template<typename CharT, typename AllocT>
 kick::size_type kick::basic_string<CharT, AllocT>::find_first_greater_than( CharT c, kick::size_type spos ) const {
 	const size_type hsize = size();
 	for( ; spos < hsize; ++spos )
-		if( _cstr_[spos] > c ) return spos;
+		if( _mem[spos] > c ) return spos;
 	
 	return npos;
 }
@@ -571,7 +571,7 @@ kick::basic_string<CharT, AllocT> kick::basic_string<CharT, AllocT>::substr( kic
 	if( pos + len > size() )
 		len = size() - pos;
 	
-	return basic_string<CharT>( &_cstr_[pos], len );
+	return basic_string<CharT>( &_mem[pos], len );
 	
 }
 

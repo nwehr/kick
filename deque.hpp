@@ -52,10 +52,10 @@ namespace kick {
 		inline iterator end();
 		
 	private:
-		int _size_;
+		int _size;
 		
-		link<T>* _front_;
-		link<T>* _back_;
+		link<T>* _front;
+		link<T>* _back;
 		
 	};
 	
@@ -63,13 +63,13 @@ namespace kick {
 
 template<typename T>
 kick::deque<T>::deque()
-: _front_( 0 )
-, _back_( 0 )
+: _front( 0 )
+, _back( 0 )
 {}
 
 template<typename T>
 kick::deque<T>::~deque() {
-	kick::link<T>* link = _front_;
+	kick::link<T>* link = _front;
 	
 	while( link ){
 		delete link;
@@ -81,47 +81,47 @@ kick::deque<T>::~deque() {
 
 template<typename T>
 void kick::deque<T>::push_back( const T& item ) {
-	link<T>* t = new link<T>( item, _back_, 0 );
+	link<T>* t = new link<T>( item, _back, 0 );
 	
-	if( _back_ )
-		_back_->next() = t;
+	if( _back )
+		_back->next() = t;
 	
-	if( !_front_ )
-		_front_ = t;
+	if( !_front )
+		_front = t;
 	
-	_back_ = t;
+	_back = t;
 	
-	++_size_;
+	++_size;
 	
 }
 
 template<typename T>
 void kick::deque<T>::push_front( const T& item ) {
-	link<T>* t = new link<T>( item, 0, _front_ );
+	link<T>* t = new link<T>( item, 0, _front );
 	
-	if( _front_ )
-		_front_->prev() = t;
+	if( _front )
+		_front->prev() = t;
 	
-	if( !_back_ )
-		_back_ = t;
+	if( !_back )
+		_back = t;
 	
-	_front_ = t;
+	_front = t;
 	
-	++_size_;
+	++_size;
 	
 }
 
 template<typename T>
 void kick::deque<T>::pop_back() {
-	if( _size_ ){
-		link<T>* t = _back_->prev();
+	if( _size ){
+		link<T>* t = _back->prev();
 		
-		delete _back_;
+		delete _back;
 		
-		_back_ = t;
-		_back_->next() = 0;
+		_back = t;
+		_back->next() = 0;
 		
-		--_size_;
+		--_size;
 		
 	}
 	
@@ -129,15 +129,15 @@ void kick::deque<T>::pop_back() {
 
 template<typename T>
 void kick::deque<T>::pop_front() {
-	if( _size_ ){
-		link<T>* t = _front_->next();
+	if( _size ){
+		link<T>* t = _front->next();
 		
-		delete _front_;
+		delete _front;
 		
-		_front_ = t;
-		_front_->prev() = 0;
+		_front = t;
+		_front->prev() = 0;
 		
-		--_size_;
+		--_size;
 		
 	}
 	
@@ -145,37 +145,37 @@ void kick::deque<T>::pop_front() {
 
 template<typename T>
 int kick::deque<T>::size() {
-	return _size_;
+	return _size;
 }
 
 template<typename T>
 T& kick::deque<T>::front() {
-	return _front_->item();
+	return _front->item();
 }
 
 template<typename T>
 T& kick::deque<T>::back() {
-	return _back_->item();
+	return _back->item();
 }
 
 template<typename T>
 kick::link<T>*& kick::deque<T>::front_link() {
-	return _front_;
+	return _front;
 }
 
 template<typename T>
 kick::link<T>*& kick::deque<T>::back_link() {
-	return _back_;
+	return _back;
 }
 
 template<typename T>
 typename kick::deque<T>::iterator kick::deque<T>::begin() {
-	return iterator( _front_ );
+	return iterator( _front );
 }
 
 template<typename T>
 typename kick::deque<T>::iterator kick::deque<T>::end() {
-	return iterator( _back_->next() );
+	return iterator( _back->next() );
 }
 
 #endif // _kick_deque_h

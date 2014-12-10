@@ -43,8 +43,8 @@ namespace kick {
 		virtual void execute( const ArgT&... a );
 		
 	private:
-		ObjectT* _o_;
-		mem_fn<ObjectT, void, ArgT...> _f_;
+		ObjectT* _o;
+		mem_fn<ObjectT, void, ArgT...> _f;
 	};
 	
 	///////////////////////////////////////////////////////////////////////////////
@@ -59,7 +59,7 @@ namespace kick {
 		void disconnect( abstract_delegate<ArgT...>* d );
 		
 	private:
-		vector<abstract_delegate<ArgT...>*> _d_;
+		vector<abstract_delegate<ArgT...>*> _d;
 	};
 	
 	///////////////////////////////////////////////////////////////////////////////
@@ -73,7 +73,7 @@ namespace kick {
 		void connect( ObjectT* o, void (ObjectT::*f)(ArgT...), event<ArgT...>* e );
 		
 	private:
-		vector<base_delegate*> _d_;
+		vector<base_delegate*> _d;
 	};
 	
 }
@@ -97,8 +97,8 @@ void kick::abstract_delegate<ArgT...>::execute( const ArgT&... a  ) {}
 ///////////////////////////////////////////////////////////////////////////////
 template<typename ObjectT, typename... ArgT>
 kick::concrete_delegate<ObjectT,ArgT...>::concrete_delegate( ObjectT* o, const mem_fn<ObjectT, void, ArgT...>& f )
-: _o_( o )
-, _f_( f )
+: _o( o )
+, _f( f )
 {}
 
 template<typename ObjectT, typename... ArgT>
@@ -106,7 +106,7 @@ kick::concrete_delegate<ObjectT,ArgT...>::~concrete_delegate() {}
 
 template<typename ObjectT, typename... ArgT>
 void kick::concrete_delegate<ObjectT,ArgT...>::execute( const ArgT&... a ) {
-	_f_( *_o_, a... );
+	_f( *_o, a... );
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -114,21 +114,21 @@ void kick::concrete_delegate<ObjectT,ArgT...>::execute( const ArgT&... a ) {
 ///////////////////////////////////////////////////////////////////////////////
 template<typename... ArgT>
 void kick::event<ArgT...>::operator()( const ArgT&... a ) {
-	for( typename vector<abstract_delegate<ArgT...>*>::iterator it = _d_.begin(); it != _d_.end(); ++it ) {
+	for( typename vector<abstract_delegate<ArgT...>*>::iterator it = _d.begin(); it != _d.end(); ++it ) {
 		(*it)->execute( a... );
 	}
 }
 
 template<typename... ArgT>
 void kick::event<ArgT...>::connect( abstract_delegate<ArgT...>* d ) {
-	_d_.push_back( d );
+	_d.push_back( d );
 }
 
 template<typename... ArgT>
 void kick::event<ArgT...>::disconnect( abstract_delegate<ArgT...>* d ) {
-	for( typename vector<abstract_delegate<ArgT...>*>::iterator it = _d_.begin(); it != _d_.end(); ++it ) {
+	for( typename vector<abstract_delegate<ArgT...>*>::iterator it = _d.begin(); it != _d.end(); ++it ) {
 		if( d == (*it) ) {
-			_d_.erase( it ); break;
+			_d.erase( it ); break;
 		}
 	}
 }
@@ -137,7 +137,7 @@ void kick::event<ArgT...>::disconnect( abstract_delegate<ArgT...>* d ) {
 // delegate
 ///////////////////////////////////////////////////////////////////////////////
 kick::delegate::~delegate() {
-	for( vector<base_delegate*>::iterator it = _d_.end(); it != _d_.begin(); --it ) {
+	for( vector<base_delegate*>::iterator it = _d.end(); it != _d.begin(); --it ) {
 		delete (*it);
 	}
 }
@@ -148,7 +148,7 @@ void kick::delegate::connect( ObjectT* o, void (ObjectT::*f)(ArgT...), event<Arg
 	
 	e->connect( d );
 	
-	_d_.push_back( d );
+	_d.push_back( d );
 	
 }
 

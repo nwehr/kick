@@ -56,7 +56,7 @@ namespace kick {
 		inline const T& operator*() const;
 		
 	protected:
-		T* _mem_;
+		T* _mem;
 		
 	};
 	
@@ -67,23 +67,23 @@ namespace kick {
 ///////////////////////////////////////////////////////////////////////////////
 template<typename T>
 kick::optional<T>::optional()
-: _mem_( 0 )
+: _mem( 0 )
 {}
 
 template<typename T>
-kick::optional<T>::optional( const T& item )
-: _mem_( new T( item ) )
+kick::optional<T>::optional( const T& obj )
+: _mem( new T( obj ) )
 {}
 
 template<typename T>
 kick::optional<T>::optional( const kick::optional<T>& opt )
-: _mem_( opt._mem_ ? new T( *(opt._mem_) ) : 0 )
+: _mem( opt._mem ? new T( *(opt._mem) ) : 0 )
 {}
 
 template<typename T>
 kick::optional<T>& kick::optional<T>::operator=( const kick::optional<T>& opt ) {
-	if( opt._mem_ ) {
-		_mem_ = new T( *(opt._mem_) );
+	if( opt._mem ) {
+		_mem = new T( *(opt._mem) );
 	}
 	
 	return *this;
@@ -91,15 +91,15 @@ kick::optional<T>& kick::optional<T>::operator=( const kick::optional<T>& opt ) 
 
 template<typename T>
 kick::optional<T>::~optional() {
-	if( _mem_ ) {
-		delete _mem_;
+	if( _mem ) {
+		delete _mem;
 	}
 	
 }
 
 template<typename T>
 bool kick::optional<T>::is_initialized() const {
-	return static_cast<bool>( _mem_ );
+	return static_cast<bool>( _mem );
 }
 
 template<typename T>
@@ -109,7 +109,7 @@ kick::optional<T>::operator bool() const {
 
 template<typename T>
 T& kick::optional<T>::get() {
-	if( !_mem_ ) {
+	if( !_mem ) {
 #if (KICK_EXCEPTION > 0)
 		throw optional_exception();
 #else 
@@ -117,7 +117,7 @@ T& kick::optional<T>::get() {
 #endif
 	}
 	
-	return *_mem_;
+	return *_mem;
 }
 
 template<typename T>
@@ -127,7 +127,7 @@ const T& kick::optional<T>::get() const {
 
 template<typename T>
 T& kick::optional<T>::operator*() {
-	if( !_mem_ ) {
+	if( !_mem ) {
 #if (KICK_EXCEPTION > 0)
 		 throw optional_exception();
 #else
@@ -135,7 +135,7 @@ T& kick::optional<T>::operator*() {
 #endif
 	}
 	
-	return *_mem_;
+	return *_mem;
 }
 
 template<typename T>

@@ -44,7 +44,7 @@ namespace kick {
 		inline bool expired() const;
 		
 	protected:
-		T* _mem_;
+		T* _mem;
 		
 	};
 	
@@ -52,7 +52,7 @@ namespace kick {
 
 template<typename T>
 kick::smart_ptr<T>::smart_ptr( T* mem )
-: _mem_( mem )
+: _mem( mem )
 {}
 
 template<typename T>
@@ -60,37 +60,37 @@ kick::smart_ptr<T>::~smart_ptr(){}
 
 template<typename T>
 T& kick::smart_ptr<T>::operator*(){
-	return *_mem_;
+	return *_mem;
 }
 
 template<typename T>
 const T& kick::smart_ptr<T>::operator*() const {
-	return *_mem_;
+	return *_mem;
 }
 
 template<typename T>
 T* kick::smart_ptr<T>::operator->(){
-	return _mem_;
+	return _mem;
 }
 
 template<typename T>
 const T* kick::smart_ptr<T>::operator->() const {
-	return _mem_;
+	return _mem;
 }
 
 template<typename T>
 T* kick::smart_ptr<T>::get(){
-	return _mem_;
+	return _mem;
 }
 
 template<typename T>
 const T* kick::smart_ptr<T>::get() const {
-	return _mem_;
+	return _mem;
 }
 
 template<typename T>
 bool kick::smart_ptr<T>::expired() const {
-	return !static_cast<bool>( _mem_ );
+	return !static_cast<bool>( _mem );
 }
 
 // Kick

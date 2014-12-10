@@ -29,10 +29,10 @@ namespace kick {
 		inline const T& item() const;
 		
 	private:
-		T _item_;
+		T _mem;
 		
-		link<T>* _prev_;
-		link<T>* _next_;
+		link<T>* _prev;
+		link<T>* _next;
 		
 	};
 	
@@ -40,46 +40,46 @@ namespace kick {
 
 template<typename T>
 kick::link<T>::link( const T& item, kick::link<T>* prev, kick::link<T>* next )
-: _item_( item )
-, _prev_( prev )
-, _next_( next )
+: _mem( item )
+, _prev( prev )
+, _next( next )
 {}
 
 template<typename T>
 kick::link<T>::link( const kick::link<T>& link )
-: _item_( link._item_ )
-, _prev_( link._prev_ )
-, _next_( link._next_ )
+: _mem( link._mem )
+, _prev( link._prev )
+, _next( link._next )
 {}
 
 template<typename T>
 kick::link<T>*& kick::link<T>::prev(){
-	return _prev_;
+	return _prev;
 }
 
 template<typename T>
 const kick::link<T>*& kick::link<T>::prev() const {
-	return _prev_;
+	return _prev;
 }
 
 template<typename T>
 kick::link<T>*& kick::link<T>::next(){
-	return _next_;
+	return _next;
 }
 
 template<typename T>
 const kick::link<T>*& kick::link<T>::next() const {
-	return _next_;
+	return _next;
 }
 
 template<typename T>
 T& kick::link<T>::item(){
-	return _item_;
+	return _mem;
 }
 
 template<typename T>
 const T& kick::link<T>::item() const {
-	return _item_;
+	return _mem;
 }
 
 #endif // _kick_link_h
