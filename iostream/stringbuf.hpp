@@ -46,7 +46,7 @@ kick::basic_stringbuf<CharT, StringT>::~basic_stringbuf() {}
 
 template<typename CharT, typename StringT>
 StringT kick::basic_stringbuf<CharT, StringT>::str() {
-	return StringT( this->_buf_ );
+	return StringT( this->_buf );
 }
 
 #endif // _kick_iostream_stringbuf_h

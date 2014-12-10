@@ -99,11 +99,6 @@ kick::mem_fn<ObjectT,ReturnT,ArgT...>::mem_fn( const mem_fn<ObjectT, ReturnT, Ar
 {}
 
 template<typename ObjectT, typename ReturnT, typename... ArgT>
-ReturnT kick::mem_fn<ObjectT,ReturnT,ArgT...>::operator()( ObjectT& o, ArgT... a ) {
-	return (o.*_f)( a... );
-}
-
-template<typename ObjectT, typename ReturnT, typename... ArgT>
 kick::mem_fn<ObjectT, ReturnT, ArgT...>& kick::mem_fn<ObjectT, ReturnT, ArgT...>::operator=( ReturnT (ObjectT::*f)(ArgT...) ) {
 	_f = f;
 	return *this;
@@ -113,6 +108,11 @@ template<typename ObjectT, typename ReturnT, typename... ArgT>
 kick::mem_fn<ObjectT, ReturnT, ArgT...>& kick::mem_fn<ObjectT, ReturnT, ArgT...>::operator=( const mem_fn<ObjectT, ReturnT, ArgT...>& f ) {
 	_f = f._f;
 	return *this;
+}
+
+template<typename ObjectT, typename ReturnT, typename... ArgT>
+ReturnT kick::mem_fn<ObjectT,ReturnT,ArgT...>::operator()( ObjectT& o, ArgT... a ) {
+	return (o.*_f)( a... );
 }
 
 #endif

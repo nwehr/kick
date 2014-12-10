@@ -11,6 +11,8 @@
 
 namespace kick {
 	typedef int size_type;
+	typedef int pos_type;
+	
 	typedef unsigned int size_t;
 }
 

@@ -58,15 +58,15 @@ namespace kick {
 		basic_streambuf<CharT>* setbuf( CharT*, size_t );
 		
 	protected:
-		pos_type _ipos_;
-		pos_type _ipos_beg_;
-		pos_type _ipos_end_;
+		pos_type _ipos;
+		pos_type _ipos_beg;
+		pos_type _ipos_end;
 		
-		pos_type _opos_;
-		pos_type _opos_beg_;
-		pos_type _opos_end_;
+		pos_type _opos;
+		pos_type _opos_beg;
+		pos_type _opos_end;
 		
-		CharT* _buf_;
+		CharT* _buf;
 		
 	};
 	
@@ -84,122 +84,112 @@ namespace kick {
 
 template<typename CharT>
 kick::basic_streambuf<CharT>::basic_streambuf()
-: _ipos_	( 0 )
-, _ipos_beg_( 0 )
-, _ipos_end_( 0 )
-, _opos_	( 0 )
-, _opos_beg_( 0 )
-, _opos_end_( 0 )
-, _buf_		( new CharT[0] )
+: _ipos		( 0 )
+, _ipos_beg	( 0 )
+, _ipos_end	( 0 )
+, _opos		( 0 )
+, _opos_beg	( 0 )
+, _opos_end	( 0 )
+, _buf		( 0 )
 {}
 
 template<typename CharT>
 kick::basic_streambuf<CharT>::basic_streambuf( const kick::basic_streambuf<CharT>& sbuf )
-: _ipos_	( sbuf._ipos_ )
-, _ipos_beg_( sbuf._ipos_beg_ )
-, _ipos_end_( sbuf._ipos_end_ )
-, _opos_	( sbuf._opos_ )
-, _opos_beg_( sbuf._opos_beg_ )
-, _opos_end_( sbuf._opos_end_ )
-, _buf_		( new CharT[sizeof(sbuf._buf_) / sizeof(CharT)] )
-{
-	::memcpy( _buf_, sbuf._buf_, sizeof(sbuf._buf_) / sizeof(CharT) );
-}
+: _ipos		( sbuf._ipos )
+, _ipos_beg	( sbuf._ipos_beg )
+, _ipos_end	( sbuf._ipos_end )
+, _opos		( sbuf._opos )
+, _opos_beg	( sbuf._opos_beg )
+, _opos_end	( sbuf._opos_end )
+, _buf		( sbuf._buf )
+{}
 
 template<typename CharT>
-kick::basic_streambuf<CharT>::~basic_streambuf() {
-	delete[] _buf_;
-}
+kick::basic_streambuf<CharT>::~basic_streambuf() {}
 
 template<typename CharT>
 CharT kick::basic_streambuf<CharT>::getc() {
-	return _buf_[_ipos_];
+	return _buf[_ipos];
 }
 
 template<typename CharT>
 CharT kick::basic_streambuf<CharT>::bumpc() {
-	return _buf_[_ipos_++];
+	return _buf[_ipos++];
 }
 
 template<typename CharT>
 CharT kick::basic_streambuf<CharT>::nextc() {
-	return _buf_[++_ipos_];
+	return _buf[++_ipos];
 }
 
 template<typename CharT>
 CharT kick::basic_streambuf<CharT>::putc( CharT c ) {
-	return _buf_[_opos_++] = c;
+	return _buf[_opos++] = c;
 }
 
 template<typename CharT>
 kick::pos_type kick::basic_streambuf<CharT>::ipos() {
-	return _ipos_;
+	return _ipos;
 }
 
 template<typename CharT>
 kick::pos_type kick::basic_streambuf<CharT>::ipos_beg() {
-	return _ipos_beg_;
+	return _ipos_beg;
 }
 
 template<typename CharT>
 kick::pos_type kick::basic_streambuf<CharT>::ipos_end() {
-	return _ipos_end_;
+	return _ipos_end;
 }
 
 template<typename CharT>
 kick::pos_type kick::basic_streambuf<CharT>::opos() {
-	return _opos_;
+	return _opos;
 }
 
 template<typename CharT>
 kick::pos_type kick::basic_streambuf<CharT>::opos_beg() {
-	return _opos_beg_;
+	return _opos_beg;
 }
 
 template<typename CharT>
 kick::pos_type kick::basic_streambuf<CharT>::opos_end() {
-	return _opos_end_;
+	return _opos_end;
 }
 
 template<typename CharT>
 kick::pos_type kick::basic_streambuf<CharT>::iseekpos( kick::pos_type pos ) {
-	_ipos_ = pos;
-	return _ipos_;
+	_ipos = pos;
+	return _ipos;
 }
 
 template<typename CharT>
 kick::pos_type kick::basic_streambuf<CharT>::oseekpos( kick::pos_type pos ) {
-	_opos_ = pos;
-	return _opos_; 
+	_opos = pos;
+	return _opos;
 }
 
 template<typename CharT>
 CharT* kick::basic_streambuf<CharT>::buf() {
-	return _buf_;
+	return _buf;
 }
 
 template<typename CharT>
 const CharT* kick::basic_streambuf<CharT>::buf() const {
-	return _buf_;
+	return _buf;
 }
 
 template<typename CharT>
 kick::basic_streambuf<CharT>* kick::basic_streambuf<CharT>::setbuf( CharT* buf, kick::size_t size ) {
-	if( _buf_ )
-		delete[] _buf_;
+	_buf = buf;
 	
-	_buf_ = new CharT[size];
+	_ipos = 0;
+	_opos = 0;
 	
-	_ipos_ = 0;
-	_opos_ = 0;
-	
-	_ipos_end_ = (size - 1);
-	_opos_end_ = (size - 1);
-	
-	::memcpy( _buf_, buf, size );
+	_ipos_end = (size - 1);
+	_opos_end = (size - 1);
 	
 	return this;
-	
 }
 
 #endif // _kick_iostream_streambuf_h

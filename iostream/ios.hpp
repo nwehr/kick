@@ -62,8 +62,8 @@ namespace kick {
 		inline const basic_streambuf<CharT>* sbuf() const;
 		
 	protected:
-		fmt_t _fmt_;
-		basic_streambuf<CharT>* _sbuf_;
+		fmt_t _fmt;
+		basic_streambuf<CharT>* _sbuf;
 		
 	};
 
@@ -81,14 +81,14 @@ namespace kick {
 
 template<typename CharT>
 kick::basic_ios<CharT>::basic_ios()
-: _fmt_( kick::basic_ios<CharT>::boolalpha )
-, _sbuf_( 0 )
+: _fmt( kick::basic_ios<CharT>::boolalpha )
+, _sbuf( 0 )
 {}
 
 template<typename CharT>
 kick::basic_ios<CharT>::basic_ios( kick::basic_streambuf<CharT>* sbuf )
-: _fmt_( kick::basic_ios<CharT>::boolalpha )
-, _sbuf_( sbuf )
+: _fmt( kick::basic_ios<CharT>::boolalpha )
+, _sbuf( sbuf )
 {}
 
 template<typename  CharT>
@@ -96,22 +96,22 @@ kick::basic_ios<CharT>::~basic_ios() {}
 
 template<typename CharT>
 typename kick::basic_ios<CharT>::fmt_t& kick::basic_ios<CharT>::fmt() {
-	return _fmt_;
+	return _fmt;
 }
 
 template<typename CharT>
 const typename kick::basic_ios<CharT>::fmt_t& kick::basic_ios<CharT>::fmt() const {
-	return _fmt_;
+	return _fmt;
 }
 
 template<typename CharT>
 kick::basic_streambuf<CharT>* kick::basic_ios<CharT>::sbuf() {
-	return _sbuf_;
+	return _sbuf;
 }
 
 template<typename CharT>
 const kick::basic_streambuf<CharT>* kick::basic_ios<CharT>::sbuf() const {
-	return _sbuf_;
+	return _sbuf;
 }
 
 #endif // _kick_iostream_ios_h
