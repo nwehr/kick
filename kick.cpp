@@ -2,13 +2,28 @@
 
 // #define KICK_POLYMORPHIC 1
 
-// C++
-#include <functional>
+#include <iostream>
 
-void test() {}
+// C++
+#include "iostream/ostream.hpp"
+#include "iostream/stringbuf.hpp"
 
 int main (int argc, char* argv[]) {
-	std::function<void(void)> F( &test );
+	char* s = new char[16]();
+	
+	
+	kick::streambuf buf;
+	
+	buf.setbuf(s, 16);
+	
+	std::cout << (buf.sputn("a\nb\nc", 6) == kick::stringbuf::buf_eof) << std::endl;
+	
+	std::cout << s << std::endl;
+	
+	delete[] s;
+	
+	return 0;
+	
 }
 
 #endif // ARDUINO

@@ -27,19 +27,28 @@ namespace kick {
 	template <typename CharT>
 	class basic_streambuf {
 	public:
+		static const int_type sync_ok		= 0x0;
+		static const int_type sync_error	= 0x1;
+		static const int_type sync_impl		= 0x2;
+		
+		static const int_type buf_ok	= 0x0;
+		static const int_type buf_eof	= 0x1;
+		
+	public:
 		basic_streambuf();
 		basic_streambuf( const basic_streambuf& );
 		
-#if	(KICK_POLYMORPHIC_STREAMBUF > 0)
+#ifdef KICK_POLYMORPHIC_STREAMBUF
 		virtual
 #endif
 		~basic_streambuf();
 		
-		inline CharT getc();
-		inline CharT bumpc();
-		inline CharT nextc();
+		inline int_type sgetc();
+		inline int_type sbumpc();
+		inline int_type snextc();
 		
-		inline CharT putc( CharT c );
+		inline int_type sputc( CharT c );
+		inline int_type sputn( const CharT* s, size_t n );
 		
 		inline pos_type ipos();
 		inline pos_type ipos_beg();
@@ -56,6 +65,24 @@ namespace kick {
 		inline const CharT* buf() const;
 
 		basic_streambuf<CharT>* setbuf( CharT*, size_t );
+		
+		int pubsync();
+		
+	protected:
+#ifdef KICK_POLYMORPHIC_STREAMBUF
+		virtual
+#endif
+		int sync();
+
+#ifdef KICK_POLYMORPHIC_STREAMBUF
+		virtual
+#endif
+		int overflow();
+
+#ifdef KICK_POLYMORPHIC_STREAMBUF
+		virtual
+#endif
+		int underflow();
 		
 	protected:
 		pos_type _ipos;
@@ -108,23 +135,50 @@ template<typename CharT>
 kick::basic_streambuf<CharT>::~basic_streambuf() {}
 
 template<typename CharT>
-CharT kick::basic_streambuf<CharT>::getc() {
-	return _buf[_ipos];
+kick::int_type kick::basic_streambuf<CharT>::sgetc() {
+	if( !_buf[_ipos] ) {
+		return underflow();
+	}
+	
+	return static_cast<int>(_buf[_ipos]);
 }
 
 template<typename CharT>
-CharT kick::basic_streambuf<CharT>::bumpc() {
-	return _buf[_ipos++];
+kick::int_type kick::basic_streambuf<CharT>::sbumpc() {
+	if( !_buf[++_ipos] ) {
+		return overflow();
+	}
+	
+	return static_cast<int>(_buf[_ipos]);
 }
 
 template<typename CharT>
-CharT kick::basic_streambuf<CharT>::nextc() {
-	return _buf[++_ipos];
+kick::int_type kick::basic_streambuf<CharT>::snextc() {
+	return static_cast<int>(_buf[++_ipos]);
 }
 
 template<typename CharT>
-CharT kick::basic_streambuf<CharT>::putc( CharT c ) {
-	return _buf[_opos++] = c;
+kick::int_type kick::basic_streambuf<CharT>::sputc( CharT c ) {
+	if( _opos > _opos_end ) {
+		return overflow();
+	}
+	
+	_buf[_opos] = c;
+	
+	++_opos;
+	
+	return buf_ok;
+}
+
+template<typename CharT>
+kick::int_type kick::basic_streambuf<CharT>::sputn( const CharT* s, kick::size_t n ) {
+	for( size_t i = 0; i < n; ++i ) {
+		if( sputc(s[i]) == buf_eof ) {
+			return overflow();
+		}
+	}
+	
+	return buf_ok;
 }
 
 template<typename CharT>
@@ -190,6 +244,26 @@ kick::basic_streambuf<CharT>* kick::basic_streambuf<CharT>::setbuf( CharT* buf, 
 	_opos_end = (size - 1);
 	
 	return this;
+}
+
+template<typename CharT>
+kick::int_type kick::basic_streambuf<CharT>::pubsync() {
+	return sync();
+}
+
+template<typename CharT>
+kick::int_type kick::basic_streambuf<CharT>::sync() {
+	return sync_impl;
+}
+
+template<typename CharT>
+kick::int_type kick::basic_streambuf<CharT>::overflow() {
+	return buf_eof;
+}
+
+template<typename CharT>
+kick::int_type kick::basic_streambuf<CharT>::underflow() {
+	return buf_eof;
 }
 
 #endif // _kick_iostream_streambuf_h

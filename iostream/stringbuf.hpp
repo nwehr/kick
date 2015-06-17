@@ -20,12 +20,19 @@ namespace kick {
 	template<typename CharT, typename StringT = basic_string<CharT> >
 	class basic_stringbuf : public basic_streambuf<CharT> {
 	public:
+		basic_stringbuf();
+		
 #if	(KICK_POLYMORPHIC_STREAMBUF > 0)
 		virtual
 #endif
 		~basic_stringbuf();
 
 		inline StringT str();
+		
+	protected:
+		int sync() {
+			return this->sync_impl;
+		}
 		
 	};
 	
@@ -34,12 +41,12 @@ namespace kick {
 	///////////////////////////////////////////////////////////////////////////////
 	typedef basic_stringbuf<char, basic_string<char> > stringbuf;
 	
-	///////////////////////////////////////////////////////////////////////////////
-	// wstringbuf
-	///////////////////////////////////////////////////////////////////////////////
-	typedef basic_stringbuf<wchar_t, basic_string<wchar_t> > wstringbuf;
-	
 } // namespace kick
+
+template<typename CharT, typename StringT>
+kick::basic_stringbuf<CharT, StringT>::basic_stringbuf()
+: basic_streambuf<CharT>()
+{}
 
 template<typename CharT, typename StringT>
 kick::basic_stringbuf<CharT, StringT>::~basic_stringbuf() {}

@@ -12,12 +12,13 @@
 namespace kick {
 	typedef int size_type;
 	typedef int pos_type;
+	typedef int int_type;
 	
 	typedef unsigned int size_t;
 }
 
 #ifndef KICK_EXCEPTION
-#define KICK_EXCEPTION 1
+#define KICK_EXCEPTION 0
 #endif
 
 #ifndef KICK_POLYMORPHIC
@@ -37,7 +38,10 @@ namespace kick {
 #endif
 
 #if (KICK_OPERATOR_NEW > 0)
+// C
 #include <stdlib.h>
+
+// Internal
 #include "./allocator/mem_exception.hpp"
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -57,9 +61,10 @@ void* operator new( kick::size_t size ) {
 	return NULL;
 }
 
-///////////////////////////////////////////////////////////////////////////////
-// placement new
-///////////////////////////////////////////////////////////////////////////////
+void* operator new[]( kick::size_t size ) {
+	return operator new( size );
+}
+
 void* operator new( kick::size_t size, void* p ) {
 	if( p ) {
 		void* ptr = realloc( p, size );
@@ -76,6 +81,10 @@ void* operator new( kick::size_t size, void* p ) {
 	return NULL;
 }
 
+void* operator new[]( kick::size_t size, void* p ) {
+	return operator new( size, p );
+}
+
 ///////////////////////////////////////////////////////////////////////////////
 // delete
 ///////////////////////////////////////////////////////////////////////////////
@@ -83,6 +92,10 @@ void operator delete( void* p ) {
 	if( p ) {
 		free( p );
 	}
+}
+
+void operator delete[]( void* p ) {
+	operator delete( p );
 }
 
 #endif

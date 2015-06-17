@@ -28,6 +28,7 @@ namespace kick {
 		
 		inline basic_ostream& operator<<( CharT );
 		inline basic_ostream& operator<<( CharT* );
+		inline basic_ostream& operator<<( const CharT* );
 		
 		inline basic_ostream& operator<<( short );
 		inline basic_ostream& operator<<( unsigned short );
@@ -69,6 +70,17 @@ kick::basic_ostream<CharT>& kick::basic_ostream<CharT>::operator<<( CharT val ) 
 
 template<typename CharT>
 kick::basic_ostream<CharT>& kick::basic_ostream<CharT>::operator<<( CharT* val ) {
+	size_t i = 0;
+	
+	do {
+		this->_sbuf->putc( val[i++] );
+	} while( val[i] );
+	
+	return *this;
+}
+
+template<typename CharT>
+kick::basic_ostream<CharT>& kick::basic_ostream<CharT>::operator<<( const CharT* val ) {
 	size_t i = 0;
 	
 	do {
