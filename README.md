@@ -22,7 +22,7 @@ Allocated size referes to the total number of items that have been allocated for
 ### Example
 
     #include <iostream>
-    #include <kick/vector.h>
+    #include <kick/vector.hpp>
 
     using namespace kick;
     
@@ -68,8 +68,8 @@ A map is an associative container. Items are represented by key and value pairs.
 
     #include <iostream>
 
-    #include <kick/string.h>
-    #include <kick/map.h>
+    #include <kick/string.hpp>
+    #include <kick/map.hpp>
 
     using namespace kick;
 
@@ -109,7 +109,7 @@ A deque (double-ended queue) is a dynamic, sequence container. Deque is similar 
 ## Example
 
     #include <iostream>
-    #include <kick/deque.h>
+    #include <kick/deque.hpp>
 
     using namespace kick;
 
