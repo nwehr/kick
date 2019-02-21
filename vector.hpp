@@ -12,7 +12,7 @@
 // Kick
 #include "./common.hpp"
 
-#include "./allocator/contiguous_allocator.hpp"
+#include "./allocator/array_allocator.hpp"
 
 #include "./iterator.hpp"
 #include "./functional.hpp"
@@ -25,7 +25,7 @@ namespace kick {
 	///////////////////////////////////////////////////////////////////////////////
 	// vector
 	///////////////////////////////////////////////////////////////////////////////
-	template<typename T, typename AllocT = contiguous_allocator<T> >
+	template<typename T, typename AllocT = array_allocator<T> >
 	class vector {
 	public:
 		typedef kick::array_iterator<T> iterator;
@@ -59,10 +59,11 @@ namespace kick {
 		inline T& front();
 		inline T& back();
 		
-		inline iterator begin();
-		inline iterator end();
+		inline iterator begin() const;
+		inline iterator end() const;
 		
 		inline T& operator[]( size_t );
+
 		
 	private:
 		T* _items_;
@@ -121,7 +122,8 @@ namespace kick {
 	
 	template<typename T, typename AllocT>
 	void vector<T,AllocT>::clear() {
-		_alloc_.free( _items_ );
+		// _alloc_.free( _items_ );
+		_items_ = _alloc_.realloc( _items_, 0 );
 	}
 	
 	template<typename T, typename AllocT>
@@ -201,12 +203,12 @@ namespace kick {
 	}
 	
 	template<typename T, typename AllocT>
-	typename vector<T,AllocT>::iterator vector<T,AllocT>::begin() {
+	typename vector<T,AllocT>::iterator vector<T,AllocT>::begin() const {
 		return iterator( 0, _items_ );
 	}
 	
 	template<typename T, typename AllocT>
-	typename vector<T,AllocT>::iterator vector<T,AllocT>::end() {
+	typename vector<T,AllocT>::iterator vector<T,AllocT>::end() const {
 		return iterator( size(), _items_ );
 	}
 	

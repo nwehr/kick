@@ -1,5 +1,5 @@
-#ifndef _kick_contiguous_allocator_h
-#define _kick_contiguous_allocator_h
+#ifndef _kick_array_allocator_h
+#define _kick_array_allocator_h
 
 //
 // Copyright 2012-2014 Kick project developers.
@@ -34,16 +34,16 @@ kick::size_t default_calc( kick::size_t size, kick::size_t asize )
 
 namespace kick {
 	///////////////////////////////////////////////////////////////////////////////
-	// contiguous_allocator
+	// array_allocator
 	///////////////////////////////////////////////////////////////////////////////
 	template<typename T>
-	class contiguous_allocator {
+	class array_allocator {
 	public:
-		contiguous_allocator( const function<size_t, size_t, size_t>& calc = &default_calc );
-		~contiguous_allocator();
+		array_allocator( const function<size_t, size_t, size_t>& calc = &default_calc );
+		~array_allocator();
 		
-		size_t asize() const;
-		size_t usize() const;
+		const size_t asize() const;
+		const size_t usize() const;
 		
 		T* malloc	( T* mem, size_t size );
 		T* realloc	( T* mem, size_t size );
@@ -60,30 +60,30 @@ namespace kick {
 	};
 	
 	///////////////////////////////////////////////////////////////////////////////
-	// contiguous_allocator
+	// array_allocator
 	///////////////////////////////////////////////////////////////////////////////
 	template<typename T>
-	contiguous_allocator<T>::contiguous_allocator( const function<size_t, size_t, size_t>& calc )
+	array_allocator<T>::array_allocator( const function<size_t, size_t, size_t>& calc )
 	: _asize_( 0 )
 	, _usize_( 0 )
 	, _calc_( calc )
 	{}
 	
 	template<typename T>
-	contiguous_allocator<T>::~contiguous_allocator(){}
+	array_allocator<T>::~array_allocator(){}
 	
 	template<typename T>
-	size_t contiguous_allocator<T>::asize() const {
+	const size_t array_allocator<T>::asize() const {
 		return _asize_;
 	}
 	
 	template<typename T>
-	size_t contiguous_allocator<T>::usize() const {
+	const size_t array_allocator<T>::usize() const {
 		return _usize_;
 	}
 	
 	template<typename T>
-	T* contiguous_allocator<T>::malloc( T* mem, size_t size ){
+	T* array_allocator<T>::malloc( T* mem, size_t size ){
 		T* ptr = 0;
 		
 		_usize_ = size;
@@ -105,7 +105,7 @@ namespace kick {
 	}
 	
 	template<typename T>
-	T* contiguous_allocator<T>::realloc( T* mem, size_t size ){
+	T* array_allocator<T>::realloc( T* mem, size_t size ){
 		T* ptr = 0;
 		
 		size_t asize = _calc_( size, _asize_ );
@@ -151,7 +151,7 @@ namespace kick {
 	}
 	
 	template<typename T>
-	T* contiguous_allocator<T>::move( T* mem, size_t src_index, size_t dest_index ){
+	T* array_allocator<T>::move( T* mem, size_t src_index, size_t dest_index ){
 		// overwritten items
 		if( dest_index < src_index ){
 			for( size_t i = dest_index; i < src_index; ++i ){
@@ -183,7 +183,7 @@ namespace kick {
 	}
 	
 	template<typename T>
-	void contiguous_allocator<T>::free( T* mem ){
+	void array_allocator<T>::free( T* mem ){
 		for( size_t i = 0; i < _usize_; ++i )
 			mem[i].~T();
 		
@@ -193,4 +193,4 @@ namespace kick {
 	
 }
 
-#endif // _kick_contiguous_allocator_h
+#endif // _kick_array_allocator_h

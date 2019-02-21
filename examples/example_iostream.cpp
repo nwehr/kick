@@ -11,7 +11,6 @@
 int main (int argc, char* argv[]) {
 	char* s = new char[16]();
 	
-	
 	kick::streambuf buf;
 	
 	buf.setbuf(s, 16);

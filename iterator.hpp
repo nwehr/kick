@@ -97,7 +97,7 @@ namespace kick {
 	// const_array_iterator
 	///////////////////////////////////////////////////////////////////////////////
 	template<typename T>
-	class const_array_iterator : public contiguous_allocator<T> {
+	class const_array_iterator : public array_iterator<T> {
 	public:
 		const_array_iterator( int index, T* mem )
 		: array_iterator<T>( index, mem )

@@ -12,7 +12,7 @@
 // Kick
 #include "./common.hpp"
 
-#include "./allocator/contiguous_allocator.hpp"
+#include "./allocator/array_allocator.hpp"
 #include "./iterator.hpp"
 
 #include "./pair.hpp"
@@ -25,7 +25,7 @@ namespace kick {
 	///////////////////////////////////////////////////////////////////////////////
 	// map
 	///////////////////////////////////////////////////////////////////////////////
-	template<typename KeyT, typename ValT, typename AllocT = contiguous_allocator< pair<KeyT,ValT> > >
+	template<typename KeyT, typename ValT, typename AllocT = array_allocator< pair<KeyT,ValT> > >
 	class map {
 	public:
 		typedef array_iterator< pair<KeyT,ValT> > iterator;

@@ -11,7 +11,7 @@
 
 // Kick
 #include "./common.hpp"
-#include "./allocator/contiguous_allocator.hpp"
+#include "./allocator/array_allocator.hpp"
 
 namespace kick {
 	///////////////////////////////////////////////////////////////////////////////
@@ -51,7 +51,7 @@ namespace kick {
 	///////////////////////////////////////////////////////////////////////////////
 	// set
 	///////////////////////////////////////////////////////////////////////////////
-	template <typename T, typename CompareT = ascending_comparator<T>, typename AllocT = contiguous_allocator<T> >
+	template <typename T, typename CompareT = ascending_comparator<T>, typename AllocT = array_allocator<T> >
 	class set {
 		
 	};

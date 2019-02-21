@@ -14,7 +14,7 @@
 
 // Kick
 #include "./common.hpp"
-#include "./allocator/contiguous_allocator.hpp"
+#include "./allocator/array_allocator.hpp"
 
 /// enable or disable virtual methods to support polymorphism
 #ifndef KICK_POLYMORPHIC_STRING
@@ -25,7 +25,7 @@ namespace kick {
 	///////////////////////////////////////////////////////////////////////////////
 	// basic_string
 	///////////////////////////////////////////////////////////////////////////////
-	template<typename CharT, typename AllocT = contiguous_allocator<CharT> >
+	template<typename CharT, typename AllocT = array_allocator<CharT> >
 	class basic_string {
 	public:
 		static const size_type npos = -1;
@@ -576,7 +576,7 @@ kick::basic_string<CharT, AllocT> kick::basic_string<CharT, AllocT>::substr( kic
 }
 
 // Non-member overload for outputting kick strings to stream objects...
-template<typename StreamT, typename CharT = char, typename AllocT = kick::contiguous_allocator<CharT> >
+template<typename StreamT, typename CharT = char, typename AllocT = kick::array_allocator<CharT> >
 StreamT& operator<<( StreamT& os, const kick::basic_string<CharT, AllocT>& str ) {
 	os << str.c_str();
 	return os;

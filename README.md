@@ -88,7 +88,7 @@ A map is an associative container. Items are represented by key and value pairs.
         std::cout << myMap["one"] << std::endl; 
 
         // Iterate through all items in the map
-        for(map<string, int>::iterator it = myMap.begin(); it != myMap.end() ++it) {
+        for(map<string, int>::iterator it = myMap.begin(); it != myMap.end(); ++it) {
             std::cout << (*it).key() << " = " << (*it).val() << std::endl; 
         }
     }
