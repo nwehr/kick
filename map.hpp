@@ -50,9 +50,19 @@ namespace kick {
 		inline const size_t capacity() const;
 		
 		ValT& operator[]( const KeyT& );
+
+		void for_each(void (*fn)(const KeyT&, const ValT&)) const;
+
+		template<typename O = ValT>
+		void map_to(map<KeyT, O>&, O (*)(const KeyT&, const ValT&)) const;
+
+		template<typename O = ValT>
+		void reduce_to(O&, O (*)(const O&, const KeyT&, const ValT&)) const;
+
+		void filter_to(map<KeyT, ValT>&, bool (*)(const KeyT&, const ValT&)) const;
 		
-		inline iterator begin();
-		inline iterator end();
+		inline iterator begin() const;
+		inline iterator end() const;
 		
 	private:
 		pair<KeyT,ValT>* _mem_;
@@ -185,12 +195,44 @@ ValT& kick::map<KeyT,ValT,AllocT>::operator[]( const KeyT& key ) {
 }
 
 template<typename KeyT, typename ValT, typename AllocT>
-typename kick::map<KeyT,ValT,AllocT>::iterator kick::map<KeyT,ValT,AllocT>::begin() {
+void kick::map<KeyT, ValT, AllocT>::for_each(void (*fn)(const KeyT&, const ValT&)) const {
+	for(kick::map<KeyT, ValT, AllocT>::iterator it = begin(); it != end(); ++it) {
+		fn((*it).key(), (*it).val());
+	}
+}
+
+template<typename KeyT, typename ValT, typename AllocT>
+template<typename O>
+void kick::map<KeyT, ValT, AllocT>::map_to(kick::map<KeyT, O>& out, O (*fn)(const KeyT&, const ValT&)) const {
+	for(kick::map<KeyT, ValT, AllocT>::iterator it = begin(); it != end(); ++it) {
+		out.insert(kick::pair<KeyT, O>((*it).key(), fn((*it).key(), (*it).val())));
+	}
+}
+
+template<typename KeyT, typename ValT, typename AllocT>
+template<typename O>
+void kick::map<KeyT, ValT, AllocT>::reduce_to(O& out, O (*fn)(const O&, const KeyT&, const ValT&)) const {
+	for(kick::map<KeyT, ValT, AllocT>::iterator it = begin(); it != end(); ++it) {
+		out = fn(out, (*it).key(), (*it).val());
+	}
+}
+
+template<typename KeyT, typename ValT, typename AllocT>
+void kick::map<KeyT, ValT, AllocT>::filter_to(kick::map<KeyT, ValT>& out, bool (*fn)(const KeyT&, const ValT&)) const {
+	for(kick::map<KeyT, ValT, AllocT>::iterator it = begin(); it != end(); ++it) {
+		if(fn((*it).key(), (*it).val())) {
+			out.insert(kick::pair<KeyT, ValT>((*it).key(), (*it).val()));
+		}
+	}
+}
+
+template<typename KeyT, typename ValT, typename AllocT>
+typename kick::map<KeyT,ValT,AllocT>::iterator kick::map<KeyT,ValT,AllocT>::begin() const {
 	return iterator( 0, _mem_ );
 }
 
 template<typename KeyT, typename ValT, typename AllocT>
-typename kick::map<KeyT,ValT,AllocT>::iterator kick::map<KeyT,ValT,AllocT>::end() {
+typename kick::map<KeyT,ValT,AllocT>::iterator kick::map<KeyT,ValT,AllocT>::end() const {
 	return iterator( size(), _mem_ );
 }
 

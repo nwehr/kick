@@ -1,34 +1,53 @@
 #include <iostream>
 #include "../vector.hpp"
-#include "../experimental/hof/hof.hpp"
+#include "../experimental/algorithm/algorithm.hpp"
 
 using namespace kick;
 
 int main( int argc, char* argv[] ){
-	vector<int> myVector; 
+	vector<int> numbers; 
 	
-	myVector.push_back(100); 
-	myVector.push_back(200); 
-	myVector.push_back(300); 
+	numbers.push_back(1); 
+	numbers.push_back(2); 
+	numbers.push_back(3); 
+	numbers.push_back(4); 
+	numbers.push_back(5); 
 
-	vector<int> newVector = experimental::hof::map<int, int>(myVector, [] (int num) -> int {
-		return num / 2;
-	});
+	{
+		vector<int> odds;
 
-	for(auto it = newVector.begin(); it != newVector.end(); ++it) {
-		std::cout << *it << std::endl; 
+		numbers.filter_to(odds, [](const int& val) -> bool {
+			return val % 2 != 0;
+		});
+
+		std::cout << "odds:" << std::endl; 
+
+		odds.for_each([](const int& val) {
+			std::cout << val << std::endl;
+		});
 	}
-	
-	// // Access individual items, outputs 100
-	// std::cout << myVector[0] << std::endl; 
 
-	// // Iterate by incrementing an index
-	// for(int i = 0; i < myVector.size(); ++i) {
-	// 	std::cout << myVector[i] << std::endl; 
-	// }
+	{
+		vector<int> squares;
 
-	// // Iterate with the vector iterator
-	// for(vector<int>::iterator it = myVector.begin(); it != myVector.end(); ++it) {
-	// 	std::cout << *it << std::endl; 
-	// }
+		numbers.map_to<int>(squares, [](const int& val) -> int {
+			return val * val;
+		});
+
+		std::cout << "squares:" << std::endl; 
+
+		squares.for_each([](const int& val) {
+			std::cout << val << std::endl;
+		});
+	}
+
+	{
+		int sum;
+
+		numbers.reduce_to<int>(sum, [](const int& sum, const int& val) {
+			return sum + val;
+		});
+
+		std::cout << "sum:" << std::endl << sum << std::endl;
+	}
 }

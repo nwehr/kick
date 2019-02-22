@@ -6,20 +6,16 @@
 
 namespace kick {
 	namespace experimental {
-		namespace hof {
+		namespace algorithm {
 			///////////////////////////////////////////////////////////////////////////////
-			// map
+			// transform
 			///////////////////////////////////////////////////////////////////////////////
-			template<typename T, typename R = T>
-			vector<R> map(const vector<T>& v, R (*fn)(T)) {
-				vector<R> r;
-
-				for(typename vector<T>::iterator it = v.begin(); it != v.end(); ++it) {
-					r.push_back(fn(*it));
-				}
-
-				return r;
-			}
+			// template<typename T, typename O = T>
+			// void transform(iterator<T> begin, iterator<T> end, R (*fn)(T)) {
+			// 	for(begin; begin != end; ++begin) {
+			// 		out.push_back(fn(*begin));
+			// 	}
+			// }
 
 		} // namespace hof
 	} // namespace experimental

@@ -6,21 +6,49 @@
 using namespace kick;
 
 int main( int argc, const char* argv[] ){
-	map<string, int> myMap; 
+	map<string, int> numbers; 
 
-	// Adding items using insert
-	myMap.insert(pair<string, int>("one", 100)); 
-	myMap.insert(pair<string, int>("two", 200)); 
+	numbers.insert(pair<string, int>("one", 1)); 
+	numbers.insert(pair<string, int>("two", 2)); 
+	numbers["three"] = 3; 
+	numbers["four"]  = 4; 
+	numbers["five"]  = 5; 
 
-	// Adding items using the subscript operator
-	myMap["three"] = 300; 
-	myMap["four"]  = 400; 
+	{
+		map<string, int> odds;
 
-	// Access individual items, outputs 100
-	std::cout << myMap["one"] << std::endl; 
+		numbers.filter_to(odds, [](const string& key, const int& val) -> bool {
+			return val % 2 != 0;
+		});
 
-	// Iterate through all items in the map
-	for(map<string, int>::iterator it = myMap.begin(); it != myMap.end(); ++it) {
-		std::cout << (*it).key() << " = " << (*it).val() << std::endl; 
+		std::cout << "odds:" << std::endl;
+
+		odds.for_each([](const string& key, const int& val) {
+			std::cout << key << ": " << val << std::endl;
+		});
+	}
+
+	{
+		map<string, int> squares;
+
+		numbers.map_to<int>(squares, [](const string& key, const int& val) -> int {
+			return val * val;
+		});
+
+		std::cout << "squares:" << std::endl;
+
+		squares.for_each([](const string& key, const int& val) {
+			std::cout << key << ": " << val << std::endl;
+		});
+	}
+
+	{
+		int sum;
+
+		numbers.reduce_to<int>(sum, [](const int& sum, const string& key, const int& val) -> int {
+			return sum + val;
+		});
+
+		std::cout << "sum:" << std::endl << sum << std::endl;
 	}
 }

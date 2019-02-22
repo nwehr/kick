@@ -39,6 +39,16 @@ namespace kick {
 		
 		void pop_back();
 		void pop_front();
+
+		void for_each(void (*)(const T&)) const;
+
+		template<typename O = T>
+		void map_to(deque<O>&, O (*)(const T&)) const;
+
+		template<typename O = T>
+		void reduce_to(O&, O (*)(const O&, const T&)) const;
+
+		void filter_to(deque<T>&, bool (*)(const T&)) const;
 		
 		inline int size();
 		
@@ -48,8 +58,8 @@ namespace kick {
 		inline link<T>*& front_link();
 		inline link<T>*& back_link();
 		
-		inline iterator begin();
-		inline iterator end();
+		inline iterator begin() const;
+		inline iterator end() const;
 		
 	private:
 		int _size;
@@ -139,8 +149,39 @@ void kick::deque<T>::pop_front() {
 		
 		--_size;
 		
+	}	
+}
+
+template<typename T>
+void kick::deque<T>::for_each(void (*fn)(const T&)) const {
+	for(kick::deque<T>::iterator it = begin(); it != end(); ++it) {
+		fn(*it);
 	}
-	
+}
+
+template<typename T>
+template<typename O>
+void kick::deque<T>::map_to(kick::deque<O>& out, O (*fn)(const T&)) const {
+	for(kick::deque<T>::iterator it = begin(); it != end(); ++it) {
+		out.push_back(fn(*it));
+	}
+}
+
+template<typename T>
+template<typename O>
+void kick::deque<T>::reduce_to(O& out, O (*fn)(const O&, const T&)) const {
+	for(kick::deque<T>::iterator it = begin(); it != end(); ++it) {
+		out = fn(out, *it);
+	}
+}
+
+template<typename T>
+void kick::deque<T>::filter_to(kick::deque<T>& out, bool (*fn)(const T&)) const {
+	for(kick::deque<T>::iterator it = begin(); it != end(); ++it) {
+		if(fn(*it)) {
+			out.push_back(*it);
+		}
+	}
 }
 
 template<typename T>
@@ -169,12 +210,12 @@ kick::link<T>*& kick::deque<T>::back_link() {
 }
 
 template<typename T>
-typename kick::deque<T>::iterator kick::deque<T>::begin() {
+typename kick::deque<T>::iterator kick::deque<T>::begin() const {
 	return iterator( _front );
 }
 
 template<typename T>
-typename kick::deque<T>::iterator kick::deque<T>::end() {
+typename kick::deque<T>::iterator kick::deque<T>::end() const {
 	return iterator( _back->next() );
 }
 

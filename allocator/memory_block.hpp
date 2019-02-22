@@ -20,7 +20,6 @@ namespace kick {
 		size_t psize; // populated size
 		size_t asize; // allocated size
 	};
-	
 }
 
 #endif
