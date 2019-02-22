@@ -19,3 +19,4 @@ Makefile
 test
 
 *.kate-swp
+settings.json
