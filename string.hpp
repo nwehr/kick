@@ -116,7 +116,7 @@ namespace kick {
 
 template<typename CharT, typename AllocT>
 kick::basic_string<CharT, AllocT>::basic_string( AllocT alloc )
-: _mem( 0 )
+: _mem( nullptr )
 , _alloc( alloc )
 {
 	_mem = _alloc.malloc( _mem, 0 );
@@ -125,7 +125,7 @@ kick::basic_string<CharT, AllocT>::basic_string( AllocT alloc )
 
 template<typename CharT, typename AllocT>
 kick::basic_string<CharT, AllocT>::basic_string( const CharT* cstr, AllocT alloc )
-: _mem( 0 )
+: _mem( nullptr )
 , _alloc( alloc )
 {
 	size_type size( 0 );
@@ -142,7 +142,7 @@ kick::basic_string<CharT, AllocT>::basic_string( const CharT* cstr, AllocT alloc
 
 template<typename CharT, typename AllocT>
 kick::basic_string<CharT, AllocT>::basic_string( const CharT* cstr, kick::size_type size, AllocT alloc )
-: _mem( 0 )
+: _mem( nullptr )
 , _alloc( alloc )
 {
 	_mem = _alloc.malloc( _mem, size + 1 );
@@ -156,7 +156,7 @@ kick::basic_string<CharT, AllocT>::basic_string( const CharT* cstr, kick::size_t
 
 template<typename CharT, typename AllocT>
 kick::basic_string<CharT, AllocT>::basic_string( kick::size_type size, AllocT alloc )
-: _mem( 0 )
+: _mem( nullptr )
 , _alloc( alloc )
 {
 	_mem = _alloc.malloc( _mem, size + 1 );
@@ -166,7 +166,7 @@ kick::basic_string<CharT, AllocT>::basic_string( kick::size_type size, AllocT al
 
 template<typename CharT, typename AllocT>
 kick::basic_string<CharT, AllocT>::basic_string( const kick::basic_string<CharT, AllocT>& str )
-: _mem( 0 )
+: _mem( nullptr )
 , _alloc( str._alloc )
 {
 	size_type size( str.size() + 1 );

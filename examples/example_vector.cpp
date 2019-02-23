@@ -1,6 +1,5 @@
 #include <iostream>
 #include "../vector.hpp"
-#include "../experimental/algorithm/algorithm.hpp"
 
 using namespace kick;
 
@@ -14,40 +13,23 @@ int main( int argc, char* argv[] ){
 	numbers.push_back(5); 
 
 	{
-		vector<int> odds;
-
-		numbers.filter_to(odds, [](const int& val) -> bool {
+		int sum = numbers.filter([](const int& val) -> bool {
 			return val % 2 != 0;
-		});
-
-		std::cout << "odds:" << std::endl; 
-
-		odds.for_each([](const int& val) {
-			std::cout << val << std::endl;
-		});
-	}
-
-	{
-		vector<int> squares;
-
-		numbers.map_to<int>(squares, [](const int& val) -> int {
+		}).map<int>([](const int& val) -> int {
 			return val * val;
+		}).reduce<int>([](const int& total, const int& val) -> int {
+			return total + val;
 		});
 
-		std::cout << "squares:" << std::endl; 
+		std::cout << "sum: " << sum << std::endl;
+		// numbers.filter_to(odds, [](const int& val) -> bool {
+		// 	return val % 2 != 0;
+		// });
 
-		squares.for_each([](const int& val) {
-			std::cout << val << std::endl;
-		});
-	}
+		// std::cout << "odds:" << std::endl; 
 
-	{
-		int sum;
-
-		numbers.reduce_to<int>(sum, [](const int& sum, const int& val) {
-			return sum + val;
-		});
-
-		std::cout << "sum:" << std::endl << sum << std::endl;
+		// for(auto const& val : squared_odds) {
+		// 	std::cout << val << std::endl;
+		// }
 	}
 }

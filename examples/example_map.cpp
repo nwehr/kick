@@ -15,40 +15,52 @@ int main( int argc, const char* argv[] ){
 	numbers["five"]  = 5; 
 
 	{
-		map<string, int> odds;
-
-		numbers.filter_to(odds, [](const string& key, const int& val) -> bool {
+		map<string, int> squared_odds = numbers.filter([](const string& key, const int& val) -> bool {
 			return val % 2 != 0;
-		});
-
-		std::cout << "odds:" << std::endl;
-
-		odds.for_each([](const string& key, const int& val) {
-			std::cout << key << ": " << val << std::endl;
-		});
-	}
-
-	{
-		map<string, int> squares;
-
-		numbers.map_to<int>(squares, [](const string& key, const int& val) -> int {
+		}).transform<int>([](const string& key, const int& val){
 			return val * val;
 		});
 
-		std::cout << "squares:" << std::endl;
-
-		squares.for_each([](const string& key, const int& val) {
-			std::cout << key << ": " << val << std::endl;
-		});
+		for(auto const& it : squared_odds) {
+			std::cout << it.val() << std::endl;
+		}
 	}
 
-	{
-		int sum;
+	// {
+	// 	map<string, int> odds;
 
-		numbers.reduce_to<int>(sum, [](const int& sum, const string& key, const int& val) -> int {
-			return sum + val;
-		});
+	// 	numbers.filter_to(odds, [](const string& key, const int& val) -> bool {
+	// 		return val % 2 != 0;
+	// 	});
 
-		std::cout << "sum:" << std::endl << sum << std::endl;
-	}
+	// 	std::cout << "odds:" << std::endl;
+
+	// 	odds.for_each([](const string& key, const int& val) {
+	// 		std::cout << key << ": " << val << std::endl;
+	// 	});
+	// }
+
+	// {
+	// 	map<string, int> squares;
+
+	// 	numbers.map_to<int>(squares, [](const string& key, const int& val) -> int {
+	// 		return val * val;
+	// 	});
+
+	// 	std::cout << "squares:" << std::endl;
+
+	// 	squares.for_each([](const string& key, const int& val) {
+	// 		std::cout << key << ": " << val << std::endl;
+	// 	});
+	// }
+
+	// {
+	// 	int sum;
+
+	// 	numbers.reduce_to<int>(sum, [](const int& sum, const string& key, const int& val) -> int {
+	// 		return sum + val;
+	// 	});
+
+	// 	std::cout << "sum:" << std::endl << sum << std::endl;
+	// }
 }

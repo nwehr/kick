@@ -18,10 +18,12 @@ namespace kick {
 	template<typename T>
 	class array_iterator {
 	public:
-		array_iterator( int index, T* mem )
+		array_iterator( size_t index, T* mem )
 		: _index( index )
 		, _mem( mem )
 		{}
+
+		array_iterator(const array_iterator<T>&) = default;
 		
 		array_iterator<T>& operator=( const array_iterator<T>& it ){
 			if( this != &it ) {
@@ -37,7 +39,7 @@ namespace kick {
 			return _mem[_index];
 		}
 		
-		array_iterator operator+( int rh ){
+		array_iterator operator+( size_t rh ){
 			return array_iterator( _index + rh, _mem );
 		}
 		
@@ -45,7 +47,7 @@ namespace kick {
 			return array_iterator( _index + rh._index, _mem );
 		}
 		
-		array_iterator operator-( int rh ){
+		array_iterator operator-( size_t rh ){
 			return array_iterator( _index - rh, _mem );
 		}
 		
@@ -81,14 +83,13 @@ namespace kick {
 			return _index != it._index;
 		}
 		
-		int index() const {
+		size_t index() const {
 			return _index; 
 		}
 		
 	protected:
-		int _index;
+		size_t _index;
 		T* _mem;
-		
 	};
 	
 	///////////////////////////////////////////////////////////////////////////////
@@ -97,7 +98,7 @@ namespace kick {
 	template<typename T>
 	class const_array_iterator : public array_iterator<T> {
 	public:
-		const_array_iterator( int index, T* mem )
+		const_array_iterator( size_t index, T* mem )
 		: array_iterator<T>( index, mem )
 		{}
 		

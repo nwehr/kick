@@ -38,12 +38,7 @@ namespace kick {
 #if	(KICK_POLYMORPHIC_EXCEPTION > 0)
 		virtual
 #endif
-		const char* what() const
-#if	(KICK_POLYMORPHIC_EXCEPTION > 0)
-		= 0;
-#else
-		;
-#endif
+		const char* what() const;
 		
 	};
 	

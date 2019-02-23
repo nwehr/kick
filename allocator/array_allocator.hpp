@@ -20,6 +20,8 @@
 
 #include "./mem_exception.hpp"
 
+kick::size_t default_calc( kick::size_t size, kick::size_t asize );
+
 kick::size_t default_calc( kick::size_t size, kick::size_t asize )
 {
 	if (size >= asize) {
@@ -40,10 +42,10 @@ namespace kick {
 	class array_allocator {
 	public:
 		array_allocator( const function<size_t, size_t, size_t>& calc = &default_calc );
-		~array_allocator();
+		array_allocator( const array_allocator<T>& ) = default;
 		
-		const size_t asize() const;
-		const size_t usize() const;
+		size_t asize() const;
+		size_t usize() const;
 		
 		T* malloc	( T* mem, size_t size );
 		T* realloc	( T* mem, size_t size );
@@ -70,26 +72,23 @@ namespace kick {
 	{}
 	
 	template<typename T>
-	array_allocator<T>::~array_allocator(){}
-	
-	template<typename T>
-	const size_t array_allocator<T>::asize() const {
+	size_t array_allocator<T>::asize() const {
 		return _asize_;
 	}
 	
 	template<typename T>
-	const size_t array_allocator<T>::usize() const {
+	size_t array_allocator<T>::usize() const {
 		return _usize_;
 	}
 	
 	template<typename T>
 	T* array_allocator<T>::malloc( T* mem, size_t size ){
-		T* ptr = 0;
+		mem = nullptr;
 		
 		_usize_ = size;
 		_asize_ = _calc_( size, _asize_ );
 		
-		if( !(ptr = static_cast<T*>( ::malloc( sizeof( T ) * _asize_ ) )) ){
+		if( !(mem = static_cast<T*>( ::malloc( sizeof( T ) * _asize_ ) )) ){
 #if (KICK_EXCEPTION > 0)
 			throw malloc_exception();
 #else
@@ -98,15 +97,15 @@ namespace kick {
 		}
 		
 		for( size_t i = 0; i < _asize_; ++i )
-			new( &ptr[i] ) T();
+			new( &mem[i] ) T();
 		
-		return ptr;
+		return mem;
 		
 	}
 	
 	template<typename T>
 	T* array_allocator<T>::realloc( T* mem, size_t size ){
-		T* ptr = 0;
+		T* ptr = nullptr;
 		
 		size_t asize = _calc_( size, _asize_ );
 		

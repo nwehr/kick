@@ -40,15 +40,39 @@ namespace kick {
 		void pop_back();
 		void pop_front();
 
-		void for_each(void (*)(const T&)) const;
+		deque<T> filter(bool (*fn)(const T&)) const {
+			deque<T> filtered;
+			
+			for(auto const& it : *this) {
+				if(fn(it)) {
+					filtered.push_back(it);
+				}
+			}
+
+			return filtered;
+		}
 
 		template<typename O = T>
-		void map_to(deque<O>&, O (*)(const T&)) const;
+		deque<O> transform(O (*fn)(const T&)) const {
+			deque<O> mapped;
+
+			for(auto const& it : *this) {
+				mapped.push_back(fn(it));
+			}
+
+			return mapped;
+		}
 
 		template<typename O = T>
-		void reduce_to(O&, O (*)(const O&, const T&)) const;
+		O reduce(O (*fn)(const O&, const T&)) const {
+			O reduced = O();
 
-		void filter_to(deque<T>&, bool (*)(const T&)) const;
+			for(auto const& it : *this) {
+				reduced = fn(reduced, it);
+			}
+
+			return reduced;
+		}
 		
 		inline int size();
 		
@@ -150,38 +174,6 @@ void kick::deque<T>::pop_front() {
 		--_size;
 		
 	}	
-}
-
-template<typename T>
-void kick::deque<T>::for_each(void (*fn)(const T&)) const {
-	for(kick::deque<T>::iterator it = begin(); it != end(); ++it) {
-		fn(*it);
-	}
-}
-
-template<typename T>
-template<typename O>
-void kick::deque<T>::map_to(kick::deque<O>& out, O (*fn)(const T&)) const {
-	for(kick::deque<T>::iterator it = begin(); it != end(); ++it) {
-		out.push_back(fn(*it));
-	}
-}
-
-template<typename T>
-template<typename O>
-void kick::deque<T>::reduce_to(O& out, O (*fn)(const O&, const T&)) const {
-	for(kick::deque<T>::iterator it = begin(); it != end(); ++it) {
-		out = fn(out, *it);
-	}
-}
-
-template<typename T>
-void kick::deque<T>::filter_to(kick::deque<T>& out, bool (*fn)(const T&)) const {
-	for(kick::deque<T>::iterator it = begin(); it != end(); ++it) {
-		if(fn(*it)) {
-			out.push_back(*it);
-		}
-	}
 }
 
 template<typename T>

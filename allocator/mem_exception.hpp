@@ -32,14 +32,12 @@ namespace kick {
 		{
 			sprintf( _msg, "Unable to move memory block to %02lux", reinterpret_cast<unsigned long>( adx ) );
 		}
-		
+
 		~move_exception() { delete[] _msg; }
-		
 		const char* what() const { return _msg; }
 		
 	private:
 		char* _msg;
-		
 	};
 }
 

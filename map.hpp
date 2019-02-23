@@ -51,22 +51,46 @@ namespace kick {
 		
 		ValT& operator[]( const KeyT& );
 
-		void for_each(void (*fn)(const KeyT&, const ValT&)) const;
+		map<KeyT, ValT> filter(bool (*fn)(const KeyT&, const ValT&)) const {
+			map<KeyT, ValT, AllocT> filtered;
+
+			for(auto const& it: *this) {
+				if(fn(it.key(), it.val())) {
+					filtered[it.key()] = it.val();
+				}
+			}
+
+			return filtered;
+		}
 
 		template<typename O = ValT>
-		void map_to(map<KeyT, O>&, O (*)(const KeyT&, const ValT&)) const;
+		map<KeyT, O> transform(O (*fn)(const KeyT&, const ValT&)) const {
+			map<KeyT, O, AllocT> mapped;
+
+			for(auto const& it : *this) {
+				mapped[it.key()] = fn(it.key(), it.val());
+			}
+
+			return mapped;
+		}
 
 		template<typename O = ValT>
-		void reduce_to(O&, O (*)(const O&, const KeyT&, const ValT&)) const;
+		O reduce(O (*fn)(const O&, const KeyT&, const ValT&)) const {
+			O reduced = O();
 
-		void filter_to(map<KeyT, ValT>&, bool (*)(const KeyT&, const ValT&)) const;
+			for(auto const& it : *this) {
+				reduced = fn(reduced, it.key(), it.val());
+			}
+
+			return reduced;
+		}
 		
 		inline iterator begin() const;
 		inline iterator end() const;
 		
 	private:
-		pair<KeyT,ValT>* _mem_;
-		AllocT _alloc_;
+		pair<KeyT,ValT>* _mem;
+		AllocT _alloc;
 		
 	};
 	
@@ -74,38 +98,38 @@ namespace kick {
 
 template<typename KeyT, typename ValT, typename AllocT>
 kick::map<KeyT,ValT,AllocT>::map( size_t size, AllocT alloc )
-: _mem_( 0 )
-, _alloc_( alloc )
+: _mem( nullptr )
+, _alloc( alloc )
 {
-	_mem_ = _alloc_.malloc( _mem_, size );
+	_mem = _alloc.malloc( _mem, size );
 }
 
 template<typename KeyT, typename ValT, typename AllocT>
 kick::map<KeyT,ValT,AllocT>::map( const map<KeyT,ValT,AllocT>& map )
-: _mem_( 0 )
-, _alloc_( map._alloc_ )
+: _mem( nullptr )
+, _alloc( map._alloc )
 {
-	_mem_ = _alloc_.malloc( _mem_, size() );
+	_mem = _alloc.malloc( _mem, size() );
 	
 	for( size_t i = 0; i < map.size(); ++i )
-		_mem_[i] = map._mem_[i];
+		_mem[i] = map._mem[i];
 	
 }
 
 template<typename KeyT, typename ValT, typename AllocT>
 kick::map<KeyT,ValT,AllocT>::~map(){
-	if( _mem_ )
-		_alloc_.free( _mem_ );
+	if( _mem )
+		_alloc.free( _mem );
 	
 }
 
 template<typename KeyT, typename ValT, typename AllocT>
 kick::map<KeyT,ValT,AllocT>& kick::map<KeyT,ValT,AllocT>::operator=( const map<KeyT,ValT,AllocT>& map ) {
 	if( this != &map ){
-		_mem_ = _alloc_.malloc( _mem_, size() );
+		_mem = _alloc.malloc( _mem, size() );
 		
 		for( size_t i = 0; i < map.size(); ++i )
-			_mem_[i] = map._mem_[i];
+			_mem[i] = map._mem[i];
 		
 	}
 	
@@ -122,18 +146,18 @@ bool kick::map<KeyT,ValT,AllocT>::find( const KeyT& key, size_t& index ) {
 	while( min + 1 < max ){
 		mid = (min + max) / 2;
 		
-		if( _mem_[mid].key() > key ) max = mid;
+		if( _mem[mid].key() > key ) max = mid;
 		else min = mid;
 		
 	}
 	
 	if( max ){
-		if( _mem_[min].key() == key ){
+		if( _mem[min].key() == key ){
 			index = min;
 			return true;
 			
 		} else {
-			index = _mem_[min].key() > key ? (min == 0 ? min : min - 1) : min + 1;
+			index = _mem[min].key() > key ? (min == 0 ? min : min - 1) : min + 1;
 			return false;
 			
 		}
@@ -150,12 +174,12 @@ void kick::map<KeyT,ValT,AllocT>::insert( const pair<KeyT,ValT>& pair ) {
 	size_t index = 0;
 	
 	if( !find( pair.key(), index ) ){
-		_mem_ = _alloc_.realloc( _mem_, size() + 1 );
+		_mem = _alloc.realloc( _mem, size() + 1 );
 		
 		if( index < (size() > 0 ? size() : 1) - 1 )
-			_mem_ = _alloc_.move( _mem_, index, index + 1 );
+			_mem = _alloc.move( _mem, index, index + 1 );
 		
-		_mem_[index] = pair;
+		_mem[index] = pair;
 		
 	}
 	
@@ -168,12 +192,12 @@ void kick::map<KeyT,ValT,AllocT>::insert( const KeyT& key, const ValT& val ) {
 
 template<typename KeyT, typename ValT, typename AllocT>
 const kick::size_t kick::map<KeyT,ValT,AllocT>::size() const {
-	return _alloc_.usize();
+	return _alloc.usize();
 }
 
 template<typename KeyT, typename ValT, typename AllocT>
 const kick::size_t kick::map<KeyT,ValT,AllocT>::capacity() const {
-	return _alloc_.asize();
+	return _alloc.asize();
 }
 
 template<typename KeyT, typename ValT, typename AllocT>
@@ -181,59 +205,27 @@ ValT& kick::map<KeyT,ValT,AllocT>::operator[]( const KeyT& key ) {
 	size_t index = 0;
 	
 	if( !find( key, index ) ){
-		_mem_ = _alloc_.realloc( _mem_, size() + 1 );
+		_mem = _alloc.realloc( _mem, size() + 1 );
 		
 		if( index < (size() > 0 ? size() : 1) - 1 )
-			_mem_ = _alloc_.move( _mem_, index, index + 1 );
+			_mem = _alloc.move( _mem, index, index + 1 );
 		
-		_mem_[index] = pair<KeyT, ValT>( key, ValT() );
+		_mem[index] = pair<KeyT, ValT>( key, ValT() );
 		
 	}
 	
-	return _mem_[index].val();
+	return _mem[index].val();
 	
-}
-
-template<typename KeyT, typename ValT, typename AllocT>
-void kick::map<KeyT, ValT, AllocT>::for_each(void (*fn)(const KeyT&, const ValT&)) const {
-	for(kick::map<KeyT, ValT, AllocT>::iterator it = begin(); it != end(); ++it) {
-		fn((*it).key(), (*it).val());
-	}
-}
-
-template<typename KeyT, typename ValT, typename AllocT>
-template<typename O>
-void kick::map<KeyT, ValT, AllocT>::map_to(kick::map<KeyT, O>& out, O (*fn)(const KeyT&, const ValT&)) const {
-	for(kick::map<KeyT, ValT, AllocT>::iterator it = begin(); it != end(); ++it) {
-		out.insert(kick::pair<KeyT, O>((*it).key(), fn((*it).key(), (*it).val())));
-	}
-}
-
-template<typename KeyT, typename ValT, typename AllocT>
-template<typename O>
-void kick::map<KeyT, ValT, AllocT>::reduce_to(O& out, O (*fn)(const O&, const KeyT&, const ValT&)) const {
-	for(kick::map<KeyT, ValT, AllocT>::iterator it = begin(); it != end(); ++it) {
-		out = fn(out, (*it).key(), (*it).val());
-	}
-}
-
-template<typename KeyT, typename ValT, typename AllocT>
-void kick::map<KeyT, ValT, AllocT>::filter_to(kick::map<KeyT, ValT>& out, bool (*fn)(const KeyT&, const ValT&)) const {
-	for(kick::map<KeyT, ValT, AllocT>::iterator it = begin(); it != end(); ++it) {
-		if(fn((*it).key(), (*it).val())) {
-			out.insert(kick::pair<KeyT, ValT>((*it).key(), (*it).val()));
-		}
-	}
 }
 
 template<typename KeyT, typename ValT, typename AllocT>
 typename kick::map<KeyT,ValT,AllocT>::iterator kick::map<KeyT,ValT,AllocT>::begin() const {
-	return iterator( 0, _mem_ );
+	return iterator( 0, _mem );
 }
 
 template<typename KeyT, typename ValT, typename AllocT>
 typename kick::map<KeyT,ValT,AllocT>::iterator kick::map<KeyT,ValT,AllocT>::end() const {
-	return iterator( size(), _mem_ );
+	return iterator( size(), _mem );
 }
 
 #endif // _kick_map_h
