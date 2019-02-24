@@ -15,21 +15,12 @@ int main( int argc, char* argv[] ){
 	{
 		int sum = numbers.filter([](const int& val) -> bool {
 			return val % 2 != 0;
-		}).map<int>([](const int& val) -> int {
+		}).transform<int>([](const int& val) -> int {
 			return val * val;
 		}).reduce<int>([](const int& total, const int& val) -> int {
 			return total + val;
 		});
 
 		std::cout << "sum: " << sum << std::endl;
-		// numbers.filter_to(odds, [](const int& val) -> bool {
-		// 	return val % 2 != 0;
-		// });
-
-		// std::cout << "odds:" << std::endl; 
-
-		// for(auto const& val : squared_odds) {
-		// 	std::cout << val << std::endl;
-		// }
 	}
 }

@@ -13,22 +13,19 @@
 #define KICK_POLYMORPHIC_OPTIONAL KICK_POLYMORPHIC_CONTAINERS
 #endif
 
+#include "./error.hpp"
+#include "./experimental/either.hpp"
+
 namespace kick {
-#if (KICK_EXCEPTION > 0)
 	///////////////////////////////////////////////////////////////////////////////
-	// optional_exception : exception
+	// optional_error
 	///////////////////////////////////////////////////////////////////////////////
-	class optional_exception : public exception {
-	public:
-		optional_exception() : exception() {}
-		
-#if	(KICK_POLYMORPHIC_EXCEPTION > 0)
-		virtual
-#endif
-		const char* what() const { return "unable to dereference uninitialized object."; }
-		
+	struct optional_error : public error {
+		optional_error() : error() {
+			code = 0;
+			what = "unable to dereference uninitialized object";
+		}
 	};
-#endif
 	
 	///////////////////////////////////////////////////////////////////////////////
 	// optional
@@ -36,14 +33,13 @@ namespace kick {
 	template <typename T>
 	class optional {
 	public:
+		typedef experimental::either<T, optional_error> either;
+
 		optional();
 		optional( const T& );
-		optional( const optional<T>& );
-		optional<T>& operator=( const optional<T>& );
+		optional( const optional<T>& ); 
+		optional<T>& operator=( const optional<T>& ); 
 		
-#if	(KICK_POLYMORPHIC_OPTIONAL > 0)
-		virtual
-#endif
 		~optional();
 		
 		inline bool is_initialized() const;
@@ -51,96 +47,100 @@ namespace kick {
 		
 		inline T& get();
 		inline const T& get() const;
+
+		inline either get_safe() {
+			if(is_initialized()) {
+				return make_left();	
+			} else {
+				return make_right();
+			}
+		}
+		
+		inline const either get_safe() const {
+			return get_safe();
+		}
 		
 		inline T& operator*();
 		inline const T& operator*() const;
 		
 	protected:
 		T* _mem;
-		
+
+		either make_left() {
+			return experimental::make_left<T, optional_error>(*_mem);
+		}
+
+		either make_right() {
+			return experimental::make_right<T, optional_error>(optional_error());
+		}
 	};
-	
-}
 
-///////////////////////////////////////////////////////////////////////////////
-// optional
-///////////////////////////////////////////////////////////////////////////////
-template<typename T>
-kick::optional<T>::optional()
-: _mem( 0 )
-{}
+	///////////////////////////////////////////////////////////////////////////////
+	// optional
+	///////////////////////////////////////////////////////////////////////////////
+	template<typename T>
+	optional<T>::optional()
+	: _mem( nullptr )
+	{}
 
-template<typename T>
-kick::optional<T>::optional( const T& obj )
-: _mem( new T( obj ) )
-{}
+	template<typename T>
+	optional<T>::optional( const T& obj )
+	: _mem( new T( obj ) )
+	{}
 
-template<typename T>
-kick::optional<T>::optional( const kick::optional<T>& opt )
-: _mem( opt._mem ? new T( *(opt._mem) ) : 0 )
-{}
+	template<typename T>
+	optional<T>::optional( const optional<T>& opt )
+	: _mem(opt.is_initialized() ? new T( *(opt._mem) ) : nullptr)
+	{}
 
-template<typename T>
-kick::optional<T>& kick::optional<T>::operator=( const kick::optional<T>& opt ) {
-	if( opt._mem ) {
-		_mem = new T( *(opt._mem) );
-	}
-	
-	return *this;
-}
-
-template<typename T>
-kick::optional<T>::~optional() {
-	if( _mem ) {
-		delete _mem;
-	}
-	
-}
-
-template<typename T>
-bool kick::optional<T>::is_initialized() const {
-	return static_cast<bool>( _mem );
-}
-
-template<typename T>
-kick::optional<T>::operator bool() const {
-	return is_initialized();
-}
-
-template<typename T>
-T& kick::optional<T>::get() {
-	if( !_mem ) {
-#if (KICK_EXCEPTION > 0)
-		throw optional_exception();
-#else 
+	template<typename T>
+	optional<T>& optional<T>::operator=( const optional<T>& opt ) {
+		if(opt.is_initialized()) {
+			_mem = new T(*(opt._mem));
+		} else {
+			_mem = nullptr;
+		}
 		
-#endif
+		return *this;
 	}
-	
-	return *_mem;
-}
 
-template<typename T>
-const T& kick::optional<T>::get() const {
-	return get();
-}
-
-template<typename T>
-T& kick::optional<T>::operator*() {
-	if( !_mem ) {
-#if (KICK_EXCEPTION > 0)
-		 throw optional_exception();
-#else
-		
-#endif
+	template<typename T>
+	optional<T>::~optional() {
+		if(is_initialized()) {
+			delete _mem;
+		}
 	}
-	
-	return *_mem;
-}
 
-template<typename T>
-const T& kick::optional<T>::operator*() const {
-	return operator*(); 
+	template<typename T>
+	bool optional<T>::is_initialized() const {
+		return static_cast<bool>(_mem);
+	}
+
+	template<typename T>
+	optional<T>::operator bool() const {
+		return is_initialized();
+	}
+
+	template<typename T>
+	T& optional<T>::get() {
+		return *_mem;
+	}
+
+	template<typename T>
+	const T& optional<T>::get() const {
+		return get();
+	}
+
+	template<typename T>
+	T& optional<T>::operator*() {
+		return *_mem;
+	}
+
+	template<typename T>
+	const T& optional<T>::operator*() const {
+		return operator*(); 
+	}
+
 }
 
 #endif // _kick_optional_h
